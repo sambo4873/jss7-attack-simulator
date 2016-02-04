@@ -2,9 +2,10 @@ package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
 
 import org.mobicents.protocols.ss7.map.api.MAPDialogListener;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
+import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 import org.mobicents.protocols.ss7.tools.simulator.common.TesterBase;
 
-public class TestSRIForSMMan extends TesterBase implements MAPDialogListener,
+public class TestSRIForSMMan extends TesterBase implements Stoppable, MAPDialogListener,
         MAPServiceSmsListener {
 
     public static String SOURCE_NAME = "TestSRIForSMClient";
@@ -95,5 +96,20 @@ public class TestSRIForSMMan extends TesterBase implements MAPDialogListener,
     @Override
     public void onNoteSubscriberPresentRequest(NoteSubscriberPresentRequest request) {
 
+    }
+
+    @Override
+    public void stop() {
+
+    }
+
+    @Override
+    public void execute() {
+
+    }
+
+    @Override
+    public String getState() {
+        return null;
     }
 }
