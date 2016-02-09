@@ -59,6 +59,7 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
 import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestSRIForSMMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.NumberingPlanIdentificationType;
@@ -125,6 +126,7 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
     TestCapScfMan testCapScfMan;
     TestAtiClientMan testAtiClientMan;
     TestAtiServerMan testAtiServerMan;
+    TestSRIForSMMan testSRIForSMMan;
 
     // testers
 
@@ -170,6 +172,8 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
 
         this.testAtiServerMan = new TestAtiServerMan(appName);
         this.testAtiServerMan.setTesterHost(this);
+
+        this.testSRIForSMMan = new TestSRIForSMMan(appName);
 
         this.setupLog4j(appName);
 
@@ -257,6 +261,10 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
 
     public TestAtiServerMan getTestAtiServerMan() {
         return this.testAtiServerMan;
+    }
+
+    public TestSRIForSMMan getTestSRIForSMMan() {
+        return this.testSRIForSMMan;
     }
 
     private void setupLog4j(String appName) {
@@ -633,6 +641,16 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
                     started = this.testAtiServerMan.start();
                 }
                 break;
+
+            case Instance_TestTask.VAL_SRI_ATTACK_TEST:
+                if (curMap == null) {
+                    this.sendNotif(TesterHost.SOURCE_NAME, "Error initializing SRI_ATTACK: No MAP stack is defined at L3",
+                            "", Level.WARN);
+                } else {
+                    this.instance_TestTask_B = this.testSRIForSMMan;
+                    this.testSRIForSMMan.setMapMan(curMap);
+                    started = this.testSRIForSMMan.start();
+                }
 
             default:
                 // TODO: implement others test tasks ...
