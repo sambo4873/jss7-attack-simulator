@@ -1,4 +1,4 @@
-package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
+package org.mobicents.protocols.ss7.tools.simulator.tests.attack.location;
 
 import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;

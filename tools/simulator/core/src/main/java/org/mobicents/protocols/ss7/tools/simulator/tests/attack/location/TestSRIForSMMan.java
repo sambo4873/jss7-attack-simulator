@@ -1,4 +1,4 @@
-package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
+package org.mobicents.protocols.ss7.tools.simulator.tests.attack.location;
 
 import org.apache.log4j.Level;
 import org.mobicents.protocols.ss7.map.api.MAPDialogListener;
@@ -107,12 +107,16 @@ public class TestSRIForSMMan extends TesterBase implements Stoppable, MAPDialogL
 
     @Override
     public void stop() {
-
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        isStarted = false;
+        mapProvider.getMAPServiceSms().deactivate();
+        mapProvider.getMAPServiceSms().removeMAPServiceListener(this);
+        mapProvider.removeMAPDialogListener(this);
+        this.testerHost.sendNotif(SOURCE_NAME, "SRI Attack Client has been stopped", "", Level.INFO);
     }
 
     @Override
     public void execute() {
-
     }
 
     public boolean start() {
@@ -120,7 +124,7 @@ public class TestSRIForSMMan extends TesterBase implements Stoppable, MAPDialogL
         mapProvider.getMAPServiceSms().acivate();
         mapProvider.getMAPServiceSms().addMAPServiceListener(this);
         mapProvider.addMAPDialogListener(this);
-        this.testerHost.sendNotif(SOURCE_NAME, "SMS Client has been started", "", Level.INFO);
+        this.testerHost.sendNotif(SOURCE_NAME, "SMS Client Client has been started", "", Level.INFO);
         isStarted = true;
 
         return true;
