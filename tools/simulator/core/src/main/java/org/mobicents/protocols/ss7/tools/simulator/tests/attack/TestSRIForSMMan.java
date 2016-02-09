@@ -1,10 +1,16 @@
 package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
 
+import org.apache.log4j.Level;
 import org.mobicents.protocols.ss7.map.api.MAPDialogListener;
+import org.mobicents.protocols.ss7.map.api.MAPProvider;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 import org.mobicents.protocols.ss7.tools.simulator.common.TesterBase;
+import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
 
+/**
+ * @author Kristoffer Jensen
+ */
 public class TestSRIForSMMan extends TesterBase implements Stoppable, MAPDialogListener,
         MAPServiceSmsListener {
 
@@ -12,6 +18,7 @@ public class TestSRIForSMMan extends TesterBase implements Stoppable, MAPDialogL
     private final String name;
 
     private boolean isStarted = false;
+    private MapMan mapMan;
 
     public TestSRIForSMMan(String name) {
         super(SOURCE_NAME);
@@ -108,8 +115,23 @@ public class TestSRIForSMMan extends TesterBase implements Stoppable, MAPDialogL
 
     }
 
+    public boolean start() {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        mapProvider.getMAPServiceSms().acivate();
+        mapProvider.getMAPServiceSms().addMAPServiceListener(this);
+        mapProvider.addMAPDialogListener(this);
+        this.testerHost.sendNotif(SOURCE_NAME, "SMS Client has been started", "", Level.INFO);
+        isStarted = true;
+
+        return true;
+    }
+
     @Override
     public String getState() {
         return null;
+    }
+
+    public void setMapMan(MapMan mapMan) {
+        this.mapMan = mapMan;
     }
 }
