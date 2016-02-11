@@ -53,6 +53,7 @@ import org.mobicents.protocols.ss7.tools.simulator.management.TesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientManMBean;
@@ -102,6 +103,7 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
     private TestCapSsfManMBean capSsf;
     private TestAtiClientManMBean atiClient;
     private TestAtiServerManMBean atiServer;
+    private TestSRIForSMManMBean sriAttackClient;
 
     private TestingForm testingForm;
 
@@ -443,7 +445,7 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
     protected void startHost(String appName, boolean isRemote, final TesterHost hostImpl, TesterHostMBean host, M3uaManMBean m3ua, DialogicManMBean dialogic,
             SccpManMBean sccp, MapManMBean map, CapManMBean cap, TestUssdClientManMBean ussdClient, TestUssdServerManMBean ussdServer,
             TestSmsClientManMBean smsClient, TestSmsServerManMBean smsServer, TestCapScfManMBean capScf, TestCapSsfManMBean capSsf,
-            TestAtiClientManMBean atiClient, TestAtiServerManMBean atiServer) {
+            TestAtiClientManMBean atiClient, TestAtiServerManMBean atiServer, TestSRIForSMManMBean sriAttackClient) {
         setTitle(getTitle() + appName);
 
         this.hostImpl = hostImpl;
@@ -461,7 +463,9 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
         this.capSsf = capSsf;
         this.atiClient = atiClient;
         this.atiServer = atiServer;
+        this.sriAttackClient = sriAttackClient;
         this.isRemote = isRemote;
+
 
         this.btTermRemote.setEnabled(isRemote);
 
