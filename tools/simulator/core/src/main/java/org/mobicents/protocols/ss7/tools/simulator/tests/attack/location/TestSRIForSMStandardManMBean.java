@@ -8,7 +8,7 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 import javax.management.*;
 
 /**
- * Created by kristoffer on 11.02.2016.
+ * @author Kristoffer Jensen
  */
 public class TestSRIForSMStandardManMBean extends StandardMBean {
     public TestSRIForSMStandardManMBean(TestSRIForSMMan impl, Class<TestSRIForSMManMBean> intf) throws NotCompliantMBeanException {

@@ -74,9 +74,9 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerStan
 import com.sun.jdmk.comm.HtmlAdaptorServer;
 
 /**
- *
  * @author sergey vetyutnev
  * @author amit bhayani
+ * @author Kristoffer Jensen
  */
 public class MainCore {
 
