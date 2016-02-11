@@ -27,7 +27,7 @@ import java.util.Random;
 /**
  * @author Kristoffer Jensen
  */
-public class TestSRIForSMMan extends TesterBase implements Stoppable, MAPDialogListener,
+public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean, Stoppable, MAPDialogListener,
         MAPServiceSmsListener {
 
     public static String SOURCE_NAME = "TestSRIForSM";
