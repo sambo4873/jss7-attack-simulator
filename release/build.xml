@@ -61,7 +61,7 @@
 		</exec>
 
 		<exec failonerror="true" executable="${mvn.executable}" dir="${checkout.sctp.dir}">
-			<arg line="-T 8 clean install -Dmaven.test.skip=true -Prelease" />
+			<arg line="clean install -Dmaven.test.skip=true -Prelease" />
 		</exec>
 	</target>
 
