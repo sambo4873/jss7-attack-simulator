@@ -301,6 +301,10 @@ public class ConfigurationData {
             if (capSsf != null)
                 data.setTestCapSsfConfigurationData(capSsf);
 
+            TestSRIForSMConfigurationData sriForSM = xml.get(TEST_SRIFORSM, TestSRIForSMConfigurationData.class);
+            if (sriForSM != null)
+                data.setTestSRIForSMConfigurationData(sriForSM);
+
             // while (xml.hasNext()) {
             // Object o = xml.getNext();
             // }
@@ -327,6 +331,7 @@ public class ConfigurationData {
             xml.add(data.getTestAtiServerConfigurationData(), TEST_ATI_SERVER, TestAtiServerConfigurationData.class);
             xml.add(data.getTestCapScfConfigurationData(), TEST_CAP_SCF, TestCapScfConfigurationData.class);
             xml.add(data.getTestCapSsfConfigurationData(), TEST_CAP_SSF, TestCapSsfConfigurationData.class);
+            xml.add(data.getTestSRIForSMConfigurationData(), TEST_SRIFORSM, TestSRIForSMConfigurationData.class);
         }
     };
 
