@@ -174,6 +174,7 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
         this.testAtiServerMan.setTesterHost(this);
 
         this.testSRIForSMMan = new TestSRIForSMMan(appName);
+        this.testSRIForSMMan.setTesterHost(this);
 
         this.setupLog4j(appName);
 
