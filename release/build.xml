@@ -45,7 +45,7 @@
 		</exec>
 
 		<exec failonerror="true" executable="${mvn.executable}" dir="${checkout.asn.dir}">
-			<arg line="-T 8 clean install -Dmaven.test.skip=true" />
+			<arg line="clean install -Dmaven.test.skip=true" />
 		</exec>
 	</target>
 	
@@ -188,13 +188,13 @@
 
 	<target name="build-jss7">
 		<exec failonerror="true" executable="${mvn.executable}" dir="${base.dir}/../">
-			<arg line="-T 8 clean install -Dmaven.test.skip=true" />
+			<arg line="clean install -Dmaven.test.skip=true" />
 		</exec>
 	</target>
 	
 	<target name="build-docs">
 		<exec failonerror="true" executable="${mvn.executable}" dir="${base.dir}/../docs">
-			<arg line="-T 8 clean install -Pmobicents" />
+			<arg line="clean install -Pmobicents" />
 		</exec>
 	</target>
 
