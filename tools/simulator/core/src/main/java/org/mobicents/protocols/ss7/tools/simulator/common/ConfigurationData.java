@@ -36,6 +36,7 @@ import org.mobicents.protocols.ss7.tools.simulator.management.Instance_L3;
 import org.mobicents.protocols.ss7.tools.simulator.management.Instance_TestTask;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientConfigurationData;
@@ -68,6 +69,7 @@ public class ConfigurationData {
     public static final String TEST_CAP_SSF = "testCapSsf";
     public static final String TEST_ATI_CLIENT = "testAtiClient";
     public static final String TEST_ATI_SERVER = "testAtiServer";
+    public static final String TEST_SRIFORSM = "testSRIForSM";
 
     private Instance_L1 instance_L1 = new Instance_L1(Instance_L1.VAL_NO);
     private Instance_L2 instance_L2 = new Instance_L2(Instance_L2.VAL_NO);
@@ -88,6 +90,7 @@ public class ConfigurationData {
     private TestCapSsfConfigurationData testCapSsfConfigurationData = new TestCapSsfConfigurationData();
     private TestAtiClientConfigurationData testAtiClientConfigurationData = new TestAtiClientConfigurationData();
     private TestAtiServerConfigurationData testAtiServerConfigurationData = new TestAtiServerConfigurationData();
+    private TestSRIForSMConfigurationData testSRIForSMConfigurationData = new TestSRIForSMConfigurationData();
 
     public Instance_L1 getInstance_L1() {
         return instance_L1;
@@ -223,6 +226,14 @@ public class ConfigurationData {
 
     public void setTestAtiServerConfigurationData(TestAtiServerConfigurationData testAtiServerConfigurationData) {
         this.testAtiServerConfigurationData = testAtiServerConfigurationData;
+    }
+
+    public TestSRIForSMConfigurationData getTestSRIForSMConfigurationData() {
+        return testSRIForSMConfigurationData;
+    }
+
+    public void setTestSRIForSMConfigurationData(TestSRIForSMConfigurationData testSRIForSMConfigurationData) {
+        this.testSRIForSMConfigurationData = testSRIForSMConfigurationData;
     }
 
     /**
