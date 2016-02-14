@@ -23,7 +23,7 @@ import java.awt.event.ActionListener;
 public class TestSRIForSMParamForm extends JDialog {
     private static final long serialVersionUID = 5428271328162943202L;
 
-    private TestSRIForSMManMBean sriAttackClient;
+    private TestSRIForSMManMBean sriForSM;
 
     private JTextField tbServiceCenterAddress;
     private JTextField tbSmscSsn;
@@ -287,7 +287,7 @@ public class TestSRIForSMParamForm extends JDialog {
     }
 
     public void setData(TestSRIForSMManMBean smsClient) {
-        this.sriAttackClient = smsClient;
+        this.sriForSM = smsClient;
 
         this.reloadData();
     }
@@ -297,29 +297,29 @@ public class TestSRIForSMParamForm extends JDialog {
     }
 
     private void reloadData() {
-        M3uaForm.setEnumeratedBaseComboBox(cbAddressNature, this.sriAttackClient.getAddressNature());
-        M3uaForm.setEnumeratedBaseComboBox(cbNumberingPlan, this.sriAttackClient.getNumberingPlan());
-        M3uaForm.setEnumeratedBaseComboBox(cbMapProtocolVersion, this.sriAttackClient.getMapProtocolVersion());
-        M3uaForm.setEnumeratedBaseComboBox(cbTypeOfNumber, this.sriAttackClient.getTypeOfNumber());
-        M3uaForm.setEnumeratedBaseComboBox(cbNumberingPlanIdentification, this.sriAttackClient.getNumberingPlanIdentification());
-        M3uaForm.setEnumeratedBaseComboBox(cbSmsCodingType, this.sriAttackClient.getSmsCodingType());
+        M3uaForm.setEnumeratedBaseComboBox(cbAddressNature, this.sriForSM.getAddressNature());
+        M3uaForm.setEnumeratedBaseComboBox(cbNumberingPlan, this.sriForSM.getNumberingPlan());
+        M3uaForm.setEnumeratedBaseComboBox(cbMapProtocolVersion, this.sriForSM.getMapProtocolVersion());
+        M3uaForm.setEnumeratedBaseComboBox(cbTypeOfNumber, this.sriForSM.getTypeOfNumber());
+        M3uaForm.setEnumeratedBaseComboBox(cbNumberingPlanIdentification, this.sriForSM.getNumberingPlanIdentification());
+        M3uaForm.setEnumeratedBaseComboBox(cbSmsCodingType, this.sriForSM.getSmsCodingType());
 
-        M3uaForm.setEnumeratedBaseComboBox(cbSRIReaction, this.sriAttackClient.getSRIReaction());
-        M3uaForm.setEnumeratedBaseComboBox(cbSRIInformServiceCenter, this.sriAttackClient.getSRIInformServiceCenter());
-        M3uaForm.setEnumeratedBaseComboBox(cbMtFSMReaction, this.sriAttackClient.getMtFSMReaction());
-        M3uaForm.setEnumeratedBaseComboBox(cbRsmdsReaction, this.sriAttackClient.getReportSMDeliveryStatusReaction());
+        M3uaForm.setEnumeratedBaseComboBox(cbSRIReaction, this.sriForSM.getSRIReaction());
+        M3uaForm.setEnumeratedBaseComboBox(cbSRIInformServiceCenter, this.sriForSM.getSRIInformServiceCenter());
+        M3uaForm.setEnumeratedBaseComboBox(cbMtFSMReaction, this.sriForSM.getMtFSMReaction());
+        M3uaForm.setEnumeratedBaseComboBox(cbRsmdsReaction, this.sriForSM.getReportSMDeliveryStatusReaction());
 
-        tbServiceCenterAddress.setText(this.sriAttackClient.getServiceCenterAddress());
-        tbSRIResponseImsi.setText(this.sriAttackClient.getSRIResponseImsi());
-        tbSRIResponseVlr.setText(this.sriAttackClient.getSRIResponseVlr());
+        tbServiceCenterAddress.setText(this.sriForSM.getServiceCenterAddress());
+        tbSRIResponseImsi.setText(this.sriForSM.getSRIResponseImsi());
+        tbSRIResponseVlr.setText(this.sriForSM.getSRIResponseVlr());
 
-        tbSmscSsn.setText(((Integer) this.sriAttackClient.getSmscSsn()).toString());
-        tbNationalLanguageCode.setText(((Integer) this.sriAttackClient.getNationalLanguageCode()).toString());
+        tbSmscSsn.setText(((Integer) this.sriForSM.getSmscSsn()).toString());
+        tbNationalLanguageCode.setText(((Integer) this.sriForSM.getNationalLanguageCode()).toString());
 
-        cbSRIScAddressNotIncluded.setSelected(this.sriAttackClient.isSRIScAddressNotIncluded());
-        cbOneNotificationFor100Dialogs.setSelected(this.sriAttackClient.isOneNotificationFor100Dialogs());
-        cbReturn20PersDeliveryErrors.setSelected(this.sriAttackClient.isReturn20PersDeliveryErrors());
-        cbContinueDialog.setSelected(this.sriAttackClient.isContinueDialog());
+        cbSRIScAddressNotIncluded.setSelected(this.sriForSM.isSRIScAddressNotIncluded());
+        cbOneNotificationFor100Dialogs.setSelected(this.sriForSM.isOneNotificationFor100Dialogs());
+        cbReturn20PersDeliveryErrors.setSelected(this.sriForSM.isReturn20PersDeliveryErrors());
+        cbContinueDialog.setSelected(this.sriForSM.isContinueDialog());
     }
 
     private void loadDataA() {
@@ -371,30 +371,30 @@ public class TestSRIForSMParamForm extends JDialog {
             return false;
         }
 
-        this.sriAttackClient.setAddressNature((AddressNatureType) cbAddressNature.getSelectedItem());
-        this.sriAttackClient.setNumberingPlan((NumberingPlanMapType) cbNumberingPlan.getSelectedItem());
-        this.sriAttackClient.setMapProtocolVersion((MapProtocolVersion) cbMapProtocolVersion.getSelectedItem());
-        this.sriAttackClient.setTypeOfNumber((TypeOfNumberType) cbTypeOfNumber.getSelectedItem());
-        this.sriAttackClient.setNumberingPlanIdentification((NumberingPlanIdentificationType) cbNumberingPlanIdentification
+        this.sriForSM.setAddressNature((AddressNatureType) cbAddressNature.getSelectedItem());
+        this.sriForSM.setNumberingPlan((NumberingPlanMapType) cbNumberingPlan.getSelectedItem());
+        this.sriForSM.setMapProtocolVersion((MapProtocolVersion) cbMapProtocolVersion.getSelectedItem());
+        this.sriForSM.setTypeOfNumber((TypeOfNumberType) cbTypeOfNumber.getSelectedItem());
+        this.sriForSM.setNumberingPlanIdentification((NumberingPlanIdentificationType) cbNumberingPlanIdentification
                 .getSelectedItem());
-        this.sriAttackClient.setSmsCodingType((SmsCodingType) cbSmsCodingType.getSelectedItem());
+        this.sriForSM.setSmsCodingType((SmsCodingType) cbSmsCodingType.getSelectedItem());
 
-        this.sriAttackClient.setSRIReaction((SRIReaction) cbSRIReaction.getSelectedItem());
-        this.sriAttackClient.setSRIInformServiceCenter((SRIInformServiceCenter) cbSRIInformServiceCenter.getSelectedItem());
-        this.sriAttackClient.setMtFSMReaction((MtFSMReaction) cbMtFSMReaction.getSelectedItem());
-        this.sriAttackClient.setReportSMDeliveryStatusReaction((ReportSMDeliveryStatusReaction) cbRsmdsReaction.getSelectedItem());
+        this.sriForSM.setSRIReaction((SRIReaction) cbSRIReaction.getSelectedItem());
+        this.sriForSM.setSRIInformServiceCenter((SRIInformServiceCenter) cbSRIInformServiceCenter.getSelectedItem());
+        this.sriForSM.setMtFSMReaction((MtFSMReaction) cbMtFSMReaction.getSelectedItem());
+        this.sriForSM.setReportSMDeliveryStatusReaction((ReportSMDeliveryStatusReaction) cbRsmdsReaction.getSelectedItem());
 
-        this.sriAttackClient.setServiceCenterAddress(tbServiceCenterAddress.getText());
-        this.sriAttackClient.setSRIResponseImsi(tbSRIResponseImsi.getText());
-        this.sriAttackClient.setSRIResponseVlr(tbSRIResponseVlr.getText());
+        this.sriForSM.setServiceCenterAddress(tbServiceCenterAddress.getText());
+        this.sriForSM.setSRIResponseImsi(tbSRIResponseImsi.getText());
+        this.sriForSM.setSRIResponseVlr(tbSRIResponseVlr.getText());
 
-        this.sriAttackClient.setSmscSsn(smscSsn);
-        this.sriAttackClient.setNationalLanguageCode(nationalLanguageCode);
+        this.sriForSM.setSmscSsn(smscSsn);
+        this.sriForSM.setNationalLanguageCode(nationalLanguageCode);
 
-        this.sriAttackClient.setSRIScAddressNotIncluded(cbSRIScAddressNotIncluded.isSelected());
-        this.sriAttackClient.setOneNotificationFor100Dialogs(cbOneNotificationFor100Dialogs.isSelected());
-        this.sriAttackClient.setReturn20PersDeliveryErrors(cbReturn20PersDeliveryErrors.isSelected());
-        this.sriAttackClient.setContinueDialog(cbContinueDialog.isSelected());
+        this.sriForSM.setSRIScAddressNotIncluded(cbSRIScAddressNotIncluded.isSelected());
+        this.sriForSM.setOneNotificationFor100Dialogs(cbOneNotificationFor100Dialogs.isSelected());
+        this.sriForSM.setReturn20PersDeliveryErrors(cbReturn20PersDeliveryErrors.isSelected());
+        this.sriForSM.setContinueDialog(cbContinueDialog.isSelected());
 
         return true;
     }
