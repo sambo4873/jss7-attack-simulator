@@ -36,7 +36,7 @@ import org.mobicents.protocols.ss7.tools.simulator.management.Instance_L3;
 import org.mobicents.protocols.ss7.tools.simulator.management.Instance_TestTask;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerConfigurationData;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientConfigurationData;
@@ -90,7 +90,7 @@ public class ConfigurationData {
     private TestCapSsfConfigurationData testCapSsfConfigurationData = new TestCapSsfConfigurationData();
     private TestAtiClientConfigurationData testAtiClientConfigurationData = new TestAtiClientConfigurationData();
     private TestAtiServerConfigurationData testAtiServerConfigurationData = new TestAtiServerConfigurationData();
-    private TestSRIForSMConfigurationData testSRIForSMConfigurationData = new TestSRIForSMConfigurationData();
+    private TestSRIForSMClientConfigurationData testSRIForSMClientConfigurationData = new TestSRIForSMClientConfigurationData();
 
     public Instance_L1 getInstance_L1() {
         return instance_L1;
@@ -228,12 +228,12 @@ public class ConfigurationData {
         this.testAtiServerConfigurationData = testAtiServerConfigurationData;
     }
 
-    public TestSRIForSMConfigurationData getTestSRIForSMConfigurationData() {
-        return testSRIForSMConfigurationData;
+    public TestSRIForSMClientConfigurationData getTestSRIForSMClientConfigurationData() {
+        return testSRIForSMClientConfigurationData;
     }
 
-    public void setTestSRIForSMConfigurationData(TestSRIForSMConfigurationData testSRIForSMConfigurationData) {
-        this.testSRIForSMConfigurationData = testSRIForSMConfigurationData;
+    public void setTestSRIForSMClientConfigurationData(TestSRIForSMClientConfigurationData testSRIForSMClientConfigurationData) {
+        this.testSRIForSMClientConfigurationData = testSRIForSMClientConfigurationData;
     }
 
     /**
@@ -301,9 +301,9 @@ public class ConfigurationData {
             if (capSsf != null)
                 data.setTestCapSsfConfigurationData(capSsf);
 
-            TestSRIForSMConfigurationData sriForSM = xml.get(TEST_SRIFORSM, TestSRIForSMConfigurationData.class);
+            TestSRIForSMClientConfigurationData sriForSM = xml.get(TEST_SRIFORSM, TestSRIForSMClientConfigurationData.class);
             if (sriForSM != null)
-                data.setTestSRIForSMConfigurationData(sriForSM);
+                data.setTestSRIForSMClientConfigurationData(sriForSM);
 
             // while (xml.hasNext()) {
             // Object o = xml.getNext();
@@ -331,7 +331,7 @@ public class ConfigurationData {
             xml.add(data.getTestAtiServerConfigurationData(), TEST_ATI_SERVER, TestAtiServerConfigurationData.class);
             xml.add(data.getTestCapScfConfigurationData(), TEST_CAP_SCF, TestCapScfConfigurationData.class);
             xml.add(data.getTestCapSsfConfigurationData(), TEST_CAP_SSF, TestCapSsfConfigurationData.class);
-            xml.add(data.getTestSRIForSMConfigurationData(), TEST_SRIFORSM, TestSRIForSMConfigurationData.class);
+            xml.add(data.getTestSRIForSMClientConfigurationData(), TEST_SRIFORSM, TestSRIForSMClientConfigurationData.class);
         }
     };
 

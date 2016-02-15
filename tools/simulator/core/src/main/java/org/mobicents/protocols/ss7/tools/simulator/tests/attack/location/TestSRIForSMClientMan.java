@@ -27,7 +27,7 @@ import java.util.Random;
 /**
  * @author Kristoffer Jensen
  */
-public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean, Stoppable, MAPDialogListener,
+public class TestSRIForSMClientMan extends TesterBase implements TestSRIForSMClientManMBean, Stoppable, MAPDialogListener,
         MAPServiceSmsListener {
 
     public static String SOURCE_NAME = "TestSRIForSM";
@@ -57,12 +57,12 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
 
     private static Charset isoCharset = Charset.forName("ISO-8859-1");
 
-    public TestSRIForSMMan() {
+    public TestSRIForSMClientMan() {
         super(SOURCE_NAME);
         this.name = "???";
     }
 
-    public TestSRIForSMMan(String name) {
+    public TestSRIForSMClientMan(String name) {
         super(SOURCE_NAME);
         this.name = name;
     }
@@ -77,136 +77,136 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
 
     @Override
     public AddressNatureType getAddressNature() {
-        return new AddressNatureType(this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getAddressNature().getIndicator());
+        return new AddressNatureType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature().getIndicator());
     }
 
     @Override
     public String getAddressNature_Value() {
-        return new AddressNatureType(this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getAddressNature().getIndicator()).toString();
+        return new AddressNatureType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature().getIndicator()).toString();
     }
 
     @Override
     public void setAddressNature(AddressNatureType val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setAddressNature(AddressNature.getInstance(val.intValue()));
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setAddressNature(AddressNature.getInstance(val.intValue()));
         this.testerHost.markStore();
     }
 
     @Override
     public NumberingPlanMapType getNumberingPlan() {
-        return new NumberingPlanMapType(this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlan().getIndicator());
+        return new NumberingPlanMapType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan().getIndicator());
     }
 
     @Override
     public String getNumberingPlan_Value() {
-        return new NumberingPlanMapType(this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlan().getIndicator())
+        return new NumberingPlanMapType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan().getIndicator())
                 .toString();
     }
 
     @Override
     public void setNumberingPlan(NumberingPlanMapType val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setNumberingPlan(NumberingPlan.getInstance(val.intValue()));
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setNumberingPlan(NumberingPlan.getInstance(val.intValue()));
         this.testerHost.markStore();
     }
 
     @Override
     public String getServiceCenterAddress() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getServiceCenterAddress();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getServiceCenterAddress();
     }
 
     @Override
     public void setServiceCenterAddress(String val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setServiceCenterAddress(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setServiceCenterAddress(val);
         this.testerHost.markStore();
     }
 
     @Override
     public MapProtocolVersion getMapProtocolVersion() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMapProtocolVersion();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMapProtocolVersion();
     }
 
     @Override
     public String getMapProtocolVersion_Value() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMapProtocolVersion().toString();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMapProtocolVersion().toString();
     }
 
     @Override
     public void setMapProtocolVersion(MapProtocolVersion val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setMapProtocolVersion(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setMapProtocolVersion(val);
         this.testerHost.markStore();
     }
 
     @Override
     public SRIReaction getSRIReaction() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSRIReaction();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIReaction();
     }
 
     @Override
     public String getSRIReaction_Value() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSRIReaction().toString();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIReaction().toString();
     }
 
     @Override
     public void setSRIReaction(SRIReaction val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setSRIReaction(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSRIReaction(val);
         this.testerHost.markStore();
     }
 
     @Override
     public SRIInformServiceCenter getSRIInformServiceCenter() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSRIInformServiceCenter();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIInformServiceCenter();
     }
 
     @Override
     public String getSRIInformServiceCenter_Value() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSRIInformServiceCenter().toString();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIInformServiceCenter().toString();
     }
 
     @Override
     public void setSRIInformServiceCenter(SRIInformServiceCenter val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setSRIInformServiceCenter(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSRIInformServiceCenter(val);
         this.testerHost.markStore();
     }
 
     @Override
     public boolean isSRIScAddressNotIncluded() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isSRIScAddressNotIncluded();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isSRIScAddressNotIncluded();
     }
 
     @Override
     public void setSRIScAddressNotIncluded(boolean val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setSRIScAddressNotIncluded(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSRIScAddressNotIncluded(val);
         this.testerHost.markStore();
     }
 
     @Override
     public MtFSMReaction getMtFSMReaction() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMtFSMReaction();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMtFSMReaction();
     }
 
     @Override
     public String getMtFSMReaction_Value() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMtFSMReaction().toString();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMtFSMReaction().toString();
     }
 
     @Override
     public void setMtFSMReaction(MtFSMReaction val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setMtFSMReaction(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setMtFSMReaction(val);
         this.testerHost.markStore();
     }
 
     @Override
     public ReportSMDeliveryStatusReaction getReportSMDeliveryStatusReaction() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getReportSMDeliveryStatusReaction();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getReportSMDeliveryStatusReaction();
     }
 
     @Override
     public String getReportSMDeliveryStatusReaction_Value() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getReportSMDeliveryStatusReaction().toString();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getReportSMDeliveryStatusReaction().toString();
     }
 
     @Override
     public void setReportSMDeliveryStatusReaction(ReportSMDeliveryStatusReaction val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setReportSMDeliveryStatusReaction(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setReportSMDeliveryStatusReaction(val);
         this.testerHost.markStore();
     }
 
@@ -219,34 +219,34 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
 
     @Override
     public boolean isOneNotificationFor100Dialogs() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isOneNotificationFor100Dialogs();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isOneNotificationFor100Dialogs();
     }
 
     @Override
     public void setOneNotificationFor100Dialogs(boolean val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setOneNotificationFor100Dialogs(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setOneNotificationFor100Dialogs(val);
         this.testerHost.markStore();
     }
 
     @Override
     public boolean isReturn20PersDeliveryErrors() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isReturn20PersDeliveryErrors();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isReturn20PersDeliveryErrors();
     }
 
     @Override
     public void setReturn20PersDeliveryErrors(boolean val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setReturn20PersDeliveryErrors(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setReturn20PersDeliveryErrors(val);
         this.testerHost.markStore();
     }
 
     @Override
     public boolean isContinueDialog() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isContinueDialog();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isContinueDialog();
     }
 
     @Override
     public void setContinueDialog(boolean val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setContinueDialog(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setContinueDialog(val);
         this.testerHost.markStore();
     }
 
@@ -273,96 +273,96 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
 
     @Override
     public String getSRIResponseImsi() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSriResponseImsi();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSriResponseImsi();
     }
 
     @Override
     public void setSRIResponseImsi(String val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setSriResponseImsi(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSriResponseImsi(val);
         this.testerHost.markStore();
     }
 
     @Override
     public String getSRIResponseVlr() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSriResponseVlr();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSriResponseVlr();
     }
 
     @Override
     public void setSRIResponseVlr(String val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setSriResponseVlr(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSriResponseVlr(val);
         this.testerHost.markStore();
     }
 
     @Override
     public int getSmscSsn() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSmscSsn();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmscSsn();
     }
 
     @Override
     public void setSmscSsn(int val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setSmscSsn(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSmscSsn(val);
         this.testerHost.markStore();
     }
 
     @Override
     public int getNationalLanguageCode() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNationalLanguageCode();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNationalLanguageCode();
     }
 
     @Override
     public void setNationalLanguageCode(int val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setNationalLanguageCode(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setNationalLanguageCode(val);
         this.testerHost.markStore();
     }
 
     @Override
     public TypeOfNumberType getTypeOfNumber() {
-        return new TypeOfNumberType(this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getTypeOfNumber().getCode());
+        return new TypeOfNumberType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getTypeOfNumber().getCode());
     }
 
     @Override
     public String getTypeOfNumber_Value() {
-        return new TypeOfNumberType(this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getTypeOfNumber().getCode()).toString();
+        return new TypeOfNumberType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getTypeOfNumber().getCode()).toString();
     }
 
     @Override
     public void setTypeOfNumber(TypeOfNumberType val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setTypeOfNumber(TypeOfNumber.getInstance(val.intValue()));
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setTypeOfNumber(TypeOfNumber.getInstance(val.intValue()));
         this.testerHost.markStore();
     }
 
     @Override
     public NumberingPlanIdentificationType getNumberingPlanIdentification() {
-        return new NumberingPlanIdentificationType(this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlanIdentification()
+        return new NumberingPlanIdentificationType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlanIdentification()
                 .getCode());
     }
 
     @Override
     public String getNumberingPlanIdentification_Value() {
-        return new NumberingPlanIdentificationType(this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlanIdentification()
+        return new NumberingPlanIdentificationType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlanIdentification()
                 .getCode()).toString();
     }
 
     @Override
     public void setNumberingPlanIdentification(NumberingPlanIdentificationType val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData()
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData()
                 .setNumberingPlanIdentification(NumberingPlanIdentification.getInstance(val.intValue()));
         this.testerHost.markStore();
     }
 
     @Override
     public SmsCodingType getSmsCodingType() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSmsCodingType();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmsCodingType();
     }
 
     @Override
     public String getSmsCodingType_Value() {
-        return this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSmsCodingType().toString();
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmsCodingType().toString();
     }
 
     @Override
     public void setSmsCodingType(SmsCodingType val) {
-        this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().setSmsCodingType(val);
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSmsCodingType(val);
         this.testerHost.markStore();
     }
 
@@ -505,7 +505,7 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
             return "DestIsdnNumber is empty";
         if (origIsdnNumber == null || origIsdnNumber.equals(""))
             return "OrigIsdnNumber is empty";
-        int maxMsgLen = this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSmsCodingType().getSupportesMaxMessageLength(0);
+        int maxMsgLen = this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmsCodingType().getSupportesMaxMessageLength(0);
         if (msg.length() > maxMsgLen)
             return "Simulator does not support message length for current encoding type more than " + maxMsgLen;
 
@@ -534,7 +534,7 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
         if (segmCnt == 1)
             segmCnt = 0;
 
-        int maxMsgLen = this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSmsCodingType()
+        int maxMsgLen = this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmsCodingType()
                 .getSupportesMaxMessageLength(segmCnt > 1 ? 6 : 0);
         if (msg.length() > maxMsgLen)
             return "Simulator does not support message length for current encoding type and segmentation state more than " + maxMsgLen;
@@ -550,7 +550,7 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
 
         MAPApplicationContextVersion vers;
         MAPApplicationContextName acn = MAPApplicationContextName.shortMsgMORelayContext;
-        switch (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMapProtocolVersion().intValue()) {
+        switch (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMapProtocolVersion().intValue()) {
             case MapProtocolVersion.VAL_MAP_V1:
                 vers = MAPApplicationContextVersion.version1;
                 break;
@@ -564,20 +564,20 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
         MAPApplicationContext mapAppContext = MAPApplicationContext.getInstance(acn, vers);
 
         AddressString serviceCentreAddressDA = mapProvider.getMAPParameterFactory().createAddressString(
-                this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getAddressNature(),
-                this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlan(), serviceCentreAddr);
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature(),
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan(), serviceCentreAddr);
         SM_RP_DA da = mapProvider.getMAPParameterFactory().createSM_RP_DA(serviceCentreAddressDA);
         ISDNAddressString msisdn = mapProvider.getMAPParameterFactory().createISDNAddressString(
-                this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getAddressNature(),
-                this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlan(), origIsdnNumber);
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature(),
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan(), origIsdnNumber);
         SM_RP_OA oa = mapProvider.getMAPParameterFactory().createSM_RP_OA_Msisdn(msisdn);
 
         try {
-            AddressField destAddress = new AddressFieldImpl(this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getTypeOfNumber(),
-                    this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlanIdentification(), destIsdnNumber);
+            AddressField destAddress = new AddressFieldImpl(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getTypeOfNumber(),
+                    this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlanIdentification(), destIsdnNumber);
 
             int dcsVal = 0;
-            switch (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSmsCodingType().intValue()) {
+            switch (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmsCodingType().intValue()) {
                 case SmsCodingType.VAL_GSM7:
                     dcsVal = 0;
                     break;
@@ -601,9 +601,9 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
                 udh.addInformationElement(new ConcatenatedShortMessagesIdentifierImpl(false, msgRef, segmCnt, segmNum));
             }
             if (dcs.getCharacterSet() == CharacterSet.GSM7
-                    && this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNationalLanguageCode() > 0) {
+                    && this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNationalLanguageCode() > 0) {
                 NationalLanguageIdentifier nli = NationalLanguageIdentifier.getInstance(this.testerHost.getConfigurationData()
-                        .getTestSRIForSMConfigurationData().getNationalLanguageCode());
+                        .getTestSRIForSMClientConfigurationData().getNationalLanguageCode());
                 if (nli != null) {
                     if (udh == null)
                         udh = new UserDataHeaderImpl();
@@ -620,11 +620,11 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
             SmsSignalInfo si = mapProvider.getMAPParameterFactory().createSmsSignalInfo(tpdu, null);
 
             MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(mapAppContext, this.mapMan.createOrigAddress(), null,
-                    this.mapMan.createDestAddress(serviceCentreAddr, this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSmscSsn()),
+                    this.mapMan.createDestAddress(serviceCentreAddr, this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmscSsn()),
                     null);
 
             if (si.getData().length < 110 || vers == MAPApplicationContextVersion.version1) {
-                if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMapProtocolVersion().intValue() <= 2)
+                if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMapProtocolVersion().intValue() <= 2)
                     curDialog.addForwardShortMessageRequest(da, oa, si, false);
                 else
                     curDialog.addMoForwardShortMessageRequest(da, oa, si, null, null);
@@ -688,7 +688,7 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
 
         MAPApplicationContextVersion vers;
         MAPApplicationContextName acn = MAPApplicationContextName.shortMsgAlertContext;
-        switch (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMapProtocolVersion().intValue()) {
+        switch (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMapProtocolVersion().intValue()) {
             case MapProtocolVersion.VAL_MAP_V1:
                 vers = MAPApplicationContextVersion.version1;
                 break;
@@ -700,14 +700,14 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
 
         try {
             ISDNAddressString msisdn = mapProvider.getMAPParameterFactory().createISDNAddressString(
-                    this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getAddressNature(),
-                    this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlan(), destIsdnNumber);
+                    this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature(),
+                    this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan(), destIsdnNumber);
             AddressString serviceCentreAddressDA = mapProvider.getMAPParameterFactory().createAddressString(
-                    this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getAddressNature(),
-                    this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlan(), serviceCentreAddr);
+                    this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature(),
+                    this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan(), serviceCentreAddr);
 
             MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(mapAppContext, this.mapMan.createOrigAddress(), null,
-                    this.mapMan.createDestAddress(serviceCentreAddr, this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSmscSsn()),
+                    this.mapMan.createDestAddress(serviceCentreAddr, this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmscSsn()),
                     null);
 
             curDialog.addAlertServiceCentreRequest(msisdn, serviceCentreAddressDA);
@@ -741,10 +741,10 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
             this.onMtRequest(da, oa, si, curDialog);
 
             try {
-                MtFSMReaction mtFSMReaction = this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMtFSMReaction();
+                MtFSMReaction mtFSMReaction = this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMtFSMReaction();
 
                 Random rnd = new Random();
-                if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isReturn20PersDeliveryErrors()) {
+                if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isReturn20PersDeliveryErrors()) {
                     int n = rnd.nextInt(5);
                     if (n == 0) {
                         n = rnd.nextInt(5);
@@ -758,11 +758,11 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
                     curDialog.addForwardShortMessageResponse(invokeId);
                     this.countMtFsmResp++;
 
-                    if (!this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isOneNotificationFor100Dialogs()) {
+                    if (!this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isOneNotificationFor100Dialogs()) {
                         this.testerHost.sendNotif(SOURCE_NAME, "Sent: mtResp", "", Level.DEBUG);
                     }
 
-                    if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isContinueDialog())
+                    if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isContinueDialog())
                         this.needSendSend = true;
                     else
                         this.needSendClose = true;
@@ -784,7 +784,7 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
             case MtFSMReaction.VAL_ERROR_MEMORY_CAPACITY_EXCEEDED:
             case MtFSMReaction.VAL_ERROR_UNKNOWN_SERVICE_CENTRE:
                 SMEnumeratedDeliveryFailureCause smEnumeratedDeliveryFailureCause;
-                if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMtFSMReaction().intValue() == MtFSMReaction.VAL_ERROR_MEMORY_CAPACITY_EXCEEDED)
+                if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMtFSMReaction().intValue() == MtFSMReaction.VAL_ERROR_MEMORY_CAPACITY_EXCEEDED)
                     smEnumeratedDeliveryFailureCause = SMEnumeratedDeliveryFailureCause.memoryCapacityExceeded;
                 else
                     smEnumeratedDeliveryFailureCause = SMEnumeratedDeliveryFailureCause.unknownServiceCentre;
@@ -888,7 +888,7 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
                 }
             }
 
-            if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isOneNotificationFor100Dialogs()) {
+            if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isOneNotificationFor100Dialogs()) {
                 int i1 = countMtFsmReq / 100;
                 if (countMtFsmReqNot < i1) {
                     countMtFsmReqNot = i1;
@@ -949,10 +949,10 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
         this.onMtRequest(da, oa, si, curDialog);
 
         try {
-            MtFSMReaction mtFSMReaction = this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getMtFSMReaction();
+            MtFSMReaction mtFSMReaction = this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMtFSMReaction();
 
             Random rnd = new Random();
-            if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isReturn20PersDeliveryErrors()) {
+            if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isReturn20PersDeliveryErrors()) {
                 int n = rnd.nextInt(5);
                 if (n == 0) {
                     n = rnd.nextInt(5);
@@ -965,11 +965,11 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
             if (mtFSMReaction.intValue() == MtFSMReaction.VAL_RETURN_SUCCESS) {
                 curDialog.addMtForwardShortMessageResponse(invokeId, null, null);
                 this.countMtFsmResp++;
-                if (!this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isOneNotificationFor100Dialogs()) {
+                if (!this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isOneNotificationFor100Dialogs()) {
                     this.testerHost.sendNotif(SOURCE_NAME, "Sent: mtResp", "", Level.DEBUG);
                 }
 
-                if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isContinueDialog())
+                if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isContinueDialog())
                     this.needSendSend = true;
                 else
                     this.needSendClose = true;
@@ -1020,24 +1020,24 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
         long invokeId = ind.getInvokeId();
 
         String uData;
-        if (!this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isOneNotificationFor100Dialogs()) {
+        if (!this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isOneNotificationFor100Dialogs()) {
             uData = this.createSriData(ind);
             this.testerHost.sendNotif(SOURCE_NAME, "Rcvd: sriReq", uData, Level.DEBUG);
         }
 
         IMSI imsi = mapProvider.getMAPParameterFactory().createIMSI(
-                this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSriResponseImsi());
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSriResponseImsi());
         ISDNAddressString networkNodeNumber = mapProvider.getMAPParameterFactory().createISDNAddressString(
-                this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getAddressNature(),
-                this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getNumberingPlan(),
-                this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSriResponseVlr());
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature(),
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan(),
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSriResponseVlr());
         LocationInfoWithLMSI li = null;
         boolean informServiceCentrePossible = false;
 
         try {
-            SRIReaction sriReaction = this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSRIReaction();
+            SRIReaction sriReaction = this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIReaction();
             Random rnd = new Random();
-            if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isReturn20PersDeliveryErrors()) {
+            if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isReturn20PersDeliveryErrors()) {
                 int n = rnd.nextInt(5);
                 if (n == 0) {
                     n = rnd.nextInt(4);
@@ -1053,7 +1053,7 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
                     curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null);
 
                     this.countSriResp++;
-                    if (!this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isOneNotificationFor100Dialogs()) {
+                    if (!this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isOneNotificationFor100Dialogs()) {
                         uData = this.createSriRespData(curDialog.getLocalDialogId(), imsi, li);
                         this.testerHost.sendNotif(SOURCE_NAME, "Sent: sriResp", uData, Level.DEBUG);
                     }
@@ -1080,8 +1080,8 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
                     switch (curDialog.getApplicationContext().getApplicationContextVersion()) {
                         case version1:
                             Boolean mwdSet = null;
-                            if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSRIInformServiceCenter().intValue() == SRIInformServiceCenter.MWD_mnrf
-                                    || this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().getSRIInformServiceCenter().intValue() == SRIInformServiceCenter.MWD_mcef_mnrf)
+                            if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIInformServiceCenter().intValue() == SRIInformServiceCenter.MWD_mnrf
+                                    || this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIInformServiceCenter().intValue() == SRIInformServiceCenter.MWD_mcef_mnrf)
                                 mwdSet = true;
                             mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageAbsentSubscriber(mwdSet);
                             break;
@@ -1126,11 +1126,11 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
 
             if (informServiceCentrePossible) {
                 MWStatus mwStatus = null;
-                boolean scAddressNotIncluded = this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isSRIScAddressNotIncluded();
-                SRIInformServiceCenter sriInformServiceCenter = this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData()
+                boolean scAddressNotIncluded = this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isSRIScAddressNotIncluded();
+                SRIInformServiceCenter sriInformServiceCenter = this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData()
                         .getSRIInformServiceCenter();
 
-                if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isReturn20PersDeliveryErrors()) {
+                if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isReturn20PersDeliveryErrors()) {
                     int n = rnd.nextInt(5);
                     if (n == 0) {
                         n = rnd.nextInt(4);
@@ -1238,11 +1238,11 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
         MAPDialogSms curDialog = ind.getMAPDialog();
         long invokeId = ind.getInvokeId();
 
-        ReportSMDeliveryStatusReaction reportSMDeliveryStatusReaction = this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData()
+        ReportSMDeliveryStatusReaction reportSMDeliveryStatusReaction = this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData()
                 .getReportSMDeliveryStatusReaction();
 
         Random rnd = new Random();
-        if (this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isReturn20PersDeliveryErrors()) {
+        if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isReturn20PersDeliveryErrors()) {
             int n = rnd.nextInt(5);
             if (n == 0) {
 //                n = rnd.nextInt(1);
@@ -1376,7 +1376,7 @@ public class TestSRIForSMMan extends TesterBase implements TestSRIForSMManMBean,
             // this is an empty first TC-BEGIN for MO SMS
             try {
                 mapDialog.send();
-                if (!this.testerHost.getConfigurationData().getTestSRIForSMConfigurationData().isOneNotificationFor100Dialogs()) {
+                if (!this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isOneNotificationFor100Dialogs()) {
                     // currentRequestDef += "Rcvd emptTBeg;Sent emptTCont;";
                     this.testerHost.sendNotif(SOURCE_NAME, "Rcvd: emptTBeg", "", Level.DEBUG);
                     this.testerHost.sendNotif(SOURCE_NAME, "Sent: emptTCont", "", Level.DEBUG);

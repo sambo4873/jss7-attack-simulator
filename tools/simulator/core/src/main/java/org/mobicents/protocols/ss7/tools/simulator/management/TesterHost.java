@@ -59,7 +59,7 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
 import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerMan;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.NumberingPlanIdentificationType;
@@ -126,7 +126,7 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
     TestCapScfMan testCapScfMan;
     TestAtiClientMan testAtiClientMan;
     TestAtiServerMan testAtiServerMan;
-    TestSRIForSMMan testSRIForSMMan;
+    TestSRIForSMClientMan testSRIForSMMan;
 
     // testers
 
@@ -173,7 +173,7 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
         this.testAtiServerMan = new TestAtiServerMan(appName);
         this.testAtiServerMan.setTesterHost(this);
 
-        this.testSRIForSMMan = new TestSRIForSMMan(appName);
+        this.testSRIForSMMan = new TestSRIForSMClientMan(appName);
         this.testSRIForSMMan.setTesterHost(this);
 
         this.setupLog4j(appName);
@@ -264,7 +264,7 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
         return this.testAtiServerMan;
     }
 
-    public TestSRIForSMMan getTestSRIForSMMan() {
+    public TestSRIForSMClientMan getTestSRIForSMMan() {
         return this.testSRIForSMMan;
     }
 

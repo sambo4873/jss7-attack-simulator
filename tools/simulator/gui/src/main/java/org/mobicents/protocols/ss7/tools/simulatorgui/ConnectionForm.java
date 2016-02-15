@@ -56,7 +56,7 @@ import org.mobicents.protocols.ss7.tools.simulator.management.TesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientManMBean;
@@ -239,7 +239,7 @@ public class ConnectionForm extends JFrame {
             ObjectName mbeanNameAtiServer = new ObjectName(tagDomain + ":type=TestAtiServerMan");
             TestAtiServerManMBean atiServer = JMX.newMBeanProxy(mbsc, mbeanNameAtiServer, TestAtiServerManMBean.class, false);
             ObjectName mbeanNameSRIAttackClient = new ObjectName(tagDomain + ":type=TestSRIAttackClientMan");
-            TestSRIForSMManMBean sriAttackClient = JMX.newMBeanProxy(mbsc, mbeanNameSRIAttackClient, TestSRIForSMManMBean.class, false);
+            TestSRIForSMClientManMBean sriAttackClient = JMX.newMBeanProxy(mbsc, mbeanNameSRIAttackClient, TestSRIForSMClientManMBean.class, false);
 
             // checking if MBean is workable
             host.getInstance_L1_Value();

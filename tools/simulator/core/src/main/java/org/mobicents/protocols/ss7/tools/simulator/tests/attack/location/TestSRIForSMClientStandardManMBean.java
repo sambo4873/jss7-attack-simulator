@@ -10,8 +10,8 @@ import javax.management.*;
 /**
  * @author Kristoffer Jensen
  */
-public class TestSRIForSMStandardManMBean extends StandardMBean {
-    public TestSRIForSMStandardManMBean(TestSRIForSMMan impl, Class<TestSRIForSMManMBean> intf) throws NotCompliantMBeanException {
+public class TestSRIForSMClientStandardManMBean extends StandardMBean {
+    public TestSRIForSMClientStandardManMBean(TestSRIForSMClientMan impl, Class<TestSRIForSMClientManMBean> intf) throws NotCompliantMBeanException {
         super(impl, intf);
     }
 

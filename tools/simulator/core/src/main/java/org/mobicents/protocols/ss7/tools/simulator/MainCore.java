@@ -56,8 +56,8 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientManMBe
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerStandardManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMStandardManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfManMBean;
@@ -197,7 +197,7 @@ public class MainCore {
         ObjectName nameTestCapScfMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestCapScfMan");
         ObjectName nameAtiClientManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestAtiClientMan");
         ObjectName nameAtiServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestAtiServerMan");
-        ObjectName nameSRIForSMManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestSRIForSMMan");
+        ObjectName nameSRIForSMManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestSRIForSMClientMan");
 
         // HtmlAdaptorServer
         HtmlAdaptorServer adapter = null;
@@ -266,7 +266,7 @@ public class MainCore {
                     TestAtiServerManMBean.class);
             mbs.registerMBean(atiServerManMBean, nameAtiServerManMan);
 
-            TestSRIForSMStandardManMBean sriForSMManMBean = new TestSRIForSMStandardManMBean(host.getTestSRIForSMMan(), TestSRIForSMManMBean.class);
+            TestSRIForSMClientStandardManMBean sriForSMManMBean = new TestSRIForSMClientStandardManMBean(host.getTestSRIForSMMan(), TestSRIForSMClientManMBean.class);
             mbs.registerMBean(sriForSMManMBean, nameSRIForSMManMan);
 
             System.out.println("All beans have been loaded...");

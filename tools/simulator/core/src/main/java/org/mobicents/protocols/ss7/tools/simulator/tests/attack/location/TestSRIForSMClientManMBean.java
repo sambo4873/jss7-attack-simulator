@@ -8,7 +8,7 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 /**
  * @author Kristoffer Jensen
  */
-public interface TestSRIForSMManMBean {
+public interface TestSRIForSMClientManMBean {
 
     AddressNatureType getAddressNature();
 

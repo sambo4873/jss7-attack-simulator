@@ -14,7 +14,7 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 /**
  * @author Kristoffer Jensen
  */
-public class TestSRIForSMConfigurationData {
+public class TestSRIForSMClientConfigurationData {
 
     protected static final String ADDRESS_NATURE = "addressNature";
     protected static final String NUMBERING_PLAN = "numberingPlan";
@@ -210,9 +210,9 @@ public class TestSRIForSMConfigurationData {
         this.continueDialog = val;
     }
 
-    protected static final XMLFormat<TestSRIForSMConfigurationData> XML = new XMLFormat<TestSRIForSMConfigurationData>(TestSRIForSMConfigurationData.class) {
+    protected static final XMLFormat<TestSRIForSMClientConfigurationData> XML = new XMLFormat<TestSRIForSMClientConfigurationData>(TestSRIForSMClientConfigurationData.class) {
 
-        public void write(TestSRIForSMConfigurationData clt, OutputElement xml) throws XMLStreamException {
+        public void write(TestSRIForSMClientConfigurationData clt, OutputElement xml) throws XMLStreamException {
             xml.setAttribute(SMSC_SSN, clt.smscSsn);
             xml.setAttribute(NATIONAL_LANGUAGE_CODE, clt.nationalLanguageCode);
             xml.setAttribute(SRI_SC_ADDRESS_NOT_INCLUDED, clt.sriScAddressNotIncluded);
@@ -238,7 +238,7 @@ public class TestSRIForSMConfigurationData {
             xml.add(clt.mtFSMReaction.toString(), MT_FSM_REACTION, String.class);
         }
 
-        public void read(InputElement xml, TestSRIForSMConfigurationData clt) throws XMLStreamException {
+        public void read(InputElement xml, TestSRIForSMClientConfigurationData clt) throws XMLStreamException {
             clt.smscSsn = xml.getAttribute(SMSC_SSN).toInt();
             CharArray val = xml.getAttribute(NATIONAL_LANGUAGE_CODE);
             if (val != null)

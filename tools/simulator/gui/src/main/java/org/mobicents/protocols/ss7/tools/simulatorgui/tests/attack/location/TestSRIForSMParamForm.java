@@ -7,7 +7,7 @@ import org.mobicents.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
 import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 import org.mobicents.protocols.ss7.tools.simulatorgui.M3uaForm;
 
@@ -23,7 +23,7 @@ import java.awt.event.ActionListener;
 public class TestSRIForSMParamForm extends JDialog {
     private static final long serialVersionUID = 5428271328162943202L;
 
-    private TestSRIForSMManMBean sriForSM;
+    private TestSRIForSMClientManMBean sriForSM;
 
     private JTextField tbServiceCenterAddress;
     private JTextField tbSmscSsn;
@@ -286,7 +286,7 @@ public class TestSRIForSMParamForm extends JDialog {
         });
     }
 
-    public void setData(TestSRIForSMManMBean smsClient) {
+    public void setData(TestSRIForSMClientManMBean smsClient) {
         this.sriForSM = smsClient;
 
         this.reloadData();

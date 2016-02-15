@@ -1,6 +1,6 @@
 package org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location;
 
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulatorgui.TestingForm;
 
 import javax.management.Notification;
@@ -16,7 +16,7 @@ public class TestSRIForSMForm extends TestingForm {
 
     private static final long serialVersionUID = 812642028723533391L;
 
-    private TestSRIForSMManMBean sriAttackClient;
+    private TestSRIForSMClientManMBean sriAttackClient;
 
     private JTextField tbMessage;
     private JTextField tbDestIsdnNumber;
@@ -183,7 +183,7 @@ public class TestSRIForSMForm extends TestingForm {
         panel.add(lbState, gbc_lbState);
     }
 
-    public void setData(TestSRIForSMManMBean sriAttackClient) {
+    public void setData(TestSRIForSMClientManMBean sriAttackClient) {
         this.sriAttackClient = sriAttackClient;
 
         this.tbRefNum.setText("1");
