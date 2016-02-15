@@ -274,7 +274,7 @@ public class Main {
             mainCore.start(appName, httpPort, rmiPort, rmiPort2);
         } else if (this.command.equals("attack_simulation")) {
             MainCore mainCore = new MainCore();
-            mainCore.startAttackSimulation(appName);
+            mainCore.startAttackSimulation("attackClient", "attackServer");
         }
 
     }
