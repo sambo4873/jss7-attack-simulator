@@ -441,6 +441,17 @@ public class MainCore {
         AttackSimulation attackSimulation = new AttackSimulation(clientHost, serverHost, AttackSimulation.AttackType.ALL);
         attackSimulation.start();
 
+
+        while (true) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (clientHost.isNeedQuit() || serverHost.isNeedQuit())
+                break;
+        }
+
         System.out.println("Terminating...");
         System.out.println("Unloading all beans");
 
