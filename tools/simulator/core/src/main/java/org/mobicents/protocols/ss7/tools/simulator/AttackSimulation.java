@@ -20,10 +20,14 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
 import org.mobicents.protocols.ss7.tools.simulator.management.*;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 
+import javax.management.Notification;
+import javax.management.NotificationFilter;
+import javax.management.NotificationListener;
+
 /**
  * @author Kristoffer Jensen
  */
-public class AttackSimulation {
+public class AttackSimulation implements NotificationListener {
     private TesterHost serverHost;
     private TesterHost clientHost;
 
@@ -37,6 +41,8 @@ public class AttackSimulation {
         this.serverHost = serverHost;
         this.clientHost = clientHost;
         this.attackType = attackType;
+
+        this.serverHost.addNotificationListener(this, null, null);
 
         configureAttackServer();
         configureAttackClient();
@@ -251,6 +257,15 @@ public class AttackSimulation {
     public void start() {
         this.clientHost.start();
         this.serverHost.start();
+
+        TestSmsClientMan testSmsClientMan = this.clientHost.getTestSmsClientMan();
+        TestSmsServerMan testSmsServerMan = this.serverHost.getTestSmsServerMan();
+        testSmsServerMan.performSRIForSM("12121212");
+    }
+
+    @Override
+    public void handleNotification(Notification notification, Object handback) {
+        System.out.println("MESSAGE: " + notification.getType() + "  |  " + notification.getMessage() + "  |  " + notification.getUserData());
     }
 
     public enum AttackType {
