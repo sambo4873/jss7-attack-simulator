@@ -176,6 +176,123 @@ public class MainCore {
 
     }
 
+    public void startAttackSimulation(String appName) throws Throwable {
+        System.out.println("Application has been loaded...");
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+        System.out.println("PlatformMBeanServer has been loaded...");
+
+        ObjectName nameTesterHost = new ObjectName("SS7_Simulator_" + appName + ":type=TesterHost");
+        ObjectName nameM3uaMan = new ObjectName("SS7_Simulator_" + appName + ":type=M3uaMan");
+        ObjectName nameDialogicMan = new ObjectName("SS7_Simulator_" + appName + ":type=DialogicMan");
+        ObjectName nameSccpMan = new ObjectName("SS7_Simulator_" + appName + ":type=SccpMan");
+        ObjectName nameMapMan = new ObjectName("SS7_Simulator_" + appName + ":type=MapMan");
+        ObjectName nameCapMan = new ObjectName("SS7_Simulator_" + appName + ":type=CapMan");
+        ObjectName nameUssdClientManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestUssdClientMan");
+        ObjectName nameUssdServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestUssdServerMan");
+        ObjectName nameSmsClientManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestSmsClientMan");
+        ObjectName nameSmsServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestSmsServerMan");
+        ObjectName nameTestCapSsfMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestCapSsfMan");
+        ObjectName nameTestCapScfMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestCapScfMan");
+        ObjectName nameAtiClientManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestAtiClientMan");
+        ObjectName nameAtiServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestAtiServerMan");
+        ObjectName nameSRIForSMClientManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestSRIForSMClientMan");
+        ObjectName nameSRIForSMServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestSRIForSMServerMan");
+
+        String sim_home = System.getProperty(TesterHost.SIMULATOR_HOME_VAR);
+        if (sim_home != null)
+            sim_home += File.separator + "data";
+        TesterHost host = new TesterHost(appName, sim_home);
+
+        JMXConnectorServer cs = null;
+        Registry reg = null;
+        try {
+            // registering managed beans
+            Object mbean = new TesterHostStandardMBean(host, TesterHostMBean.class, host);
+            mbs.registerMBean(mbean, nameTesterHost);
+
+            M3uaManStandardMBean m3uaMBean = new M3uaManStandardMBean(host.getM3uaMan(), M3uaManMBean.class);
+            mbs.registerMBean(m3uaMBean, nameM3uaMan);
+
+            DialogicManStandardMBean dialogicMBean = new DialogicManStandardMBean(host.getDialogicMan(), DialogicManMBean.class);
+            mbs.registerMBean(dialogicMBean, nameDialogicMan);
+
+            SccpManStandardMBean sccpMBean = new SccpManStandardMBean(host.getSccpMan(), SccpManMBean.class);
+            mbs.registerMBean(sccpMBean, nameSccpMan);
+
+            MapManStandardMBean mapMBean = new MapManStandardMBean(host.getMapMan(), MapManMBean.class);
+            mbs.registerMBean(mapMBean, nameMapMan);
+
+            CapManStandardMBean capMBean = new CapManStandardMBean(host.getCapMan(), CapManMBean.class);
+            mbs.registerMBean(capMBean, nameCapMan);
+
+            TestUssdClientStandardManMBean ussdClientManMBean = new TestUssdClientStandardManMBean(host.getTestUssdClientMan(),
+                    TestUssdClientManMBean.class);
+            mbs.registerMBean(ussdClientManMBean, nameUssdClientManMan);
+
+            TestUssdServerStandardManMBean ussdServerManMBean = new TestUssdServerStandardManMBean(host.getTestUssdServerMan(),
+                    TestUssdServerManMBean.class);
+            mbs.registerMBean(ussdServerManMBean, nameUssdServerManMan);
+
+            TestSmsClientStandardManMBean smsClientManMBean = new TestSmsClientStandardManMBean(host.getTestSmsClientMan(),
+                    TestSmsClientManMBean.class);
+            mbs.registerMBean(smsClientManMBean, nameSmsClientManMan);
+
+            TestSmsServerStandardManMBean smsServerManMBean = new TestSmsServerStandardManMBean(host.getTestSmsServerMan(),
+                    TestSmsServerManMBean.class);
+            mbs.registerMBean(smsServerManMBean, nameSmsServerManMan);
+
+            TestCapSsfStandardManMBean capSsfManMBean = new TestCapSsfStandardManMBean(host.getTestCapSsfMan(),
+                    TestCapSsfManMBean.class);
+            mbs.registerMBean(capSsfManMBean, nameTestCapSsfMan);
+
+            TestCapScfStandardManMBean capScfManMBean = new TestCapScfStandardManMBean(host.getTestCapScfMan(),
+                    TestCapScfManMBean.class);
+            mbs.registerMBean(capScfManMBean, nameTestCapScfMan);
+
+            TestAtiClientStandardManMBean atiClientManMBean = new TestAtiClientStandardManMBean(host.getTestAtiClientMan(),
+                    TestAtiClientManMBean.class);
+            mbs.registerMBean(atiClientManMBean, nameAtiClientManMan);
+
+            TestAtiServerStandardManMBean atiServerManMBean = new TestAtiServerStandardManMBean(host.getTestAtiServerMan(),
+                    TestAtiServerManMBean.class);
+            mbs.registerMBean(atiServerManMBean, nameAtiServerManMan);
+
+            TestSRIForSMClientStandardManMBean sriForSMClientManMBean = new TestSRIForSMClientStandardManMBean(host.getTestSRIForSMClientMan(), TestSRIForSMClientManMBean.class);
+            mbs.registerMBean(sriForSMClientManMBean, nameSRIForSMClientManMan);
+
+            TestSRIForSMServerStandardManMbBean sriForSMServerManMBean = new TestSRIForSMServerStandardManMbBean(host.getTestSRIForSMServerMan(), TestSRIForSMServerManMBean.class);
+            mbs.registerMBean(sriForSMServerManMBean, nameSRIForSMServerManMan);
+
+            System.out.println("All beans have been loaded...");
+        } catch (Exception ee) {
+            System.out.println("Exception when initializing the managed beans or started connectors:");
+            ee.printStackTrace();
+        }
+
+        System.out.println("Unloading all beans");
+
+        mbs.unregisterMBean(nameTesterHost);
+        mbs.unregisterMBean(nameM3uaMan);
+        mbs.unregisterMBean(nameDialogicMan);
+        mbs.unregisterMBean(nameSccpMan);
+        mbs.unregisterMBean(nameMapMan);
+        mbs.unregisterMBean(nameCapMan);
+        mbs.unregisterMBean(nameUssdClientManMan);
+        mbs.unregisterMBean(nameUssdServerManMan);
+        mbs.unregisterMBean(nameSmsClientManMan);
+        mbs.unregisterMBean(nameSmsServerManMan);
+        mbs.unregisterMBean(nameTestCapSsfMan);
+        mbs.unregisterMBean(nameTestCapScfMan);
+        mbs.unregisterMBean(nameAtiClientManMan);
+        mbs.unregisterMBean(nameAtiServerManMan);
+        mbs.unregisterMBean(nameSRIForSMClientManMan);
+        mbs.unregisterMBean(nameSRIForSMServerManMan);
+
+        System.out.println("Unload complete, shutting down...");
+
+        System.exit(0);
+    }
+
     public void start(String appName, int httpPort, int rmiPort, int rmiPort2) throws MalformedObjectNameException,
             MBeanRegistrationException, InstanceNotFoundException, IOException {
         System.out.println("Application has been loaded...");

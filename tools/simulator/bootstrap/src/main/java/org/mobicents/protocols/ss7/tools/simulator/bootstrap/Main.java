@@ -89,6 +89,7 @@ public class Main {
         longopts[2] = new LongOpt("http", LongOpt.REQUIRED_ARGUMENT, null, 't');
         longopts[3] = new LongOpt("rmi", LongOpt.REQUIRED_ARGUMENT, null, 'r');
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
+        longopts[5] = new LongOpt("attack_simulation", LongOpt.NO_ARGUMENT, null, 0);
 
         Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h", longopts);
         g.setOpterr(false); // We'll do our own error handling
@@ -146,6 +147,8 @@ public class Main {
                         this.command = "core";
                     } else if (optArg.equals("gui")) {
                         this.command = "gui";
+                    } else if (optArg.equals("attack_simulation")) {
+                        this.command = "attack_simulation";
                     } else if (optArg.equals("help")) {
                         if (this.command == null) {
                             this.genericHelp();
@@ -269,6 +272,9 @@ public class Main {
         } else if (this.command.equals("core")) {
             MainCore mainCore = new MainCore();
             mainCore.start(appName, httpPort, rmiPort, rmiPort2);
+        } else if (this.command.equals("attack_simulation")) {
+            MainCore mainCore = new MainCore();
+            mainCore.startAttackSimulation(appName);
         }
 
     }
