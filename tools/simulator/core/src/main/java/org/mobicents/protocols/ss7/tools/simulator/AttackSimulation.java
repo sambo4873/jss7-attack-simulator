@@ -261,7 +261,7 @@ public class AttackSimulation implements NotificationListener {
         while (true) {
             try {
                 Thread.sleep(500);
-                this.clientHost.getM3uaMan().getState();
+                System.out.print("---------------M3UA STATE: " + this.clientHost.getM3uaMan().getState());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
