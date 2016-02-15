@@ -58,6 +58,8 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerManMBe
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientStandardManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerStandardManMbBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfManMBean;
@@ -197,7 +199,8 @@ public class MainCore {
         ObjectName nameTestCapScfMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestCapScfMan");
         ObjectName nameAtiClientManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestAtiClientMan");
         ObjectName nameAtiServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestAtiServerMan");
-        ObjectName nameSRIForSMManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestSRIForSMClientMan");
+        ObjectName nameSRIForSMClientManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestSRIForSMClientMan");
+        ObjectName nameSRIForSMServerManMan = new ObjectName("SS7_Simulator_" + appName + ":type=TestSRIForSMServerMan");
 
         // HtmlAdaptorServer
         HtmlAdaptorServer adapter = null;
@@ -266,8 +269,11 @@ public class MainCore {
                     TestAtiServerManMBean.class);
             mbs.registerMBean(atiServerManMBean, nameAtiServerManMan);
 
-            TestSRIForSMClientStandardManMBean sriForSMManMBean = new TestSRIForSMClientStandardManMBean(host.getTestSRIForSMMan(), TestSRIForSMClientManMBean.class);
-            mbs.registerMBean(sriForSMManMBean, nameSRIForSMManMan);
+            TestSRIForSMClientStandardManMBean sriForSMClientManMBean = new TestSRIForSMClientStandardManMBean(host.getTestSRIForSMClientMan(), TestSRIForSMClientManMBean.class);
+            mbs.registerMBean(sriForSMClientManMBean, nameSRIForSMClientManMan);
+
+            TestSRIForSMServerStandardManMbBean sriForSMServerManMBean = new TestSRIForSMServerStandardManMbBean(host.getTestSRIForSMServerMan(), TestSRIForSMServerManMBean.class);
+            mbs.registerMBean(sriForSMServerManMBean, nameSRIForSMServerManMan);
 
             System.out.println("All beans have been loaded...");
 
@@ -343,7 +349,8 @@ public class MainCore {
         mbs.unregisterMBean(nameTestCapScfMan);
         mbs.unregisterMBean(nameAtiClientManMan);
         mbs.unregisterMBean(nameAtiServerManMan);
-        mbs.unregisterMBean(nameSRIForSMManMan);
+        mbs.unregisterMBean(nameSRIForSMClientManMan);
+        mbs.unregisterMBean(nameSRIForSMServerManMan);
 
         // Registry.unbind(key);
         UnicastRemoteObject.unexportObject(reg, true);

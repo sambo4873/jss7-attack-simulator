@@ -60,6 +60,7 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.NumberingPlanIdentificationType;
@@ -126,7 +127,8 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
     TestCapScfMan testCapScfMan;
     TestAtiClientMan testAtiClientMan;
     TestAtiServerMan testAtiServerMan;
-    TestSRIForSMClientMan testSRIForSMMan;
+    TestSRIForSMClientMan testSRIForSMClientMan;
+    TestSRIForSMServerMan testSRIForSMServerMan;
 
     // testers
 
@@ -173,8 +175,11 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
         this.testAtiServerMan = new TestAtiServerMan(appName);
         this.testAtiServerMan.setTesterHost(this);
 
-        this.testSRIForSMMan = new TestSRIForSMClientMan(appName);
-        this.testSRIForSMMan.setTesterHost(this);
+        this.testSRIForSMClientMan = new TestSRIForSMClientMan(appName);
+        this.testSRIForSMClientMan.setTesterHost(this);
+
+        this.testSRIForSMServerMan = new TestSRIForSMServerMan(appName);
+        this.testSRIForSMServerMan.setTesterHost(this);
 
         this.setupLog4j(appName);
 
@@ -264,8 +269,12 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
         return this.testAtiServerMan;
     }
 
-    public TestSRIForSMClientMan getTestSRIForSMMan() {
-        return this.testSRIForSMMan;
+    public TestSRIForSMClientMan getTestSRIForSMClientMan() {
+        return this.testSRIForSMClientMan;
+    }
+
+    public TestSRIForSMServerMan getTestSRIForSMServerMan() {
+        return this.testSRIForSMServerMan;
     }
 
     private void setupLog4j(String appName) {
@@ -643,15 +652,27 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
                 }
                 break;
 
-            case Instance_TestTask.VAL_SRI_ATTACK_TEST:
+            case Instance_TestTask.VAL_SRI_ATTACK_TEST_CLIENT:
                 if (curMap == null) {
-                    this.sendNotif(TesterHost.SOURCE_NAME, "Error initializing SRI_ATTACK: No MAP stack is defined at L3",
+                    this.sendNotif(TesterHost.SOURCE_NAME, "Error initializing SRI_ATTACK_CLIENT: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
-                    this.instance_TestTask_B = this.testSRIForSMMan;
-                    this.testSRIForSMMan.setMapMan(curMap);
-                    started = this.testSRIForSMMan.start();
+                    this.instance_TestTask_B = this.testSRIForSMClientMan;
+                    this.testSRIForSMClientMan.setMapMan(curMap);
+                    started = this.testSRIForSMClientMan.start();
                 }
+                break;
+
+            case Instance_TestTask.VAL_SRI_ATTACK_TEST_SERVER:
+                if (curMap == null) {
+                    this.sendNotif(TesterHost.SOURCE_NAME, "Error initializing SRI_ATTACK_SERVER: No MAP stack is defined at L3",
+                            "", Level.WARN);
+                } else {
+                    this.instance_TestTask_B = this.testSRIForSMServerMan;
+                    this.testSRIForSMServerMan.setMapMan(curMap);
+                    started = this.testSRIForSMServerMan.start();
+                }
+                break;
 
             default:
                 // TODO: implement others test tasks ...

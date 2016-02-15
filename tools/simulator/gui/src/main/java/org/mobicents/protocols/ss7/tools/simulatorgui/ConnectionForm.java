@@ -57,6 +57,7 @@ import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientManMBean;
@@ -178,7 +179,7 @@ public class ConnectionForm extends JFrame {
         frame.startHost(appName + "-local", false, host, host, host.getM3uaMan(), host.getDialogicMan(), host.getSccpMan(),
                 host.getMapMan(), host.getCapMan(), host.getTestUssdClientMan(), host.getTestUssdServerMan(),
                 host.getTestSmsClientMan(), host.getTestSmsServerMan(), host.getTestCapScfMan(), host.getTestCapSsfMan(),
-                host.getTestAtiClientMan(), host.getTestAtiServerMan(), host.getTestSRIForSMMan());
+                host.getTestAtiClientMan(), host.getTestAtiServerMan(), host.getTestSRIForSMClientMan(), host.getTestSRIForSMServerMan());
         frame.setVisible(true);
 
         // closing the connection form
@@ -240,6 +241,9 @@ public class ConnectionForm extends JFrame {
             TestAtiServerManMBean atiServer = JMX.newMBeanProxy(mbsc, mbeanNameAtiServer, TestAtiServerManMBean.class, false);
             ObjectName mbeanNameSRIAttackClient = new ObjectName(tagDomain + ":type=TestSRIAttackClientMan");
             TestSRIForSMClientManMBean sriAttackClient = JMX.newMBeanProxy(mbsc, mbeanNameSRIAttackClient, TestSRIForSMClientManMBean.class, false);
+            ObjectName mbeanNameSRIAttackServer = new ObjectName(tagDomain + ":type=TestSRIAttackServerMan");
+            TestSRIForSMServerManMBean sriAttackServer = JMX.newMBeanProxy(mbsc, mbeanNameSRIAttackServer, TestSRIForSMServerManMBean.class, false);
+
 
             // checking if MBean is workable
             host.getInstance_L1_Value();
@@ -248,7 +252,7 @@ public class ConnectionForm extends JFrame {
             SimulatorGuiForm frame = new SimulatorGuiForm();
             mbsc.addNotificationListener(mbeanNameTesterHost, frame, null, null);
             frame.startHost(appName + "-remote", true, null, host, m3ua, dialogic, sccp, map, cap, ussdClient, ussdServer,
-                    smsClient, smsServer, capScf, capSsf, atiClient, atiServer, sriAttackClient);
+                    smsClient, smsServer, capScf, capSsf, atiClient, atiServer, sriAttackClient, sriAttackServer);
             frame.setVisible(true);
 
             // closing the connection form

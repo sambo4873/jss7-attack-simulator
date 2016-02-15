@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 /**
  * @author Kristoffer Jensen
  */
-public class TestSRIForSMForm extends TestingForm {
+public class TestSRIForSMClientForm extends TestingForm {
 
     private static final long serialVersionUID = 812642028723533391L;
 
@@ -28,7 +28,7 @@ public class TestSRIForSMForm extends TestingForm {
     private JTextField tbSegmCnt;
     private JTextField tbSegmNum;
 
-    public TestSRIForSMForm(JFrame owner) {
+    public TestSRIForSMClientForm(JFrame owner) {
         super(owner);
 
         JPanel panel = new JPanel();

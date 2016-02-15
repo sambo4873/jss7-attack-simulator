@@ -54,6 +54,7 @@ import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientManMBean;
@@ -64,8 +65,9 @@ import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiClientFor
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiClientParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiServerForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiServerParamForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMParamForm;
+import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMClientForm;
+import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMClientParamForm;
+import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMServerForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapSsfForm;
@@ -106,6 +108,7 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
     private TestAtiClientManMBean atiClient;
     private TestAtiServerManMBean atiServer;
     private TestSRIForSMClientManMBean sriAttackClient;
+    private TestSRIForSMServerManMBean sriAttackServer;
 
     private TestingForm testingForm;
 
@@ -333,8 +336,8 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                         frame.setVisible(true);
                     }
                         break;
-                    case Instance_TestTask.VAL_SRI_ATTACK_TEST: {
-                        TestSRIForSMParamForm frame = new TestSRIForSMParamForm(getJFrame());
+                    case Instance_TestTask.VAL_SRI_ATTACK_TEST_CLIENT: {
+                        TestSRIForSMClientParamForm frame = new TestSRIForSMClientParamForm(getJFrame());
                         frame.setData(sriAttackClient);
                         frame.setVisible(true);
                     }
@@ -413,10 +416,16 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                 dlg = testAtiServerForm;
             }
                 break;
-            case Instance_TestTask.VAL_SRI_ATTACK_TEST: {
-                TestSRIForSMForm testSRIForSMForm = new TestSRIForSMForm(getJFrame());
-                testSRIForSMForm.setData(sriAttackClient);
-                dlg = testSRIForSMForm;
+            case Instance_TestTask.VAL_SRI_ATTACK_TEST_CLIENT: {
+                TestSRIForSMClientForm testSRIForSMClientForm = new TestSRIForSMClientForm(getJFrame());
+                testSRIForSMClientForm.setData(sriAttackClient);
+                dlg = testSRIForSMClientForm;
+            }
+                break;
+            case Instance_TestTask.VAL_SRI_ATTACK_TEST_SERVER: {
+                TestSRIForSMServerForm testSRIForSMServerForm = new TestSRIForSMServerForm(getJFrame());
+                testSRIForSMServerForm.setData(sriAttackServer);
+                dlg = testSRIForSMServerForm;
             }
             break;
 
@@ -459,7 +468,7 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
     protected void startHost(String appName, boolean isRemote, final TesterHost hostImpl, TesterHostMBean host, M3uaManMBean m3ua, DialogicManMBean dialogic,
             SccpManMBean sccp, MapManMBean map, CapManMBean cap, TestUssdClientManMBean ussdClient, TestUssdServerManMBean ussdServer,
             TestSmsClientManMBean smsClient, TestSmsServerManMBean smsServer, TestCapScfManMBean capScf, TestCapSsfManMBean capSsf,
-            TestAtiClientManMBean atiClient, TestAtiServerManMBean atiServer, TestSRIForSMClientManMBean sriAttackClient) {
+            TestAtiClientManMBean atiClient, TestAtiServerManMBean atiServer, TestSRIForSMClientManMBean sriAttackClient, TestSRIForSMServerManMBean sriAttackServer) {
         setTitle(getTitle() + appName);
 
         this.hostImpl = hostImpl;
@@ -478,6 +487,7 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
         this.atiClient = atiClient;
         this.atiServer = atiServer;
         this.sriAttackClient = sriAttackClient;
+        this.sriAttackServer = sriAttackServer;
         this.isRemote = isRemote;
 
 

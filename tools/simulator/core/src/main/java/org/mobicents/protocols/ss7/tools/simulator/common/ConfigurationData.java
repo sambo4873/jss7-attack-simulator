@@ -37,6 +37,7 @@ import org.mobicents.protocols.ss7.tools.simulator.management.Instance_TestTask;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientConfigurationData;
@@ -69,7 +70,8 @@ public class ConfigurationData {
     public static final String TEST_CAP_SSF = "testCapSsf";
     public static final String TEST_ATI_CLIENT = "testAtiClient";
     public static final String TEST_ATI_SERVER = "testAtiServer";
-    public static final String TEST_SRIFORSM = "testSRIForSM";
+    public static final String TEST_SRIFORSM_CLIENT = "testSRIForSMClient";
+    public static final String TEST_SRIFORSM_SERVER = "testSRIForSMServer";
 
     private Instance_L1 instance_L1 = new Instance_L1(Instance_L1.VAL_NO);
     private Instance_L2 instance_L2 = new Instance_L2(Instance_L2.VAL_NO);
@@ -91,6 +93,7 @@ public class ConfigurationData {
     private TestAtiClientConfigurationData testAtiClientConfigurationData = new TestAtiClientConfigurationData();
     private TestAtiServerConfigurationData testAtiServerConfigurationData = new TestAtiServerConfigurationData();
     private TestSRIForSMClientConfigurationData testSRIForSMClientConfigurationData = new TestSRIForSMClientConfigurationData();
+    private TestSRIForSMServerConfigurationData testSRIForSMServerConfigurationData = new TestSRIForSMServerConfigurationData();
 
     public Instance_L1 getInstance_L1() {
         return instance_L1;
@@ -236,6 +239,14 @@ public class ConfigurationData {
         this.testSRIForSMClientConfigurationData = testSRIForSMClientConfigurationData;
     }
 
+    public TestSRIForSMServerConfigurationData getTestSRIForSMServerConfigurationData() {
+        return testSRIForSMServerConfigurationData;
+    }
+
+    public void setTestSRIForSMServerConfigurationData(TestSRIForSMServerConfigurationData testSRIForSMServerConfigurationData) {
+        this.testSRIForSMServerConfigurationData = testSRIForSMServerConfigurationData;
+    }
+
     /**
      * XML Serialization/Deserialization
      */
@@ -301,9 +312,13 @@ public class ConfigurationData {
             if (capSsf != null)
                 data.setTestCapSsfConfigurationData(capSsf);
 
-            TestSRIForSMClientConfigurationData sriForSM = xml.get(TEST_SRIFORSM, TestSRIForSMClientConfigurationData.class);
-            if (sriForSM != null)
-                data.setTestSRIForSMClientConfigurationData(sriForSM);
+            TestSRIForSMClientConfigurationData sriForSMClient = xml.get(TEST_SRIFORSM_CLIENT, TestSRIForSMClientConfigurationData.class);
+            if (sriForSMClient != null)
+                data.setTestSRIForSMClientConfigurationData(sriForSMClient);
+
+            TestSRIForSMServerConfigurationData sriForSMServer = xml.get(TEST_SRIFORSM_SERVER, TestSRIForSMServerConfigurationData.class);
+            if (sriForSMServer != null)
+                data.setTestSRIForSMServerConfigurationData(sriForSMServer);
 
             // while (xml.hasNext()) {
             // Object o = xml.getNext();
@@ -331,7 +346,8 @@ public class ConfigurationData {
             xml.add(data.getTestAtiServerConfigurationData(), TEST_ATI_SERVER, TestAtiServerConfigurationData.class);
             xml.add(data.getTestCapScfConfigurationData(), TEST_CAP_SCF, TestCapScfConfigurationData.class);
             xml.add(data.getTestCapSsfConfigurationData(), TEST_CAP_SSF, TestCapSsfConfigurationData.class);
-            xml.add(data.getTestSRIForSMClientConfigurationData(), TEST_SRIFORSM, TestSRIForSMClientConfigurationData.class);
+            xml.add(data.getTestSRIForSMClientConfigurationData(), TEST_SRIFORSM_CLIENT, TestSRIForSMClientConfigurationData.class);
+            xml.add(data.getTestSRIForSMServerConfigurationData(), TEST_SRIFORSM_SERVER, TestSRIForSMServerConfigurationData.class);
         }
     };
 

@@ -20,7 +20,7 @@ import java.awt.event.ActionListener;
 /**
  * @author Kristoffer Jensen
  */
-public class TestSRIForSMParamForm extends JDialog {
+public class TestSRIForSMClientParamForm extends JDialog {
     private static final long serialVersionUID = 5428271328162943202L;
 
     private TestSRIForSMClientManMBean sriForSM;
@@ -45,7 +45,7 @@ public class TestSRIForSMParamForm extends JDialog {
     private JComboBox cbRsmdsReaction;
     private JTextField tbNationalLanguageCode;
 
-    public TestSRIForSMParamForm(JFrame owner) {
+    public TestSRIForSMClientParamForm(JFrame owner) {
         super(owner, true);
 
         setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
