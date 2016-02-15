@@ -83,7 +83,7 @@ public class Main {
 
         int c;
         String arg;
-        LongOpt[] longopts = new LongOpt[5];
+        LongOpt[] longopts = new LongOpt[6];
         longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
         longopts[1] = new LongOpt("name", LongOpt.REQUIRED_ARGUMENT, null, 'n');
         longopts[2] = new LongOpt("http", LongOpt.REQUIRED_ARGUMENT, null, 't');
