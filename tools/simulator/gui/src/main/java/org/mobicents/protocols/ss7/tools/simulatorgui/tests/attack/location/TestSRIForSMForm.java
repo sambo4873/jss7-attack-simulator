@@ -100,16 +100,6 @@ public class TestSRIForSMForm extends TestingForm {
         gbc_panel_1.gridy = 3;
         panel.add(panel_1, gbc_panel_1);
 
-        JButton btnSendSriforsm = new JButton("Send SRIForSM");
-        btnSendSriforsm.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                sendSRIForSM();
-            }
-        });
-
-        btnSendSriforsm.setBounds(0, 0, 164, 23);
-        panel_1.add(btnSendSriforsm);
-
         JButton btnSendMoForwardSm = new JButton("Send MoForwardSM");
         btnSendMoForwardSm.setBounds(12, 0, 149, 25);
         panel_1.add(btnSendMoForwardSm);
@@ -199,13 +189,6 @@ public class TestSRIForSMForm extends TestingForm {
         this.tbRefNum.setText("1");
         this.tbSegmCnt.setText("0");
         this.tbSegmNum.setText("0");
-    }
-
-    private void sendSRIForSM() {
-        this.lbMessage.setText("");
-        String msg = this.tbDestIsdnNumber.getText();
-        String res = this.sriAttackClient.performSRIForSM(msg);
-        this.lbResult.setText(res);
     }
 
     private void sendMoforwardsm() {
