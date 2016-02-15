@@ -258,9 +258,20 @@ public class AttackSimulation implements NotificationListener {
         this.clientHost.start();
         this.serverHost.start();
 
-        TestSmsClientMan testSmsClientMan = this.clientHost.getTestSmsClientMan();
-        TestSmsServerMan testSmsServerMan = this.serverHost.getTestSmsServerMan();
-        testSmsServerMan.performSRIForSM("12121212");
+        while (true) {
+            try {
+                Thread.sleep(500);
+                this.clientHost.getM3uaMan().getState();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            if (clientHost.isNeedQuit() || serverHost.isNeedQuit())
+                break;
+        }
+
+        //TestSmsClientMan testSmsClientMan = this.clientHost.getTestSmsClientMan();
+        //TestSmsServerMan testSmsServerMan = this.serverHost.getTestSmsServerMan();
+        //testSmsServerMan.performSRIForSM("12121212");
     }
 
     @Override
