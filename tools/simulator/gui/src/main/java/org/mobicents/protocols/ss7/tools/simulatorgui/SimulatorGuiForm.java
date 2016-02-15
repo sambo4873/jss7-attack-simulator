@@ -68,6 +68,7 @@ import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiServerPar
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMClientForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMClientParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMServerForm;
+import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMServerParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapSsfForm;
@@ -339,6 +340,12 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                     case Instance_TestTask.VAL_SRI_ATTACK_TEST_CLIENT: {
                         TestSRIForSMClientParamForm frame = new TestSRIForSMClientParamForm(getJFrame());
                         frame.setData(sriAttackClient);
+                        frame.setVisible(true);
+                    }
+                    break;
+                    case Instance_TestTask.VAL_SRI_ATTACK_TEST_SERVER: {
+                        TestSRIForSMServerParamForm frame = new TestSRIForSMServerParamForm(getJFrame());
+                        frame.setData(sriAttackServer);
                         frame.setVisible(true);
                     }
                     break;
