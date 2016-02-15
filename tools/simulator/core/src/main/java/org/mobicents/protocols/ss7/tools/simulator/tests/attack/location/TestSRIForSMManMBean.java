@@ -135,6 +135,8 @@ public interface TestSRIForSMManMBean {
 
     String performAlertServiceCentre(String destIsdnNumber);
 
+    String performSRIForSM(String destIsdnNumber);
+
     String closeCurrentDialog();
 
 }
