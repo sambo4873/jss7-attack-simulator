@@ -394,14 +394,19 @@ public class TestSRIForSMServerMan extends TesterBase implements TestSRIForSMSer
                 this.testerHost.getConfigurationData().getTestSmsServerConfigurationData().getNumberingPlan(), serviceCentreAddr);
         curDestIsdnNumber = destIsdnNumber;
 
+        // hard coded HLRSSn = 6 for realistic SSNId
+        int hlr_ssn = 6;
+
         try {
             MAPDialogSms curDialog = mapProvider.getMAPServiceSms()
                     .createNewDialog(
                             mapAppContext,
                             this.mapMan.createOrigAddress(),
                             null,
-                            this.mapMan.createDestAddress(destIsdnNumber, this.testerHost.getConfigurationData().getTestSmsServerConfigurationData()
-                                    .getHlrSsn()), null);
+                            this.mapMan.createDestAddress(destIsdnNumber,
+                                    hlr_ssn),
+                                    //this.testerHost.getConfigurationData().getTestSmsServerConfigurationData().getHlrSsn()),
+                                    null);
             HostMessageData hostMessageData = new HostMessageData();
             hostMessageData.mtMessageData = messageData;
             curDialog.setUserObject(hostMessageData);
