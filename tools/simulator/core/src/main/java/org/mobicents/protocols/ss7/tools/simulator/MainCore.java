@@ -464,7 +464,9 @@ public class MainCore {
                 break;
             }
 
-            System.out.println("NOTICE ME");
+            System.out.println("CLIENT STATUS: " + attackSimulationClient.getM3uaMan().getState());
+            System.out.println("SERVER STATUS: " + attackSimulationServer.getM3uaMan().getState());
+
 
            if(!sentSRI && attackSimulationClient.getM3uaMan().getState().contains("Connected") && attackSimulationServer.getM3uaMan().getState().contains("Connected")) {
                attackSimulationServer.getTestSmsServerMan().performSRIForSM("123123123");
