@@ -132,6 +132,9 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
 
     // testers
 
+    public TesterHost() {
+    }
+
     public TesterHost(String appName, String persistDir) {
         this.appName = appName;
         this.persistDir = persistDir;

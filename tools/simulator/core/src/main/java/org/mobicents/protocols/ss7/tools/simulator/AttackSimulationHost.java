@@ -12,42 +12,84 @@ import org.mobicents.protocols.ss7.map.api.smstpdu.NumberingPlanIdentification;
 import org.mobicents.protocols.ss7.map.api.smstpdu.TypeOfNumber;
 import org.mobicents.protocols.ss7.mtp.RoutingLabelFormat;
 import org.mobicents.protocols.ss7.sccp.SccpProtocolVersion;
+import org.mobicents.protocols.ss7.tools.simulator.common.ConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.level1.M3uaConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.level1.M3uaMan;
 import org.mobicents.protocols.ss7.tools.simulator.level2.GlobalTitleType;
 import org.mobicents.protocols.ss7.tools.simulator.level2.SccpConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.level2.SccpMan;
+import org.mobicents.protocols.ss7.tools.simulator.level3.CapMan;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
 import org.mobicents.protocols.ss7.tools.simulator.management.*;
+import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
-
-import javax.management.Notification;
-import javax.management.NotificationFilter;
-import javax.management.NotificationListener;
+import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerMan;
 
 /**
  * @author Kristoffer Jensen
  */
-public class AttackSimulation implements NotificationListener {
+public class AttackSimulationHost extends TesterHost implements Stoppable {
     private TesterHost serverHost;
     private TesterHost clientHost;
 
+
+    private boolean isStarted = false;
+    private boolean needQuit = false;
+
+    private ConfigurationData configurationData = new ConfigurationData();
+
+    private Stoppable instance_L1_B = null;
+    private Stoppable instance_L2_B = null;
+    private Stoppable instance_L3_B = null;
+    private Stoppable instance_TestTask_B = null;
+
+    M3uaMan m3ua;
+    SccpMan sccpMan;
+    MapMan mapMan;
+    CapMan capMan;
+    TestUssdClientMan testUssdClientMan;
+    TestUssdServerMan testUssdServerMan;
+    TestSmsClientMan testSmsClientMan;
+    TestSmsServerMan testSmsServerMan;
+    TestCapSsfMan testCapSsfMan;
+    TestCapScfMan testCapScfMan;
+    TestAtiClientMan testAtiClientMan;
+    TestAtiServerMan testAtiServerMan;
+    TestSRIForSMClientMan testSRIForSMClientMan;
+    TestSRIForSMServerMan testSRIForSMServerMan;
+
+
     private AttackType attackType;
 
-    public AttackSimulation() {
+    public AttackSimulationHost() {
+        super();
 
     }
 
-    public AttackSimulation(TesterHost serverHost, TesterHost clientHost, AttackType attackType) {
-        this.serverHost = serverHost;
-        this.clientHost = clientHost;
+    public AttackSimulationHost(AttackType attackType) {
+        this.serverHost = null;
+        this.clientHost = null;
         this.attackType = attackType;
 
-        this.serverHost.addNotificationListener(this, null, null);
+        //this.serverHost.addNotificationListener(this, null, null);
 
         configureAttackServer();
         configureAttackClient();
 
         start();
+    }
+
+    private void setupLayers() {
+        this.m3ua = new M3uaMan();
+
     }
 
     private void configureAttackServer() {
@@ -148,7 +190,7 @@ public class AttackSimulation implements NotificationListener {
         configureL1(clientHost, dpc, isSctpServer, localHost, localPort, ipspType, opc, remoteHost, remotePort);
         configureL2(clientHost, callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
         configureL3(clientHost, destReferenceDigits, origReferenceDigits, remoteAddressDigits);
-        configureSMSTestClient(clientHost);
+        configureSMSTestClient();
     }
 
     public void configureL1(TesterHost testerHost, int dpc, boolean isSctpServer, String localHost, int localPort, IPSPType ipspType, int opc, String remoteHost, int remotePort) {
@@ -211,9 +253,9 @@ public class AttackSimulation implements NotificationListener {
         mapConfigurationData.setRemoteAddressDigits(remoteAddressDigits);
     }
 
-    public void configureSMSTestClient(TesterHost testerHost) {
-        testerHost.setInstance_TestTask(Instance_TestTask.createInstance("SMS_TEST_CLIENT"));
-        TestSmsClientConfigurationData testSmsClientConfigurationData = testerHost.getConfigurationData().getTestSmsClientConfigurationData();
+    public void configureSMSTestClient() {
+        this.setInstance_TestTask(Instance_TestTask.createInstance("SMS_TEST_CLIENT"));
+        TestSmsClientConfigurationData testSmsClientConfigurationData = this.getConfigurationData().getTestSmsClientConfigurationData();
 
         //testSmsClientConfigurationData.setAddressNature();
         testSmsClientConfigurationData.setContinueDialog(false);
@@ -275,8 +317,18 @@ public class AttackSimulation implements NotificationListener {
     }
 
     @Override
-    public void handleNotification(Notification notification, Object handback) {
-        System.out.println("MESSAGE: " + notification.getType() + "  |  " + notification.getMessage() + "  |  " + notification.getUserData());
+    public void stop() {
+
+    }
+
+    @Override
+    public void execute() {
+
+    }
+
+    @Override
+    public String getState() {
+        return null;
     }
 
     public enum AttackType {

@@ -420,25 +420,25 @@ public class MainCore {
 
     public void startAttackSimulation(String clientName, String serverName) throws Throwable {
         System.out.println("Application has been loaded...");
-        this.mbs = ManagementFactory.getPlatformMBeanServer();
-        System.out.println("PlatformMBeanServer has been loaded...");
+        //this.mbs = ManagementFactory.getPlatformMBeanServer();
+        //System.out.println("PlatformMBeanServer has been loaded...");
 
-        setObjectNamesA(serverName);
-        setObjectNamesB(clientName);
+        //setObjectNamesA(serverName);
+        //setObjectNamesB(clientName);
 
-        String sim_home = System.getProperty(TesterHost.SIMULATOR_HOME_VAR);
-        if (sim_home != null)
-            sim_home += File.separator + "data";
+        //String sim_home = System.getProperty(TesterHost.SIMULATOR_HOME_VAR);
+        //if (sim_home != null)
+        //    sim_home += File.separator + "data";
 
-        TesterHost clientHost = new TesterHost(clientName, sim_home);
-        TesterHost serverHost = new TesterHost(serverName, sim_home);
+        //TesterHost clientHost = new TesterHost(clientName, sim_home);
+        //TesterHost serverHost = new TesterHost(serverName, sim_home);
 
-        registerMBeansA(serverHost);
-        registerMBeansB(clientHost);
+        //registerMBeansA(serverHost);
+        //registerMBeansB(clientHost);
 
-        System.out.println("All beans have been loaded...");
+        //System.out.println("All beans have been loaded...");
 
-        AttackSimulation attackSimulation = new AttackSimulation(clientHost, serverHost, AttackSimulation.AttackType.ALL);
+        AttackSimulationHost attackSimulation = new AttackSimulationHost(AttackSimulationHost.AttackType.ALL);
         attackSimulation.start();
 
 
@@ -447,16 +447,15 @@ public class MainCore {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-            if (clientHost.isNeedQuit() || serverHost.isNeedQuit())
                 break;
+            }
         }
 
         System.out.println("Terminating...");
-        System.out.println("Unloading all beans");
+        //System.out.println("Unloading all beans");
 
-        unregisterMBeansA(serverHost);
-        unregisterMBeansB(clientHost);
+        //unregisterMBeansA(serverHost);
+        //unregisterMBeansB(clientHost);
 
         System.out.println("Unload complete, shutting down...");
 
