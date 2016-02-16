@@ -95,6 +95,9 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         this.appName = appName;
         this.attackType = attackType;
 
+        this.setupLayers(appName);
+        this.setupLog4j(appName);
+
         //this.serverHost.addNotificationListener(this, null, null);
 
         switch(attackType) {
