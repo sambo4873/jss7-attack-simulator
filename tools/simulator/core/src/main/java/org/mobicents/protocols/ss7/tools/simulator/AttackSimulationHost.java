@@ -1,5 +1,7 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
+import javolution.text.TextBuilder;
+import javolution.xml.XMLBinding;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -56,6 +58,9 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
     private final String SOURCE_NAME = "ATTACK_HOST";
     private final String appName;
+    private String persistDir = null;
+    private final TextBuilder persistFile = TextBuilder.newInstance();
+    private static final XMLBinding binding = new XMLBinding();
 
     private boolean isStarted = false;
     private boolean needQuit = false;
@@ -91,8 +96,9 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         this.appName = null;
     }
 
-    public AttackSimulationHost(String appName, AttackType attackType) {
+    public AttackSimulationHost(String appName, String persistDir, AttackType attackType) {
         this.appName = appName;
+        this.persistDir = persistDir;
         this.attackType = attackType;
 
         this.setupLayers(appName);
@@ -156,10 +162,6 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
         this.testSRIForSMServerMan = new TestSRIForSMServerMan(appName);
         this.testSRIForSMServerMan.setTesterHost(this);
-
-        this.setupLog4j(appName);
-
-
     }
 
 
@@ -206,9 +208,9 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         ///////////////////////////////////////////
 
 
-        configureL1(this, dpc, isSctpServer, localHost, localPort, ipspType, opc, remoteHost, remotePort);
-        configureL2(this, callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
-        configureL3(this, destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        configureL1(dpc, isSctpServer, localHost, localPort, ipspType, opc, remoteHost, remotePort);
+        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
         configureSMSTestServer();
     }
 
@@ -258,15 +260,15 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         ///////////////////////////////////////////
 
 
-        configureL1(this, dpc, isSctpServer, localHost, localPort, ipspType, opc, remoteHost, remotePort);
-        configureL2(this, callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
-        configureL3(this, destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        configureL1(dpc, isSctpServer, localHost, localPort, ipspType, opc, remoteHost, remotePort);
+        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
         configureSMSTestClient();
     }
 
-    public void configureL1(AttackSimulationHost testerHost, int dpc, boolean isSctpServer, String localHost, int localPort, IPSPType ipspType, int opc, String remoteHost, int remotePort) {
-        testerHost.setInstance_L1(Instance_L1.createInstance("M3UA"));
-        M3uaConfigurationData m3uaConfigurationData = testerHost.getConfigurationData().getM3uaConfigurationData();
+    public void configureL1(int dpc, boolean isSctpServer, String localHost, int localPort, IPSPType ipspType, int opc, String remoteHost, int remotePort) {
+        this.setInstance_L1(Instance_L1.createInstance("M3UA"));
+        M3uaConfigurationData m3uaConfigurationData = this.getConfigurationData().getM3uaConfigurationData();
 
         m3uaConfigurationData.setDpc(dpc);
         m3uaConfigurationData.setIpChannelType(IpChannelType.SCTP);
@@ -286,11 +288,13 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         m3uaConfigurationData.setStorePcapTrace(false);
         m3uaConfigurationData.setTrafficModeType(TrafficModeType.Loadshare);
         m3uaConfigurationData.setTrafficModeType(TrafficModeType.Loadshare);
+
+        this.setInstance_L1(Instance_L1.createInstance("M3UA"));
     }
 
-    public void configureL2(TesterHost testerHost, String callingPartyAddressDigits, int localSpc, int localSsn, int remoteSpc, int remoteSsn, boolean routeonGtMode) {
-        testerHost.setInstance_L2(Instance_L2.createInstance("SCCP"));
-        SccpConfigurationData sccpConfigurationData = testerHost.getConfigurationData().getSccpConfigurationData();
+    public void configureL2(String callingPartyAddressDigits, int localSpc, int localSsn, int remoteSpc, int remoteSsn, boolean routeonGtMode) {
+        this.setInstance_L2(Instance_L2.createInstance("SCCP"));
+        SccpConfigurationData sccpConfigurationData = this.getConfigurationData().getSccpConfigurationData();
 
         sccpConfigurationData.setCallingPartyAddressDigits(callingPartyAddressDigits);
         sccpConfigurationData.setGlobalTitleType(GlobalTitleType.createInstance("Translation type, numbering plan, encoding scheme and NOA ind"));
@@ -306,9 +310,9 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         sccpConfigurationData.setTranslationType(0);
     }
 
-    public void configureL3(AttackSimulationHost testerHost, String destReferenceDigits, String origReferenceDigits, String remoteAddressDigits) {
-        testerHost.setInstance_L3(Instance_L3.createInstance("TCAP+MAP"));
-        MapConfigurationData mapConfigurationData = testerHost.getConfigurationData().getMapConfigurationData();
+    public void configureL3(String destReferenceDigits, String origReferenceDigits, String remoteAddressDigits) {
+        this.setInstance_L3(Instance_L3.createInstance("TCAP+MAP"));
+        MapConfigurationData mapConfigurationData = this.getConfigurationData().getMapConfigurationData();
 
         mapConfigurationData.setDestReference(destReferenceDigits); //Destination reference digits
         mapConfigurationData.setDestReferenceAddressNature(AddressNature.international_number);
@@ -482,6 +486,102 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
                 System.currentTimeMillis(), msg);
         notif.setUserData(userData);
         this.sendNotification(notif);
+    }
+
+    @Override
+    public Instance_L1 getInstance_L1() {
+        return configurationData.getInstance_L1();
+    }
+
+    @Override
+    public void setInstance_L1(Instance_L1 val) {
+        configurationData.setInstance_L1(val);
+        this.markStore();
+    }
+
+    @Override
+    public Instance_L2 getInstance_L2() {
+        return configurationData.getInstance_L2();
+    }
+
+    @Override
+    public void setInstance_L2(Instance_L2 val) {
+        configurationData.setInstance_L2(val);
+        this.markStore();
+    }
+
+    @Override
+    public Instance_L3 getInstance_L3() {
+        return configurationData.getInstance_L3();
+    }
+
+    @Override
+    public void setInstance_L3(Instance_L3 val) {
+        configurationData.setInstance_L3(val);
+        this.markStore();
+    }
+
+    @Override
+    public Instance_TestTask getInstance_TestTask() {
+        return configurationData.getInstance_TestTask();
+    }
+
+    @Override
+    public void setInstance_TestTask(Instance_TestTask val) {
+        configurationData.setInstance_TestTask(val);
+        this.markStore();
+    }
+
+    @Override
+    public String getInstance_L1_Value() {
+        return configurationData.getInstance_L1().toString();
+    }
+
+    @Override
+    public String getInstance_L2_Value() {
+        return configurationData.getInstance_L2().toString();
+    }
+
+    @Override
+    public String getInstance_L3_Value() {
+        return configurationData.getInstance_L3().toString();
+    }
+
+    @Override
+    public String getInstance_TestTask_Value() {
+        return configurationData.getInstance_TestTask().toString();
+    }
+
+    @Override
+    public String getL1State() {
+        if (this.instance_L1_B != null)
+            return this.instance_L1_B.getState();
+        else
+            return "";
+    }
+
+    @Override
+    public String getL2State() {
+        if (this.instance_L2_B != null)
+            return this.instance_L2_B.getState();
+        else
+            return "";
+    }
+
+    @Override
+    public String getL3State() {
+        if (this.instance_L3_B != null)
+            return this.instance_L3_B.getState();
+        else
+            return "";
+    }
+
+    @Override
+    public String getTestTaskState() {
+        if (this.instance_TestTask_B != null)
+            return this.instance_TestTask_B.getState();
+        else
+            return "";
     }
 
     @Override

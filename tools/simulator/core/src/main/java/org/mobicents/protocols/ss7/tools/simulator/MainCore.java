@@ -438,9 +438,13 @@ public class MainCore {
 
         //System.out.println("All beans have been loaded...");
 
-        AttackSimulationHost attackSimulationClient = new AttackSimulationHost("attackClient", AttackSimulationHost.AttackType.SMS_CLIENT);
+        String sim_home = System.getProperty(AttackSimulationHost.SIMULATOR_HOME_VAR);
+        if (sim_home != null)
+            sim_home += File.separator + "data";
 
-        AttackSimulationHost attackSimulationServer = new AttackSimulationHost("attackServer", AttackSimulationHost.AttackType.SMS_SERVER);
+        AttackSimulationHost attackSimulationClient = new AttackSimulationHost("attackClient", sim_home, AttackSimulationHost.AttackType.SMS_CLIENT);
+
+        AttackSimulationHost attackSimulationServer = new AttackSimulationHost("attackServer", sim_home, AttackSimulationHost.AttackType.SMS_SERVER);
 
         attackSimulationClient.start();
         attackSimulationServer.start();
@@ -450,6 +454,11 @@ public class MainCore {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                break;
+            }
+            if(attackSimulationClient.isNeedQuit() || attackSimulationServer.isNeedQuit()) {
+                attackSimulationClient.stop();
+                attackSimulationServer.stop();
                 break;
             }
         }
