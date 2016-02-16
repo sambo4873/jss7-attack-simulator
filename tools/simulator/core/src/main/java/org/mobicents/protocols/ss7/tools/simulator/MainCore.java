@@ -449,6 +449,8 @@ public class MainCore {
         attackSimulationClient.start();
         attackSimulationServer.start();
 
+        boolean sentSRI = false;
+
         while (true) {
             try {
                 Thread.sleep(500);
@@ -461,6 +463,11 @@ public class MainCore {
                 attackSimulationServer.stop();
                 break;
             }
+
+           if(!sentSRI && attackSimulationClient.getM3uaMan().getState().contains("Connected") && attackSimulationServer.getM3uaMan().getState().contains("Connected")) {
+               attackSimulationServer.getTestSmsServerMan().performSRIForSM("123123123");
+               sentSRI = true;
+           }
         }
 
         System.out.println("Terminating...");
