@@ -133,6 +133,7 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
     // testers
 
     public TesterHost() {
+        this.appName = null;
     }
 
     public TesterHost(String appName, String persistDir) {
