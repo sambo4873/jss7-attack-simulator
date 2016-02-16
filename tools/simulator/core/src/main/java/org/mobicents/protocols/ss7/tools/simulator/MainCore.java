@@ -464,6 +464,8 @@ public class MainCore {
                 break;
             }
 
+            System.out.println("NOTICE ME");
+
            if(!sentSRI && attackSimulationClient.getM3uaMan().getState().contains("Connected") && attackSimulationServer.getM3uaMan().getState().contains("Connected")) {
                attackSimulationServer.getTestSmsServerMan().performSRIForSM("123123123");
                sentSRI = true;
