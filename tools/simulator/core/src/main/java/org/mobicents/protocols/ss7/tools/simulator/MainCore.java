@@ -438,9 +438,12 @@ public class MainCore {
 
         //System.out.println("All beans have been loaded...");
 
-        AttackSimulationHost attackSimulation = new AttackSimulationHost(AttackSimulationHost.AttackType.ALL);
-        attackSimulation.start();
+        AttackSimulationHost attackSimulationClient = new AttackSimulationHost("attackClient", AttackSimulationHost.AttackType.SMS_CLIENT);
 
+        AttackSimulationHost attackSimulationServer = new AttackSimulationHost("attackServer", AttackSimulationHost.AttackType.SMS_SERVER);
+
+        attackSimulationClient.start();
+        attackSimulationServer.start();
 
         while (true) {
             try {
