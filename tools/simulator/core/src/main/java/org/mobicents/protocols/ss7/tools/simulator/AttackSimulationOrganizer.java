@@ -17,47 +17,49 @@ public class AttackSimulationOrganizer implements Stoppable {
         attackServer.start();
     }
 
+    private boolean waitForM3UALink() {
+        while (true) {
+            try {
+                Thread.sleep(500);
+                if(attackClient.getM3uaMan().getState().contains("ACTIVE") && attackServer.getM3uaMan().getState().contains("ACTIVE"))
+                    return true;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+
     public void start() {
         startAttackSimulationHosts();
 
         boolean sentSRI = false;
 
+        if (!waitForM3UALink())
+            return;
 
+        System.out.println("-----------------M3UA Link Active");
+
+
+        System.out.println("-----------------ENTERING MAIN LOOP");
         while (true) {
-            System.out.println("-----------------ENTERED MAIN LOOP");
-
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 break;
             }
-            if(attackClient.isNeedQuit() || attackServer.isNeedQuit()) {
+            if (attackClient.isNeedQuit() || attackServer.isNeedQuit()) {
                 attackClient.stop();
                 attackServer.stop();
                 break;
             }
 
-            System.out.println("CLIENT STATUS: " + attackClient.getM3uaMan().getState());
-            System.out.println("SERVER STATUS: " + attackServer.getM3uaMan().getState());
-
-//            if(!sentSRI && attackClient.getM3uaMan().getState().contains("ACTIVE") //&& attackServer.getM3uaMan().getState().contains("ACTIVE")) {
-//                System.out.println("------------------M3UA LINK ACTIVE");
-//
-//                try{
-//                    ;
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                    break;
-//                }
-//
-//                attackClient.getTestSmsServerMan().performSRIForSM("123123123");
-//                sentSRI = true;
-//            } else {
-//                System.out.println("-------------------M3UA LINK INACTIVE");
-//            }
+            if(!sentSRI) {
+                this.attackServer.getTestSmsServerMan().performSRIForSM("123123123");
+                sentSRI = true;
+            }
         }
-
     }
 
     @Override
