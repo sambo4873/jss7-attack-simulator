@@ -2,6 +2,8 @@ package org.mobicents.protocols.ss7.tools.simulator;
 
 import javolution.text.TextBuilder;
 import javolution.xml.XMLBinding;
+import javolution.xml.XMLObjectReader;
+import javolution.xml.XMLObjectWriter;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -44,6 +46,7 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerMan;
 import javax.management.Notification;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -56,6 +59,12 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
     private static final Logger logger = Logger.getLogger(AttackSimulationHost.class);
 
+    private static final String CLASS_ATTRIBUTE = "type";
+    private static final String TAB_INDENT = "\t";
+    private static final String PERSIST_FILE_NAME_OLD = "simulator.xml";
+    private static final String PERSIST_FILE_NAME = "simulator2.xml";
+    private static final String CONFIGURATION_DATA = "configurationData";
+
     private final String SOURCE_NAME = "ATTACK_HOST";
     private final String appName;
     private String persistDir = null;
@@ -65,6 +74,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
     private boolean isStarted = false;
     private boolean needQuit = false;
     private long sequenceNumber = 0;
+    private boolean needStore = false;
 
     private ConfigurationData configurationData = new ConfigurationData();
 
@@ -843,6 +853,62 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
     public void quit() {
         this.stop();
         this.needQuit = true;
+    }
+
+    @Override
+    public void markStore() {
+        this.needStore = true;
+    }
+
+    @Override
+    public void checkStore() {
+        if (this.needStore) {
+            this.needStore = false;
+            this.store();
+        }
+    }
+
+    @Override
+    public synchronized void store() {
+
+        try {
+            XMLObjectWriter writer = XMLObjectWriter.newInstance(new FileOutputStream(persistFile.toString()));
+            writer.setBinding(binding);
+            // writer.setReferenceResolver(new XMLReferenceResolver());
+            writer.setIndentation(TAB_INDENT);
+
+            writer.write(this.configurationData, CONFIGURATION_DATA, ConfigurationData.class);
+
+            writer.close();
+        } catch (Exception e) {
+            this.sendNotif(SOURCE_NAME, "Error while persisting the Host state in file", e, Level.ERROR);
+        }
+    }
+
+    private boolean load(File fn) {
+
+        XMLObjectReader reader = null;
+        try {
+            if (!fn.exists()) {
+                this.sendNotif(SOURCE_NAME, "Error while reading the Host state from file: file not found: " + persistFile, "",
+                        Level.WARN);
+                return false;
+            }
+
+            reader = XMLObjectReader.newInstance(new FileInputStream(fn));
+
+            reader.setBinding(binding);
+
+            this.configurationData = reader.read(CONFIGURATION_DATA, ConfigurationData.class);
+
+            reader.close();
+
+            return true;
+
+        } catch (Exception ex) {
+            this.sendNotif(SOURCE_NAME, "Error while reading the Host state from file", ex, Level.WARN);
+            return false;
+        }
     }
 
     private void setupLog4j(String appName) {

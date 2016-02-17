@@ -54,6 +54,11 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             }
 
+            this.attackClient.execute();
+            this.attackServer.execute();
+            this.attackClient.checkStore();
+            this.attackServer.checkStore();
+
             if(sentSRINum < 20) {
                 if(sentSRINum == 5) {
                     this.attackClient.getSccpMan().setLocalSsn(8);
