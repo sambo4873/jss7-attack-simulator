@@ -235,7 +235,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         //////// L2 Configuration Data //////////
 
         int localSpc = 1,
-                localSsn = 8,
+                localSsn = 6,
                 remoteSpc = 2,
                 remoteSsn = 8;
         boolean routeonGtMode = true;

@@ -420,56 +420,24 @@ public class MainCore {
 
     public void startAttackSimulation(String clientName, String serverName) throws Throwable {
         System.out.println("Application has been loaded...");
-        //this.mbs = ManagementFactory.getPlatformMBeanServer();
-        //System.out.println("PlatformMBeanServer has been loaded...");
-
-        //setObjectNamesA(serverName);
-        //setObjectNamesB(clientName);
-
-        //String sim_home = System.getProperty(TesterHost.SIMULATOR_HOME_VAR);
-        //if (sim_home != null)
-        //    sim_home += File.separator + "data";
-
-        //TesterHost clientHost = new TesterHost(clientName, sim_home);
-        //TesterHost serverHost = new TesterHost(serverName, sim_home);
-
-        //registerMBeansA(serverHost);
-        //registerMBeansB(clientHost);
-
-        //System.out.println("All beans have been loaded...");
 
         String sim_home = System.getProperty(AttackSimulationHost.SIMULATOR_HOME_VAR);
         if (sim_home != null)
             sim_home += File.separator + "data";
 
+        System.out.println("Loading simulation hosts...");
+
         AttackSimulationHost attackSimulationClient = new AttackSimulationHost("attackClient", sim_home, AttackSimulationHost.AttackType.SMS_CLIENT);
 
         AttackSimulationHost attackSimulationServer = new AttackSimulationHost("attackServer", sim_home, AttackSimulationHost.AttackType.SMS_SERVER);
 
-        attackSimulationClient.start();
-        attackSimulationServer.start();
+        AttackSimulationOrganizer attackSimulationOrganizer = new AttackSimulationOrganizer(attackSimulationServer, attackSimulationClient);
 
-        boolean sentSRI = false;
+        System.out.println("Simulation hosts loaded, starting simulation...");
 
-        while (true) {
-            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                break;
-            }
-            if(attackSimulationClient.isNeedQuit() || attackSimulationServer.isNeedQuit()) {
-                attackSimulationClient.stop();
-                attackSimulationServer.stop();
-                break;
-            }
+        attackSimulationOrganizer.start();
 
 
-           if(!sentSRI && attackSimulationClient.getM3uaMan().getState().contains("ACTIVE") && attackSimulationServer.getM3uaMan().getState().contains("ACTIVE")) {
-               attackSimulationServer.getTestSmsServerMan().performSRIForSM("123123123");
-               sentSRI = true;
-           }
-        }
 
         System.out.println("Terminating...");
         //System.out.println("Unloading all beans");
