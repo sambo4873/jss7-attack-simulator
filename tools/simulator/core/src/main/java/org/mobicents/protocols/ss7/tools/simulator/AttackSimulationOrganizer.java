@@ -24,6 +24,8 @@ public class AttackSimulationOrganizer implements Stoppable {
 
 
         while (true) {
+            System.out.println("-----------------ENTERED MAIN LOOP");
+
             try {
                 Thread.sleep(500);
             } catch (InterruptedException e) {
@@ -36,16 +38,20 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             }
 
-
             if(!sentSRI && attackClient.getM3uaMan().getState().contains("ACTIVE") && attackServer.getM3uaMan().getState().contains("ACTIVE")) {
-                try{
-                    Thread.sleep(500);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    break;
-                }
+                System.out.println("------------------M3UA LINK ACTIVE");
+
+//                try{
+//                    ;
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                    break;
+//                }
+
                 attackClient.getTestSmsServerMan().performSRIForSM("123123123");
                 sentSRI = true;
+            } else {
+                System.out.println("-------------------M3UA LINK INACTIVE");
             }
         }
 

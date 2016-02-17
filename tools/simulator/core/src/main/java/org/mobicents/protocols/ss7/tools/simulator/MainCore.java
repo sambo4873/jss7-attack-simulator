@@ -437,8 +437,6 @@ public class MainCore {
 
         attackSimulationOrganizer.start();
 
-
-
         System.out.println("Terminating...");
         //System.out.println("Unloading all beans");
 
