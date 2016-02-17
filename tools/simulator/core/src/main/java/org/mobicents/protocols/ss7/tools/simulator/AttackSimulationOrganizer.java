@@ -54,7 +54,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             }
 
-            if(sentSRINum < 2) {
+            if(sentSRINum < 20) {
                 this.attackServer.getTestSmsServerMan().performSRIForSM("123123123");
                 sentSRINum++;
             }
