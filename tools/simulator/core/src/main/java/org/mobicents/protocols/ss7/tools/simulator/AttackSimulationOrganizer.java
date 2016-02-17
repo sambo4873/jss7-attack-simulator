@@ -38,21 +38,24 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             }
 
-            if(!sentSRI && attackClient.getM3uaMan().getState().contains("ACTIVE") && attackServer.getM3uaMan().getState().contains("ACTIVE")) {
-                System.out.println("------------------M3UA LINK ACTIVE");
+            System.out.println("CLIENT STATUS: " + attackClient.getM3uaMan().getState());
+            System.out.println("SERVER STATUS: " + attackServer.getM3uaMan().getState());
 
+//            if(!sentSRI && attackClient.getM3uaMan().getState().contains("ACTIVE") //&& attackServer.getM3uaMan().getState().contains("ACTIVE")) {
+//                System.out.println("------------------M3UA LINK ACTIVE");
+//
 //                try{
 //                    ;
 //                } catch (InterruptedException e) {
 //                    e.printStackTrace();
 //                    break;
 //                }
-
-                attackClient.getTestSmsServerMan().performSRIForSM("123123123");
-                sentSRI = true;
-            } else {
-                System.out.println("-------------------M3UA LINK INACTIVE");
-            }
+//
+//                attackClient.getTestSmsServerMan().performSRIForSM("123123123");
+//                sentSRI = true;
+//            } else {
+//                System.out.println("-------------------M3UA LINK INACTIVE");
+//            }
         }
 
     }
