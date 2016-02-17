@@ -33,13 +33,12 @@ public class AttackSimulationOrganizer implements Stoppable {
     public void start() {
         startAttackSimulationHosts();
 
-        boolean sentSRI = false;
+        int sentSRINum = 0;
 
         if (!waitForM3UALink())
             return;
 
         System.out.println("-----------------M3UA Link Active");
-
 
         System.out.println("-----------------ENTERING MAIN LOOP");
         while (true) {
@@ -55,9 +54,9 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             }
 
-            if(!sentSRI) {
+            if(sentSRINum < 2) {
                 this.attackServer.getTestSmsServerMan().performSRIForSM("123123123");
-                sentSRI = true;
+                sentSRINum++;
             }
         }
     }
