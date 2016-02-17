@@ -55,8 +55,16 @@ public class AttackSimulationOrganizer implements Stoppable {
             }
 
             if(sentSRINum < 20) {
+                if(sentSRINum == 5) {
+                    this.attackClient.getSccpMan().setLocalSsn(8);
+                }
+
                 this.attackServer.getTestSmsServerMan().performSRIForSM("123123123");
                 sentSRINum++;
+
+                if(sentSRINum == 5) {
+                    this.attackClient.getSccpMan().setLocalSsn(6);
+                }
             }
         }
     }
