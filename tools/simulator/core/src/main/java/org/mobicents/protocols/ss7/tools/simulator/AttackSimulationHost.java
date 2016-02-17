@@ -22,16 +22,14 @@ import org.mobicents.protocols.ss7.mtp.Mtp3UserPart;
 import org.mobicents.protocols.ss7.mtp.RoutingLabelFormat;
 import org.mobicents.protocols.ss7.sccp.SccpProtocolVersion;
 import org.mobicents.protocols.ss7.sccp.SccpStack;
+import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
 import org.mobicents.protocols.ss7.tools.simulator.common.ConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.level1.DialogicConfigurationData_OldFormat;
 import org.mobicents.protocols.ss7.tools.simulator.level1.M3uaConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.level1.M3uaConfigurationData_OldFormat;
 import org.mobicents.protocols.ss7.tools.simulator.level1.M3uaMan;
-import org.mobicents.protocols.ss7.tools.simulator.level2.GlobalTitleType;
-import org.mobicents.protocols.ss7.tools.simulator.level2.SccpConfigurationData;
-import org.mobicents.protocols.ss7.tools.simulator.level2.SccpMan;
-import org.mobicents.protocols.ss7.tools.simulator.level3.CapMan;
-import org.mobicents.protocols.ss7.tools.simulator.level3.MapConfigurationData;
-import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
-import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
+import org.mobicents.protocols.ss7.tools.simulator.level2.*;
+import org.mobicents.protocols.ss7.tools.simulator.level3.*;
 import org.mobicents.protocols.ss7.tools.simulator.management.*;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerMan;
@@ -40,7 +38,9 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRI
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
+import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientConfigurationData_OldFormat;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerConfigurationData_OldFormat;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerMan;
 
 import javax.management.Notification;
@@ -64,6 +64,8 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
     private static final String PERSIST_FILE_NAME_OLD = "simulator.xml";
     private static final String PERSIST_FILE_NAME = "simulator2.xml";
     private static final String CONFIGURATION_DATA = "configurationData";
+    private static final String TESTER_HOST_PERSIST_DIR_KEY = "testerhost.persist.dir";
+    private static final String USER_DIR_KEY = "user.dir";
 
     private final String SOURCE_NAME = "ATTACK_HOST";
     private final String appName;
@@ -126,6 +128,32 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
             default:
                 break;
         }
+
+        TextBuilder persistFileOld = new TextBuilder();
+
+
+        if (persistDir != null) {
+            persistFileOld.append(persistDir).append(File.separator).append(this.appName).append("_")
+                    .append(PERSIST_FILE_NAME_OLD);
+            this.persistFile.append(persistDir).append(File.separator).append(this.appName).append("_")
+                    .append(PERSIST_FILE_NAME);
+        } else {
+            persistFileOld.append(System.getProperty(TESTER_HOST_PERSIST_DIR_KEY, System.getProperty(USER_DIR_KEY)))
+                    .append(File.separator).append(this.appName).append("_").append(PERSIST_FILE_NAME_OLD);
+            this.persistFile.append(System.getProperty(TESTER_HOST_PERSIST_DIR_KEY, System.getProperty(USER_DIR_KEY)))
+                    .append(File.separator).append(this.appName).append("_").append(PERSIST_FILE_NAME);
+        }
+
+        File fnOld = new File(persistFileOld.toString());
+        File fn = new File(persistFile.toString());
+
+        if (this.loadOld(fnOld)) {
+            this.store();
+        } else {
+            this.load(fn);
+        }
+        if (fnOld.exists())
+            fnOld.delete();
 
         start();
     }
@@ -941,6 +969,136 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
     @Override
     public String getName() {
         return this.appName;
+    }
+
+    private boolean loadOld(File fn) {
+
+        XMLObjectReader reader = null;
+        try {
+            if (!fn.exists()) {
+                // this.sendNotif(SOURCE_NAME, "Error while reading the Host state from file: file not found: " + persistFile,
+                // "", Level.WARN);
+                return false;
+            }
+
+            reader = XMLObjectReader.newInstance(new FileInputStream(fn));
+
+            reader.setBinding(binding);
+            this.configurationData.setInstance_L1(Instance_L1.createInstance(reader.read(ConfigurationData.INSTANCE_L1,
+                    String.class)));
+            this.configurationData.setInstance_L2(Instance_L2.createInstance(reader.read(ConfigurationData.INSTANCE_L2,
+                    String.class)));
+            this.configurationData.setInstance_L3(Instance_L3.createInstance(reader.read(ConfigurationData.INSTANCE_L3,
+                    String.class)));
+            this.configurationData.setInstance_TestTask(Instance_TestTask.createInstance(reader.read(
+                    ConfigurationData.INSTANCE_TESTTASK, String.class)));
+
+            M3uaConfigurationData_OldFormat _m3ua = reader.read(ConfigurationData.M3UA, M3uaConfigurationData_OldFormat.class);
+            this.m3ua.setSctpLocalHost(_m3ua.getLocalHost());
+            this.m3ua.setSctpLocalPort(_m3ua.getLocalPort());
+            this.m3ua.setSctpRemoteHost(_m3ua.getRemoteHost());
+            this.m3ua.setSctpRemotePort(_m3ua.getRemotePort());
+            this.configurationData.getM3uaConfigurationData().setIpChannelType(_m3ua.getIpChannelType());
+            this.m3ua.setSctpIsServer(_m3ua.getIsSctpServer());
+            this.m3ua.doSetExtraHostAddresses(_m3ua.getSctpExtraHostAddresses());
+            this.configurationData.getM3uaConfigurationData().setM3uaFunctionality(_m3ua.getM3uaFunctionality());
+            this.configurationData.getM3uaConfigurationData().setM3uaIPSPType(_m3ua.getM3uaIPSPType());
+            this.configurationData.getM3uaConfigurationData().setM3uaExchangeType(_m3ua.getM3uaExchangeType());
+            this.m3ua.setM3uaDpc(_m3ua.getDpc());
+            this.m3ua.setM3uaOpc(_m3ua.getOpc());
+            this.m3ua.setM3uaSi(_m3ua.getSi());
+
+            SccpConfigurationData_OldFormat _sccp = reader.read(ConfigurationData.SCCP, SccpConfigurationData_OldFormat.class);
+            this.sccp.setRouteOnGtMode(_sccp.isRouteOnGtMode());
+            this.sccp.setRemoteSpc(_sccp.getRemoteSpc());
+            this.sccp.setLocalSpc(_sccp.getLocalSpc());
+            this.sccp.setNi(_sccp.getNi());
+            this.sccp.setRemoteSsn(_sccp.getRemoteSsn());
+            this.sccp.setLocalSsn(_sccp.getLocalSsn());
+            this.sccp.setGlobalTitleType(_sccp.getGlobalTitleType());
+            this.sccp.setNatureOfAddress(new NatureOfAddressType(_sccp.getNatureOfAddress().getValue()));
+            this.sccp.setNumberingPlan(new NumberingPlanSccpType(_sccp.getNumberingPlan().getValue()));
+            this.sccp.setTranslationType(_sccp.getTranslationType());
+            this.sccp.setCallingPartyAddressDigits(_sccp.getCallingPartyAddressDigits());
+            // this.sccp.setExtraLocalAddressDigits(_sccp.getExtraLocalAddressDigits());
+
+            MapConfigurationData_OldFormat _map = reader.read(ConfigurationData.MAP, MapConfigurationData_OldFormat.class);
+            // this.map.setLocalSsn(_map.getLocalSsn());
+            // this.map.setRemoteSsn(_map.getRemoteSsn());
+            this.map.setRemoteAddressDigits(_map.getRemoteAddressDigits());
+            this.map.setOrigReference(_map.getOrigReference());
+            this.map.setOrigReferenceAddressNature(new AddressNatureType(_map.getOrigReferenceAddressNature().getIndicator()));
+            this.map.setOrigReferenceNumberingPlan(new NumberingPlanMapType(_map.getOrigReferenceNumberingPlan().getIndicator()));
+            this.map.setDestReference(_map.getDestReference());
+            this.map.setDestReferenceAddressNature(new AddressNatureType(_map.getDestReferenceAddressNature().getIndicator()));
+            this.map.setDestReferenceNumberingPlan(new NumberingPlanMapType(_map.getDestReferenceNumberingPlan().getIndicator()));
+
+            TestUssdClientConfigurationData_OldFormat _TestUssdClientMan = reader.read(ConfigurationData.TEST_USSD_CLIENT,
+                    TestUssdClientConfigurationData_OldFormat.class);
+            this.testUssdClientMan.setMsisdnAddress(_TestUssdClientMan.getMsisdnAddress());
+            this.testUssdClientMan.setMsisdnAddressNature(new AddressNatureType(_TestUssdClientMan.getMsisdnAddressNature()
+                    .getIndicator()));
+            this.testUssdClientMan.setMsisdnNumberingPlan(new NumberingPlanMapType(_TestUssdClientMan.getMsisdnNumberingPlan()
+                    .getIndicator()));
+            this.testUssdClientMan.setDataCodingScheme(_TestUssdClientMan.getDataCodingScheme());
+            this.testUssdClientMan.setAlertingPattern(_TestUssdClientMan.getAlertingPattern());
+            this.testUssdClientMan.setUssdClientAction(_TestUssdClientMan.getUssdClientAction());
+            this.testUssdClientMan.setAutoRequestString(_TestUssdClientMan.getAutoRequestString());
+            this.testUssdClientMan.setMaxConcurrentDialogs(_TestUssdClientMan.getMaxConcurrentDialogs());
+            this.testUssdClientMan.setOneNotificationFor100Dialogs(_TestUssdClientMan.isOneNotificationFor100Dialogs());
+
+            TestUssdServerConfigurationData_OldFormat _TestUssdServerMan = reader.read(ConfigurationData.TEST_USSD_SERVER,
+                    TestUssdServerConfigurationData_OldFormat.class);
+            this.testUssdServerMan.setMsisdnAddress(_TestUssdServerMan.getMsisdnAddress());
+            this.testUssdServerMan.setMsisdnAddressNature(new AddressNatureType(_TestUssdServerMan.getMsisdnAddressNature()
+                    .getIndicator()));
+            this.testUssdServerMan.setMsisdnNumberingPlan(new NumberingPlanMapType(_TestUssdServerMan.getMsisdnNumberingPlan()
+                    .getIndicator()));
+            this.testUssdServerMan.setDataCodingScheme(_TestUssdServerMan.getDataCodingScheme());
+            this.testUssdServerMan.setAlertingPattern(_TestUssdServerMan.getAlertingPattern());
+            this.testUssdServerMan.setProcessSsRequestAction(_TestUssdServerMan.getProcessSsRequestAction());
+            this.testUssdServerMan.setAutoResponseString(_TestUssdServerMan.getAutoResponseString());
+            this.testUssdServerMan.setAutoUnstructured_SS_RequestString(_TestUssdServerMan
+                    .getAutoUnstructured_SS_RequestString());
+            this.testUssdServerMan.setOneNotificationFor100Dialogs(_TestUssdServerMan.isOneNotificationFor100Dialogs());
+
+            TestSmsClientConfigurationData_OldFormat _TestSmsClientMan = reader.read(ConfigurationData.TEST_SMS_CLIENT,
+                    TestSmsClientConfigurationData_OldFormat.class);
+            this.testSmsClientMan.setAddressNature(new AddressNatureType(_TestSmsClientMan.getAddressNature().getIndicator()));
+            this.testSmsClientMan
+                    .setNumberingPlan(new NumberingPlanMapType(_TestSmsClientMan.getNumberingPlan().getIndicator()));
+            this.testSmsClientMan.setServiceCenterAddress(_TestSmsClientMan.getServiceCenterAddress());
+            this.testSmsClientMan.setMapProtocolVersion(_TestSmsClientMan.getMapProtocolVersion());
+            this.testSmsClientMan.setSRIResponseImsi(_TestSmsClientMan.getSriResponseImsi());
+            this.testSmsClientMan.setSRIResponseVlr(_TestSmsClientMan.getSriResponseVlr());
+            this.testSmsClientMan.setSmscSsn(_TestSmsClientMan.getSmscSsn());
+            this.testSmsClientMan.setTypeOfNumber(new TypeOfNumberType(_TestSmsClientMan.getTypeOfNumber().getCode()));
+            this.testSmsClientMan.setNumberingPlanIdentification(new NumberingPlanIdentificationType(_TestSmsClientMan
+                    .getNumberingPlanIdentification().getCode()));
+            this.testSmsClientMan.setSmsCodingType(_TestSmsClientMan.getSmsCodingType());
+
+            TestSmsServerConfigurationData_OldFormat _TestSmsServerMan = reader.read(ConfigurationData.TEST_SMS_SERVER,
+                    TestSmsServerConfigurationData_OldFormat.class);
+            this.testSmsServerMan.setAddressNature(new AddressNatureType(_TestSmsServerMan.getAddressNature().getIndicator()));
+            this.testSmsServerMan
+                    .setNumberingPlan(new NumberingPlanMapType(_TestSmsServerMan.getNumberingPlan().getIndicator()));
+            this.testSmsServerMan.setServiceCenterAddress(_TestSmsServerMan.getServiceCenterAddress());
+            this.testSmsServerMan.setMapProtocolVersion(_TestSmsServerMan.getMapProtocolVersion());
+            this.testSmsServerMan.setHlrSsn(_TestSmsServerMan.getHlrSsn());
+            this.testSmsServerMan.setVlrSsn(_TestSmsServerMan.getVlrSsn());
+            this.testSmsServerMan.setTypeOfNumber(new TypeOfNumberType(_TestSmsServerMan.getTypeOfNumber().getCode()));
+            this.testSmsServerMan.setNumberingPlanIdentification(new NumberingPlanIdentificationType(_TestSmsServerMan
+                    .getNumberingPlanIdentification().getCode()));
+            this.testSmsServerMan.setSmsCodingType(_TestSmsServerMan.getSmsCodingType());
+
+            reader.close();
+
+            return true;
+
+        } catch (Exception ex) {
+            this.sendNotif(SOURCE_NAME, "Error while reading the Host state from file", ex, Level.WARN);
+            return false;
+        }
     }
 
     public enum AttackType {
