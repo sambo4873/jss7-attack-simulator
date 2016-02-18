@@ -1,21 +1,30 @@
 package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
 
+import org.apache.log4j.Level;
 import org.mobicents.protocols.ss7.map.api.*;
+import org.mobicents.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
 import org.mobicents.protocols.ss7.map.api.dialog.*;
 import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.primitives.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
+import org.mobicents.protocols.ss7.map.api.service.mobility.MAPServiceMobility;
+import org.mobicents.protocols.ss7.map.api.service.mobility.MAPServiceMobilityListener;
 import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.*;
-import org.mobicents.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
-import org.mobicents.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfo;
-import org.mobicents.protocols.ss7.map.api.service.mobility.imei.UESBIIu;
+import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.ForwardCheckSSIndicationRequest;
+import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.ResetRequest;
+import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.RestoreDataRequest;
+import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.RestoreDataResponse;
+import org.mobicents.protocols.ss7.map.api.service.mobility.imei.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.locationManagement.*;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.RequestedInfo;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
+import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeRequest_Mobility;
+import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
+import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.*;
 import org.mobicents.protocols.ss7.map.api.service.oam.*;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
 import org.mobicents.protocols.ss7.map.api.service.supplementary.SSCode;
+import org.mobicents.protocols.ss7.map.api.smstpdu.*;
+import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.sccp.parameter.SccpAddress;
 import org.mobicents.protocols.ss7.tcap.api.MessageType;
 import org.mobicents.protocols.ss7.tcap.asn.ApplicationContextName;
@@ -23,13 +32,451 @@ import org.mobicents.protocols.ss7.tcap.asn.comp.Invoke;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
 import org.mobicents.protocols.ss7.tcap.asn.comp.ReturnResult;
 import org.mobicents.protocols.ss7.tcap.asn.comp.ReturnResultLast;
+import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
+import org.mobicents.protocols.ss7.tools.simulator.common.TesterBase;
+import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
+import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
+import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
+import org.mobicents.protocols.ss7.tools.simulator.management.TesterHost;
+import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 /**
  * @author Kristoffer Jensen
  */
-public class TestAttackClient implements MAPDialogListener, MAPDialogSms, MAPDialogMobility {
+public class TestAttackClient extends TesterBase implements MAPDialogListener,
+        MAPServiceSmsListener, MAPServiceMobilityListener {
+
+    public static String SOURCE_NAME = "TestAttackClient";
+
+    private final String name;
+
+    private MapMan mapMan;
+
+    private String currentRequestDef = "";
+
+    private boolean isStarted = false;
+
+    private static Charset isoCharset = Charset.forName("ISO-8859-1");
+
+    private int countSriReq = 0;
+    private int countSriResp = 0;
+    private int countMtFsmReq = 0;
+    private int countMtFsmReqNot = 0;
+    private int countMtFsmResp = 0;
+    private int countMoFsmReq = 0;
+    private int countMoFsmResp = 0;
+    private int countIscReq = 0;
+    private int countRsmdsReq = 0;
+    private int countRsmdsResp = 0;
+    private int countAscReq = 0;
+    private int countAscResp = 0;
+    private int countErrRcvd = 0;
+    private int countErrSent = 0;
+    private int mesRef = 0;
+
+    public TestAttackClient(String name) {
+        super(SOURCE_NAME);
+        this.name = name;
+    }
+
+    public void setTesterHost(TesterHost testerHost) {
+        this.testerHost = testerHost;
+    }
+
+    public void setMapMan(MapMan val) {
+        this.mapMan = val;
+    }
+
+
+    public AddressNatureType getAddressNature() {
+        return new AddressNatureType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature().getIndicator());
+    }
+
+    public String getAddressNature_Value() {
+        return new AddressNatureType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature().getIndicator()).toString();
+    }
+
+    public void setAddressNature(AddressNatureType val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setAddressNature(AddressNature.getInstance(val.intValue()));
+        this.testerHost.markStore();
+    }
+
+    public NumberingPlanMapType getNumberingPlan() {
+        return new NumberingPlanMapType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan().getIndicator());
+    }
+
+    public String getNumberingPlan_Value() {
+        return new NumberingPlanMapType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan().getIndicator())
+                .toString();
+    }
+
+    public void setNumberingPlan(NumberingPlanMapType val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setNumberingPlan(NumberingPlan.getInstance(val.intValue()));
+        this.testerHost.markStore();
+    }
+
+    public String getServiceCenterAddress() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getServiceCenterAddress();
+    }
+
+    public void setServiceCenterAddress(String val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setServiceCenterAddress(val);
+        this.testerHost.markStore();
+    }
+
+    public MapProtocolVersion getMapProtocolVersion() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMapProtocolVersion();
+    }
+
+    public String getMapProtocolVersion_Value() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMapProtocolVersion().toString();
+    }
+
+    public void setMapProtocolVersion(MapProtocolVersion val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setMapProtocolVersion(val);
+        this.testerHost.markStore();
+    }
+
+    public SRIReaction getSRIReaction() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIReaction();
+    }
+
+    public String getSRIReaction_Value() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIReaction().toString();
+    }
+
+    public void setSRIReaction(SRIReaction val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSRIReaction(val);
+        this.testerHost.markStore();
+    }
+
+    public SRIInformServiceCenter getSRIInformServiceCenter() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIInformServiceCenter();
+    }
+
+    public String getSRIInformServiceCenter_Value() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSRIInformServiceCenter().toString();
+    }
+
+    public void setSRIInformServiceCenter(SRIInformServiceCenter val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSRIInformServiceCenter(val);
+        this.testerHost.markStore();
+    }
+
+    public boolean isSRIScAddressNotIncluded() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().isSRIScAddressNotIncluded();
+    }
+
+    public void setSRIScAddressNotIncluded(boolean val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSRIScAddressNotIncluded(val);
+        this.testerHost.markStore();
+    }
+
+    public MtFSMReaction getMtFSMReaction() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMtFSMReaction();
+    }
+
+    public String getMtFSMReaction_Value() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMtFSMReaction().toString();
+    }
+
+    public void setMtFSMReaction(MtFSMReaction val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setMtFSMReaction(val);
+        this.testerHost.markStore();
+    }
+
+    public ReportSMDeliveryStatusReaction getReportSMDeliveryStatusReaction() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getReportSMDeliveryStatusReaction();
+    }
+
+    public String getReportSMDeliveryStatusReaction_Value() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getReportSMDeliveryStatusReaction().toString();
+    }
+
+    public void setReportSMDeliveryStatusReaction(ReportSMDeliveryStatusReaction val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setReportSMDeliveryStatusReaction(val);
+        this.testerHost.markStore();
+    }
+
+    public String getSRIResponseImsi() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSriResponseImsi();
+    }
+
+    public void setSRIResponseImsi(String val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSriResponseImsi(val);
+        this.testerHost.markStore();
+    }
+
+    public String getSRIResponseVlr() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSriResponseVlr();
+    }
+
+    public void setSRIResponseVlr(String val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSriResponseVlr(val);
+        this.testerHost.markStore();
+    }
+
+    public int getSmscSsn() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmscSsn();
+    }
+
+    public void setSmscSsn(int val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSmscSsn(val);
+        this.testerHost.markStore();
+    }
+
+    public int getNationalLanguageCode() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNationalLanguageCode();
+    }
+
+    public void setNationalLanguageCode(int val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setNationalLanguageCode(val);
+        this.testerHost.markStore();
+    }
+
+    public TypeOfNumberType getTypeOfNumber() {
+        return new TypeOfNumberType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getTypeOfNumber().getCode());
+    }
+
+    public String getTypeOfNumber_Value() {
+        return new TypeOfNumberType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getTypeOfNumber().getCode()).toString();
+    }
+
+    public void setTypeOfNumber(TypeOfNumberType val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setTypeOfNumber(TypeOfNumber.getInstance(val.intValue()));
+        this.testerHost.markStore();
+    }
+
+    public NumberingPlanIdentificationType getNumberingPlanIdentification() {
+        return new NumberingPlanIdentificationType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlanIdentification()
+                .getCode());
+    }
+
+    public String getNumberingPlanIdentification_Value() {
+        return new NumberingPlanIdentificationType(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlanIdentification()
+                .getCode()).toString();
+    }
+
+    public void setNumberingPlanIdentification(NumberingPlanIdentificationType val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData()
+                .setNumberingPlanIdentification(NumberingPlanIdentification.getInstance(val.intValue()));
+        this.testerHost.markStore();
+    }
+
+    public SmsCodingType getSmsCodingType() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmsCodingType();
+    }
+
+    public String getSmsCodingType_Value() {
+        return this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmsCodingType().toString();
+    }
+
+    public void setSmsCodingType(SmsCodingType val) {
+        this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().setSmsCodingType(val);
+        this.testerHost.markStore();
+    }
+
+
+    public String getCurrentRequestDef() {
+        return "LastDialog: " + currentRequestDef;
+    }
+
+    public boolean start() {
+        this.activateMapServices();
+
+        this.testerHost.sendNotif(SOURCE_NAME, "Attack Client has been started", "", Level.INFO);
+        isStarted = true;
+
+        return true;
+    }
+
+    private void activateMapServices() {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
+        mapProvider.getMAPServiceMobility().acivate();
+        mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
+
+        mapProvider.getMAPServiceSms().acivate();
+        mapProvider.getMAPServiceSms().addMAPServiceListener(this);
+
+        mapProvider.addMAPDialogListener(this);
+    }
+
+    private void deactivateMapServices() {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
+        mapProvider.getMAPServiceMobility().deactivate();
+        mapProvider.getMAPServiceMobility().removeMAPServiceListener(this);
+
+        mapProvider.getMAPServiceSms().deactivate();
+        mapProvider.getMAPServiceSms().removeMAPServiceListener(this);
+
+        mapProvider.removeMAPDialogListener(this);
+    }
+
+    public void stop() {
+        this.deactivateMapServices();
+
+        isStarted = false;
+        this.testerHost.sendNotif(SOURCE_NAME, "SRIForSM Client has been stopped", "", Level.INFO);
+    }
+
+    public String performMoForwardSM(String msg, String destIsdnNumber, String origIsdnNumber) {
+        if (!isStarted)
+            return "The tester is not started";
+        if (msg == null || msg.equals(""))
+            return "Msg is empty";
+        if (destIsdnNumber == null || destIsdnNumber.equals(""))
+            return "DestIsdnNumber is empty";
+        if (origIsdnNumber == null || origIsdnNumber.equals(""))
+            return "OrigIsdnNumber is empty";
+        int maxMsgLen = this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmsCodingType().getSupportesMaxMessageLength(0);
+        if (msg.length() > maxMsgLen)
+            return "Simulator does not support message length for current encoding type more than " + maxMsgLen;
+
+        currentRequestDef = "";
+
+        return doMoForwardSM(msg, destIsdnNumber, origIsdnNumber, this.getServiceCenterAddress(), 0, 0, 0);
+    }
+
+    private String doMoForwardSM(String msg, String destIsdnNumber, String origIsdnNumber, String serviceCentreAddr, int msgRef, int segmCnt, int segmNum) {
+
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
+        MAPApplicationContextVersion vers;
+        MAPApplicationContextName acn = MAPApplicationContextName.shortMsgMORelayContext;
+        switch (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMapProtocolVersion().intValue()) {
+            case MapProtocolVersion.VAL_MAP_V1:
+                vers = MAPApplicationContextVersion.version1;
+                break;
+            case MapProtocolVersion.VAL_MAP_V2:
+                vers = MAPApplicationContextVersion.version2;
+                break;
+            default:
+                vers = MAPApplicationContextVersion.version3;
+                break;
+        }
+        MAPApplicationContext mapAppContext = MAPApplicationContext.getInstance(acn, vers);
+
+        AddressString serviceCentreAddressDA = mapProvider.getMAPParameterFactory().createAddressString(
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature(),
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan(), serviceCentreAddr);
+        SM_RP_DA da = mapProvider.getMAPParameterFactory().createSM_RP_DA(serviceCentreAddressDA);
+        ISDNAddressString msisdn = mapProvider.getMAPParameterFactory().createISDNAddressString(
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getAddressNature(),
+                this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlan(), origIsdnNumber);
+        SM_RP_OA oa = mapProvider.getMAPParameterFactory().createSM_RP_OA_Msisdn(msisdn);
+
+        try {
+            AddressField destAddress = new AddressFieldImpl(this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getTypeOfNumber(),
+                    this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNumberingPlanIdentification(), destIsdnNumber);
+
+            int dcsVal = 0;
+            switch (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmsCodingType().intValue()) {
+                case SmsCodingType.VAL_GSM7:
+                    dcsVal = 0;
+                    break;
+                case SmsCodingType.VAL_GSM8:
+                    dcsVal = 4;
+                    break;
+                case SmsCodingType.VAL_UCS2:
+                    dcsVal = 8;
+                    break;
+            }
+            DataCodingScheme dcs = new DataCodingSchemeImpl(dcsVal);
+            UserDataHeader udh = null;
+            if (dcs.getCharacterSet() == CharacterSet.GSM8) {
+                ApplicationPortAddressing16BitAddressImpl apa16 = new ApplicationPortAddressing16BitAddressImpl(16020, 0);
+                udh = new UserDataHeaderImpl();
+                udh.addInformationElement(apa16);
+            }
+            if (segmCnt > 1) {
+                if (udh == null)
+                    udh = new UserDataHeaderImpl();
+                udh.addInformationElement(new ConcatenatedShortMessagesIdentifierImpl(false, msgRef, segmCnt, segmNum));
+            }
+            if (dcs.getCharacterSet() == CharacterSet.GSM7
+                    && this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getNationalLanguageCode() > 0) {
+                NationalLanguageIdentifier nli = NationalLanguageIdentifier.getInstance(this.testerHost.getConfigurationData()
+                        .getTestSRIForSMClientConfigurationData().getNationalLanguageCode());
+                if (nli != null) {
+                    if (udh == null)
+                        udh = new UserDataHeaderImpl();
+                    udh.addInformationElement(new NationalLanguageLockingShiftIdentifierImpl(nli));
+                    udh.addInformationElement(new NationalLanguageSingleShiftIdentifierImpl(nli));
+                }
+            }
+
+            UserData userData = new UserDataImpl(msg, dcs, udh, isoCharset);
+            ProtocolIdentifier pi = new ProtocolIdentifierImpl(0);
+            ValidityPeriod validityPeriod = new ValidityPeriodImpl(169); // 3
+            // days
+            SmsSubmitTpdu tpdu = new SmsSubmitTpduImpl(false, false, false, ++mesRef, destAddress, pi, validityPeriod, userData);
+            SmsSignalInfo si = mapProvider.getMAPParameterFactory().createSmsSignalInfo(tpdu, null);
+
+            MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(mapAppContext, this.mapMan.createOrigAddress(), null,
+                    this.mapMan.createDestAddress(serviceCentreAddr, this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getSmscSsn()),
+                    null);
+
+            if (si.getData().length < 110 || vers == MAPApplicationContextVersion.version1) {
+                if (this.testerHost.getConfigurationData().getTestSRIForSMClientConfigurationData().getMapProtocolVersion().intValue() <= 2)
+                    curDialog.addForwardShortMessageRequest(da, oa, si, false);
+                else
+                    curDialog.addMoForwardShortMessageRequest(da, oa, si, null, null);
+                curDialog.send();
+
+                String mtData = createMoData(curDialog.getLocalDialogId(), destIsdnNumber, origIsdnNumber, serviceCentreAddr);
+                currentRequestDef += "Sent moReq;";
+                this.countMoFsmReq++;
+                this.testerHost.sendNotif(SOURCE_NAME, "Sent: moReq: " + msg, mtData, Level.DEBUG);
+            } else {
+                ResendMessageData md = new ResendMessageData();
+                md.da = da;
+                md.oa = oa;
+                md.si = si;
+                md.destIsdnNumber = destIsdnNumber;
+                md.origIsdnNumber = origIsdnNumber;
+                md.serviceCentreAddr = serviceCentreAddr;
+                md.msg = msg;
+                curDialog.setUserObject(md);
+
+                curDialog.send();
+                currentRequestDef += "Sent emptTBegin;";
+                this.testerHost.sendNotif(SOURCE_NAME, "Sent: emptTBegin", "", Level.DEBUG);
+            }
+
+            return "MoForwardShortMessageRequest has been sent";
+        } catch (MAPException ex) {
+            return "Exception when sending MoForwardShortMessageRequest: " + ex.toString();
+        }
+    }
+
+    private String createMoData(long dialogId, String destIsdnNumber, String origIsdnNumber, String serviceCentreAddr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("dialogId=");
+        sb.append(dialogId);
+        sb.append(", destIsdnNumber=\"");
+        sb.append(destIsdnNumber);
+        sb.append(", origIsdnNumber=\"");
+        sb.append(origIsdnNumber);
+        sb.append("\", serviceCentreAddr=\"");
+        sb.append(serviceCentreAddr);
+        sb.append("\"");
+        return sb.toString();
+    }
+
+    private class ResendMessageData {
+        public SM_RP_DA da;
+        public SM_RP_OA oa;
+        public SmsSignalInfo si;
+        public String msg;
+        public String destIsdnNumber;
+        public String origIsdnNumber;
+        public String serviceCentreAddr;
+    }
 
     @Override
     public void onDialogDelimiter(MAPDialog mapDialog) {
@@ -87,582 +534,232 @@ public class TestAttackClient implements MAPDialogListener, MAPDialogSms, MAPDia
     }
 
     @Override
-    public Long addUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString roamingNumber, ISDNAddressString vlrNumber, LMSI lmsi, MAPExtensionContainer extensionContainer, VLRCapability vlrCapability, boolean informPreviousNetworkEntity, boolean csLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo, PagingArea pagingArea, boolean skipSubscriberDataUpdate, boolean restorationIndicator) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addUpdateLocationRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString roamingNumber, ISDNAddressString vlrNumber, LMSI lmsi, MAPExtensionContainer extensionContainer, VLRCapability vlrCapability, boolean informPreviousNetworkEntity, boolean csLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo, PagingArea pagingArea, boolean skipSubscriberDataUpdate, boolean restorationIndicator) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addUpdateLocationResponse(long invokeId, ISDNAddressString hlrNumber, MAPExtensionContainer extensionContainer, boolean addCapability, boolean pagingAreaCapability) throws MAPException {
-
-    }
-
-    @Override
-    public Long addCancelLocationRequest(int customInvokeTimeout, IMSI imsi, IMSIWithLMSI imsiWithLmsi, CancellationType cancellationType, MAPExtensionContainer extensionContainer, TypeOfUpdate typeOfUpdate, boolean mtrfSupportedAndAuthorized, boolean mtrfSupportedAndNotAuthorized, ISDNAddressString newMSCNumber, ISDNAddressString newVLRNumber, LMSI newLmsi) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addCancelLocationRequest(IMSI imsi, IMSIWithLMSI imsiWithLmsi, CancellationType cancellationType, MAPExtensionContainer extensionContainer, TypeOfUpdate typeOfUpdate, boolean mtrfSupportedAndAuthorized, boolean mtrfSupportedAndNotAuthorized, ISDNAddressString newMSCNumber, ISDNAddressString newVLRNumber, LMSI newLmsi) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addCancelLocationResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
-
-    }
-
-    @Override
-    public Long addSendIdentificationRequest(int customInvokeTimeout, TMSI tmsi, Integer numberOfRequestedVectors, boolean segmentationProhibited, MAPExtensionContainer extensionContainer, ISDNAddressString mscNumber, LAIFixedLength previousLAI, Integer hopCounter, boolean mtRoamingForwardingSupported, ISDNAddressString newVLRNumber, LMSI lmsi) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addSendIdentificationRequest(TMSI tmsi, Integer numberOfRequestedVectors, boolean segmentationProhibited, MAPExtensionContainer extensionContainer, ISDNAddressString mscNumber, LAIFixedLength previousLAI, Integer hopCounter, boolean mtRoamingForwardingSupported, ISDNAddressString newVLRNumber, LMSI lmsi) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addSendIdentificationResponse(long invokeId, IMSI imsi, AuthenticationSetList authenticationSetList, CurrentSecurityContext currentSecurityContext, MAPExtensionContainer extensionContainer) throws MAPException {
-
-    }
-
-    @Override
-    public Long addUpdateGprsLocationRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString sgsnNumber, GSNAddress sgsnAddress, MAPExtensionContainer extensionContainer, SGSNCapability sgsnCapability, boolean informPreviousNetworkEntity, boolean psLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo, EPSInfo epsInfo, boolean servingNodeTypeIndicator, boolean skipSubscriberDataUpdate, UsedRATType usedRATType, boolean gprsSubscriptionDataNotNeeded, boolean nodeTypeIndicator, boolean areaRestricted, boolean ueReachableIndicator, boolean epsSubscriptionDataNotNeeded, UESRVCCCapability uesrvccCapability) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addUpdateGprsLocationRequest(IMSI imsi, ISDNAddressString sgsnNumber, GSNAddress sgsnAddress, MAPExtensionContainer extensionContainer, SGSNCapability sgsnCapability, boolean informPreviousNetworkEntity, boolean psLCSNotSupportedByUE, GSNAddress vGmlcAddress, ADDInfo addInfo, EPSInfo epsInfo, boolean servingNodeTypeIndicator, boolean skipSubscriberDataUpdate, UsedRATType usedRATType, boolean gprsSubscriptionDataNotNeeded, boolean nodeTypeIndicator, boolean areaRestricted, boolean ueReachableIndicator, boolean epsSubscriptionDataNotNeeded, UESRVCCCapability uesrvccCapability) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addUpdateGprsLocationResponse(long invokeId, ISDNAddressString hlrNumber, MAPExtensionContainer extensionContainer, boolean addCapability, boolean sgsnMmeSeparationSupported) throws MAPException {
-
-    }
-
-    @Override
-    public Long addPurgeMSRequest(int customInvokeTimeout, IMSI imsi, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber, MAPExtensionContainer extensionContainer) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addPurgeMSRequest(IMSI imsi, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber, MAPExtensionContainer extensionContainer) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addPurgeMSResponse(long invokeId, boolean freezeTMSI, boolean freezePTMSI, MAPExtensionContainer extensionContainer, boolean freezeMTMSI) throws MAPException {
-
-    }
-
-    @Override
-    public Long addSendAuthenticationInfoRequest(IMSI imsi, int numberOfRequestedVectors, boolean segmentationProhibited, boolean immediateResponsePreferred, ReSynchronisationInfo reSynchronisationInfo, MAPExtensionContainer extensionContainer, RequestingNodeType requestingNodeType, PlmnId requestingPlmnId, Integer numberOfRequestedAdditionalVectors, boolean additionalVectorsAreForEPS) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addSendAuthenticationInfoRequest(int customInvokeTimeout, IMSI imsi, int numberOfRequestedVectors, boolean segmentationProhibited, boolean immediateResponsePreferred, ReSynchronisationInfo reSynchronisationInfo, MAPExtensionContainer extensionContainer, RequestingNodeType requestingNodeType, PlmnId requestingPlmnId, Integer numberOfRequestedAdditionalVectors, boolean additionalVectorsAreForEPS) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addSendAuthenticationInfoResponse(long invokeId, AuthenticationSetList authenticationSetList, MAPExtensionContainer extensionContainer, EpsAuthenticationSetList epsAuthenticationSetList) throws MAPException {
-
-    }
-
-    @Override
-    public Long addAuthenticationFailureReportRequest(IMSI imsi, FailureCause failureCause, MAPExtensionContainer extensionContainer, Boolean reAttempt, AccessType accessType, byte[] rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addAuthenticationFailureReportRequest(int customInvokeTimeout, IMSI imsi, FailureCause failureCause, MAPExtensionContainer extensionContainer, Boolean reAttempt, AccessType accessType, byte[] rand, ISDNAddressString vlrNumber, ISDNAddressString sgsnNumber) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addAuthenticationFailureReportResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
-
-    }
-
-    @Override
-    public Long addResetRequest(NetworkResource networkResource, ISDNAddressString hlrNumber, ArrayList<IMSI> hlrList) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addResetRequest(int customInvokeTimeout, NetworkResource networkResource, ISDNAddressString hlrNumber, ArrayList<IMSI> hlrList) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addForwardCheckSSIndicationRequest() throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addForwardCheckSSIndicationRequest(int customInvokeTimeout) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addRestoreDataRequest(IMSI imsi, LMSI lmsi, VLRCapability vlrCapability, MAPExtensionContainer extensionContainer, boolean restorationIndicator) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addRestoreDataRequest(int customInvokeTimeout, IMSI imsi, LMSI lmsi, VLRCapability vlrCapability, MAPExtensionContainer extensionContainer, boolean restorationIndicator) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addRestoreDataResponse(long invokeId, ISDNAddressString hlrNumber, boolean msNotReachable, MAPExtensionContainer extensionContainer) throws MAPException {
-
-    }
-
-    @Override
-    public long addAnyTimeInterrogationRequest(SubscriberIdentity subscriberIdentity, RequestedInfo requestedInfo, ISDNAddressString gsmSCFAddress, MAPExtensionContainer extensionContainer) throws MAPException {
-        return 0;
-    }
-
-    @Override
-    public long addAnyTimeInterrogationRequest(long customInvokeTimeout, SubscriberIdentity subscriberIdentity, RequestedInfo requestedInfo, ISDNAddressString gsmSCFAddress, MAPExtensionContainer extensionContainer) throws MAPException {
-        return 0;
-    }
-
-    @Override
-    public void addAnyTimeInterrogationResponse(long invokeId, SubscriberInfo subscriberInfo, MAPExtensionContainer extensionContainer) throws MAPException {
-
-    }
-
-    @Override
-    public long addProvideSubscriberInfoRequest(IMSI imsi, LMSI lmsi, RequestedInfo requestedInfo, MAPExtensionContainer extensionContainer, EMLPPPriority callPriority) throws MAPException {
-        return 0;
-    }
-
-    @Override
-    public long addProvideSubscriberInfoRequest(long customInvokeTimeout, IMSI imsi, LMSI lmsi, RequestedInfo requestedInfo, MAPExtensionContainer extensionContainer, EMLPPPriority callPriority) throws MAPException {
-        return 0;
-    }
-
-    @Override
-    public void addProvideSubscriberInfoResponse(long invokeId, SubscriberInfo subscriberInfo, MAPExtensionContainer extensionContainer) throws MAPException {
-
-    }
-
-    @Override
-    public Long addInsertSubscriberDataRequest(IMSI imsi, ISDNAddressString msisdn, Category category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCode> bearerServiceList, ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtSSInfo> provisionedSS, ODBData odbData, boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCode> regionalSubscriptionData, ArrayList<VoiceBroadcastData> vbsSubscriptionData, ArrayList<VoiceGroupCallData> vgcsSubscriptionData, VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addInsertSubscriberDataRequest(long customInvokeTimeout, IMSI imsi, ISDNAddressString msisdn, Category category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCode> bearerServiceList, ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtSSInfo> provisionedSS, ODBData odbData, boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCode> regionalSubscriptionData, ArrayList<VoiceBroadcastData> vbsSubscriptionData, ArrayList<VoiceGroupCallData> vgcsSubscriptionData, VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addInsertSubscriberDataRequest(IMSI imsi, ISDNAddressString msisdn, Category category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCode> bearerServiceList, ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtSSInfo> provisionedSS, ODBData odbData, boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCode> regionalSubscriptionData, ArrayList<VoiceBroadcastData> vbsSubscriptionData, ArrayList<VoiceGroupCallData> vgcsSubscriptionData, VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo, MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, GPRSSubscriptionData gprsSubscriptionData, boolean roamingRestrictedInSgsnDueToUnsupportedFeature, NetworkAccessMode networkAccessMode, LSAInformation lsaInformation, boolean lmuIndicator, LCSInformation lcsInformation, Integer istAlertTimer, AgeIndicator superChargerSupportedInHLR, MCSSInfo mcSsInfo, CSAllocationRetentionPriority csAllocationRetentionPriority, SGSNCAMELSubscriptionInfo sgsnCamelSubscriptionInfo, ChargingCharacteristics chargingCharacteristics, AccessRestrictionData accessRestrictionData, Boolean icsIndicator, EPSSubscriptionData epsSubscriptionData, ArrayList<CSGSubscriptionData> csgSubscriptionDataList, boolean ueReachabilityRequestIndicator, ISDNAddressString sgsnNumber, DiameterIdentity mmeName, Long subscribedPeriodicRAUTAUtimer, boolean vplmnLIPAAllowed, Boolean mdtUserConsent, Long subscribedPeriodicLAUtimer) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addInsertSubscriberDataRequest(long customInvokeTimeout, IMSI imsi, ISDNAddressString msisdn, Category category, SubscriberStatus subscriberStatus, ArrayList<ExtBearerServiceCode> bearerServiceList, ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtSSInfo> provisionedSS, ODBData odbData, boolean roamingRestrictionDueToUnsupportedFeature, ArrayList<ZoneCode> regionalSubscriptionData, ArrayList<VoiceBroadcastData> vbsSubscriptionData, ArrayList<VoiceGroupCallData> vgcsSubscriptionData, VlrCamelSubscriptionInfo vlrCamelSubscriptionInfo, MAPExtensionContainer extensionContainer, NAEAPreferredCI naeaPreferredCI, GPRSSubscriptionData gprsSubscriptionData, boolean roamingRestrictedInSgsnDueToUnsupportedFeature, NetworkAccessMode networkAccessMode, LSAInformation lsaInformation, boolean lmuIndicator, LCSInformation lcsInformation, Integer istAlertTimer, AgeIndicator superChargerSupportedInHLR, MCSSInfo mcSsInfo, CSAllocationRetentionPriority csAllocationRetentionPriority, SGSNCAMELSubscriptionInfo sgsnCamelSubscriptionInfo, ChargingCharacteristics chargingCharacteristics, AccessRestrictionData accessRestrictionData, Boolean icsIndicator, EPSSubscriptionData epsSubscriptionData, ArrayList<CSGSubscriptionData> csgSubscriptionDataList, boolean ueReachabilityRequestIndicator, ISDNAddressString sgsnNumber, DiameterIdentity mmeName, Long subscribedPeriodicRAUTAUtimer, boolean vplmnLIPAAllowed, Boolean mdtUserConsent, Long subscribedPeriodicLAUtimer) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addInsertSubscriberDataResponse(long invokeId, ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtBearerServiceCode> bearerServiceList, ArrayList<SSCode> ssList, ODBGeneralData odbGeneralData, RegionalSubscriptionResponse regionalSubscriptionResponse) throws MAPException {
-
-    }
-
-    @Override
-    public void addInsertSubscriberDataResponse(long invokeId, ArrayList<ExtTeleserviceCode> teleserviceList, ArrayList<ExtBearerServiceCode> bearerServiceList, ArrayList<SSCode> ssList, ODBGeneralData odbGeneralData, RegionalSubscriptionResponse regionalSubscriptionResponse, SupportedCamelPhases supportedCamelPhases, MAPExtensionContainer extensionContainer, OfferedCamel4CSIs offeredCamel4CSIs, SupportedFeatures supportedFeatures) throws MAPException {
-
-    }
-
-    @Override
-    public Long addDeleteSubscriberDataRequest(IMSI imsi, ArrayList<ExtBasicServiceCode> basicServiceList, ArrayList<SSCode> ssList, boolean roamingRestrictionDueToUnsupportedFeature, ZoneCode regionalSubscriptionIdentifier, boolean vbsGroupIndication, boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainer extensionContainer, GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature, LSAInformationWithdraw lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdraw specificCSIWithdraw, boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw, boolean apnOiReplacementWithdraw, boolean csgSubscriptionDeleted) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addDeleteSubscriberDataRequest(long customInvokeTimeout, IMSI imsi, ArrayList<ExtBasicServiceCode> basicServiceList, ArrayList<SSCode> ssList, boolean roamingRestrictionDueToUnsupportedFeature, ZoneCode regionalSubscriptionIdentifier, boolean vbsGroupIndication, boolean vgcsGroupIndication, boolean camelSubscriptionInfoWithdraw, MAPExtensionContainer extensionContainer, GPRSSubscriptionDataWithdraw gprsSubscriptionDataWithdraw, boolean roamingRestrictedInSgsnDueToUnsuppportedFeature, LSAInformationWithdraw lsaInformationWithdraw, boolean gmlcListWithdraw, boolean istInformationWithdraw, SpecificCSIWithdraw specificCSIWithdraw, boolean chargingCharacteristicsWithdraw, boolean stnSrWithdraw, EPSSubscriptionDataWithdraw epsSubscriptionDataWithdraw, boolean apnOiReplacementWithdraw, boolean csgSubscriptionDeleted) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addDeleteSubscriberDataResponse(long invokeId, RegionalSubscriptionResponse regionalSubscriptionResponse, MAPExtensionContainer extensionContainer) throws MAPException {
-
-    }
-
-    @Override
-    public Long addCheckImeiRequest(IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo, MAPExtensionContainer extensionContainer) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addCheckImeiRequest(long customInvokeTimeout, IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo, MAPExtensionContainer extensionContainer) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addCheckImeiResponse(long invokeId, EquipmentStatus equipmentStatus, UESBIIu bmuef, MAPExtensionContainer extensionContainer) throws MAPException {
-
-    }
-
-    @Override
-    public Long addCheckImeiRequest_Huawei(IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo, MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addCheckImeiRequest_Huawei(long customInvokeTimeout, IMEI imei, RequestedEquipmentInfo requestedEquipmentInfo, MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException {
-        return null;
-    }
+    public void onForwardShortMessageRequest(ForwardShortMessageRequest forwSmInd) {
 
-    @Override
-    public Long addActivateTraceModeRequest(IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId, MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList, TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addActivateTraceModeRequest(int customInvokeTimeout, IMSI imsi, TraceReference traceReference, TraceType traceType, AddressString omcId, MAPExtensionContainer extensionContainer, TraceReference2 traceReference2, TraceDepthList traceDepthList, TraceNETypeList traceNeTypeList, TraceInterfaceList traceInterfaceList, TraceEventList traceEventList, GSNAddress traceCollectionEntity, MDTConfiguration mdtConfiguration) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public void addActivateTraceModeResponse(long invokeId, MAPExtensionContainer extensionContainer, boolean traceSupportIndicator) throws MAPException {
-
-    }
-
-    @Override
-    public Long addForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI, boolean moreMessagesToSend) throws MAPException {
-        return null;
-    }
-
-    @Override
-    public Long addForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI, boolean moreMessagesToSend) throws MAPException {
-        return null;
     }
 
     @Override
-    public void addForwardShortMessageResponse(long invokeId) throws MAPException {
+    public void onForwardShortMessageResponse(ForwardShortMessageResponse forwSmRespInd) {
 
     }
 
     @Override
-    public Long addMoForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException {
-        return null;
-    }
+    public void onMoForwardShortMessageRequest(MoForwardShortMessageRequest moForwSmInd) {
 
-    @Override
-    public Long addMoForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer, IMSI imsi) throws MAPException {
-        return null;
     }
 
     @Override
-    public void addMoForwardShortMessageResponse(long invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer) throws MAPException {
+    public void onMoForwardShortMessageResponse(MoForwardShortMessageResponse moForwSmRespInd) {
 
     }
 
     @Override
-    public Long addMtForwardShortMessageRequest(SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI, boolean moreMessagesToSend, MAPExtensionContainer extensionContainer) throws MAPException {
-        return null;
-    }
+    public void onMtForwardShortMessageRequest(MtForwardShortMessageRequest mtForwSmInd) {
 
-    @Override
-    public Long addMtForwardShortMessageRequest(int customInvokeTimeout, SM_RP_DA sm_RP_DA, SM_RP_OA sm_RP_OA, SmsSignalInfo sm_RP_UI, boolean moreMessagesToSend, MAPExtensionContainer extensionContainer) throws MAPException {
-        return null;
     }
 
     @Override
-    public void addMtForwardShortMessageResponse(long invokeId, SmsSignalInfo sm_RP_UI, MAPExtensionContainer extensionContainer) throws MAPException {
+    public void onMtForwardShortMessageResponse(MtForwardShortMessageResponse mtForwSmRespInd) {
 
     }
 
     @Override
-    public Long addSendRoutingInfoForSMRequest(ISDNAddressString msisdn, boolean sm_RP_PRI, AddressString serviceCentreAddress, MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA, TeleserviceCode teleservice) throws MAPException {
-        return null;
-    }
+    public void onSendRoutingInfoForSMRequest(SendRoutingInfoForSMRequest sendRoutingInfoForSMInd) {
 
-    @Override
-    public Long addSendRoutingInfoForSMRequest(int customInvokeTimeout, ISDNAddressString msisdn, boolean sm_RP_PRI, AddressString serviceCentreAddress, MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, SM_RP_MTI sM_RP_MTI, SM_RP_SMEA sM_RP_SMEA, TeleserviceCode teleservice) throws MAPException {
-        return null;
     }
 
     @Override
-    public void addSendRoutingInfoForSMResponse(long invokeId, IMSI imsi, LocationInfoWithLMSI locationInfoWithLMSI, MAPExtensionContainer extensionContainer, Boolean mwdSet) throws MAPException {
+    public void onSendRoutingInfoForSMResponse(SendRoutingInfoForSMResponse sendRoutingInfoForSMRespInd) {
 
     }
 
     @Override
-    public Long addReportSMDeliveryStatusRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress, SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM, MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator, SMDeliveryOutcome additionalSMDeliveryOutcome, Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException {
-        return null;
-    }
+    public void onReportSMDeliveryStatusRequest(ReportSMDeliveryStatusRequest reportSMDeliveryStatusInd) {
 
-    @Override
-    public Long addReportSMDeliveryStatusRequest(int customInvokeTimeout, ISDNAddressString msisdn, AddressString serviceCentreAddress, SMDeliveryOutcome sMDeliveryOutcome, Integer absentSubscriberDiagnosticSM, MAPExtensionContainer extensionContainer, boolean gprsSupportIndicator, boolean deliveryOutcomeIndicator, SMDeliveryOutcome additionalSMDeliveryOutcome, Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException {
-        return null;
     }
 
     @Override
-    public void addReportSMDeliveryStatusResponse(long invokeId, ISDNAddressString storedMSISDN, MAPExtensionContainer extensionContainer) throws MAPException {
+    public void onReportSMDeliveryStatusResponse(ReportSMDeliveryStatusResponse reportSMDeliveryStatusRespInd) {
 
     }
 
     @Override
-    public Long addInformServiceCentreRequest(ISDNAddressString storedMSISDN, MWStatus mwStatus, MAPExtensionContainer extensionContainer, Integer absentSubscriberDiagnosticSM, Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException {
-        return null;
-    }
+    public void onInformServiceCentreRequest(InformServiceCentreRequest informServiceCentreInd) {
 
-    @Override
-    public Long addInformServiceCentreRequest(int customInvokeTimeout, ISDNAddressString storedMSISDN, MWStatus mwStatus, MAPExtensionContainer extensionContainer, Integer absentSubscriberDiagnosticSM, Integer additionalAbsentSubscriberDiagnosticSM) throws MAPException {
-        return null;
     }
 
     @Override
-    public Long addAlertServiceCentreRequest(ISDNAddressString msisdn, AddressString serviceCentreAddress) throws MAPException {
-        return null;
-    }
+    public void onAlertServiceCentreRequest(AlertServiceCentreRequest alertServiceCentreInd) {
 
-    @Override
-    public Long addAlertServiceCentreRequest(int customInvokeTimeout, ISDNAddressString msisdn, AddressString serviceCentreAddress) throws MAPException {
-        return null;
     }
 
     @Override
-    public void addAlertServiceCentreResponse(long invokeId) throws MAPException {
+    public void onAlertServiceCentreResponse(AlertServiceCentreResponse alertServiceCentreInd) {
 
     }
 
     @Override
-    public Long addReadyForSMRequest(IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainer extensionContainer, boolean additionalAlertReasonIndicator) throws MAPException {
-        return null;
-    }
+    public void onReadyForSMRequest(ReadyForSMRequest request) {
 
-    @Override
-    public Long addReadyForSMRequest(int customInvokeTimeout, IMSI imsi, AlertReason alertReason, boolean alertReasonIndicator, MAPExtensionContainer extensionContainer, boolean additionalAlertReasonIndicator) throws MAPException {
-        return null;
     }
 
     @Override
-    public void addReadyForSMResponse(long invokeId, MAPExtensionContainer extensionContainer) throws MAPException {
+    public void onReadyForSMResponse(ReadyForSMResponse response) {
 
     }
 
     @Override
-    public Long addNoteSubscriberPresentRequest(IMSI imsi) throws MAPException {
-        return null;
-    }
+    public void onNoteSubscriberPresentRequest(NoteSubscriberPresentRequest request) {
 
-    @Override
-    public Long addNoteSubscriberPresentRequest(int customInvokeTimeout, IMSI imsi) throws MAPException {
-        return null;
     }
 
     @Override
-    public MAPDialogState getState() {
-        return null;
-    }
+    public void onUpdateLocationRequest(UpdateLocationRequest ind) {
 
-    @Override
-    public SccpAddress getLocalAddress() {
-        return null;
     }
 
     @Override
-    public void setLocalAddress(SccpAddress localAddress) {
+    public void onUpdateLocationResponse(UpdateLocationResponse ind) {
 
     }
 
     @Override
-    public SccpAddress getRemoteAddress() {
-        return null;
-    }
-
-    @Override
-    public void setRemoteAddress(SccpAddress remoteAddress) {
+    public void onCancelLocationRequest(CancelLocationRequest request) {
 
     }
 
     @Override
-    public void setReturnMessageOnError(boolean val) {
+    public void onCancelLocationResponse(CancelLocationResponse response) {
 
     }
 
     @Override
-    public boolean getReturnMessageOnError() {
-        return false;
-    }
+    public void onSendIdentificationRequest(SendIdentificationRequest request) {
 
-    @Override
-    public MessageType getTCAPMessageType() {
-        return null;
     }
 
     @Override
-    public AddressString getReceivedOrigReference() {
-        return null;
-    }
+    public void onSendIdentificationResponse(SendIdentificationResponse response) {
 
-    @Override
-    public AddressString getReceivedDestReference() {
-        return null;
     }
 
     @Override
-    public MAPExtensionContainer getReceivedExtensionContainer() {
-        return null;
-    }
+    public void onUpdateGprsLocationRequest(UpdateGprsLocationRequest request) {
 
-    @Override
-    public int getNetworkId() {
-        return 0;
     }
 
     @Override
-    public void setNetworkId(int networkId) {
+    public void onUpdateGprsLocationResponse(UpdateGprsLocationResponse response) {
 
     }
 
     @Override
-    public void release() {
+    public void onPurgeMSRequest(PurgeMSRequest request) {
 
     }
 
     @Override
-    public void keepAlive() {
-
-    }
+    public void onPurgeMSResponse(PurgeMSResponse response) {
 
-    @Override
-    public Long getLocalDialogId() {
-        return null;
     }
 
     @Override
-    public Long getRemoteDialogId() {
-        return null;
-    }
+    public void onSendAuthenticationInfoRequest(SendAuthenticationInfoRequest ind) {
 
-    @Override
-    public MAPServiceBase getService() {
-        return null;
     }
 
     @Override
-    public void setExtentionContainer(MAPExtensionContainer extContainer) {
+    public void onSendAuthenticationInfoResponse(SendAuthenticationInfoResponse ind) {
 
     }
 
     @Override
-    public void send() throws MAPException {
+    public void onAuthenticationFailureReportRequest(AuthenticationFailureReportRequest ind) {
 
     }
 
     @Override
-    public void close(boolean prearrangedEnd) throws MAPException {
+    public void onAuthenticationFailureReportResponse(AuthenticationFailureReportResponse ind) {
 
     }
 
     @Override
-    public void sendDelayed() throws MAPException {
+    public void onResetRequest(ResetRequest ind) {
 
     }
 
     @Override
-    public void closeDelayed(boolean prearrangedEnd) throws MAPException {
+    public void onForwardCheckSSIndicationRequest(ForwardCheckSSIndicationRequest ind) {
 
     }
 
     @Override
-    public void abort(MAPUserAbortChoice mapUserAbortChoice) throws MAPException {
+    public void onRestoreDataRequest(RestoreDataRequest ind) {
 
     }
 
     @Override
-    public void refuse(Reason reason) throws MAPException {
+    public void onRestoreDataResponse(RestoreDataResponse ind) {
 
     }
 
     @Override
-    public void processInvokeWithoutAnswer(Long invokeId) {
+    public void onAnyTimeInterrogationRequest(AnyTimeInterrogationRequest request) {
 
     }
 
     @Override
-    public void sendInvokeComponent(Invoke invoke) throws MAPException {
+    public void onAnyTimeInterrogationResponse(AnyTimeInterrogationResponse response) {
 
     }
 
     @Override
-    public void sendReturnResultComponent(ReturnResult returnResult) throws MAPException {
+    public void onProvideSubscriberInfoRequest(ProvideSubscriberInfoRequest request) {
 
     }
 
     @Override
-    public void sendReturnResultLastComponent(ReturnResultLast returnResultLast) throws MAPException {
+    public void onProvideSubscriberInfoResponse(ProvideSubscriberInfoResponse response) {
 
     }
 
     @Override
-    public void sendErrorComponent(Long invokeId, MAPErrorMessage mapErrorMessage) throws MAPException {
+    public void onInsertSubscriberDataRequest(InsertSubscriberDataRequest request) {
 
     }
 
     @Override
-    public void sendRejectComponent(Long invokeId, Problem problem) throws MAPException {
+    public void onInsertSubscriberDataResponse(InsertSubscriberDataResponse request) {
 
     }
 
     @Override
-    public void resetInvokeTimer(Long invokeId) throws MAPException {
+    public void onDeleteSubscriberDataRequest(DeleteSubscriberDataRequest request) {
 
     }
 
     @Override
-    public boolean cancelInvocation(Long invokeId) throws MAPException {
-        return false;
-    }
+    public void onDeleteSubscriberDataResponse(DeleteSubscriberDataResponse request) {
 
-    @Override
-    public Object getUserObject() {
-        return null;
     }
 
     @Override
-    public void setUserObject(Object userObject) {
+    public void onCheckImeiRequest(CheckImeiRequest request) {
 
     }
 
     @Override
-    public MAPApplicationContext getApplicationContext() {
-        return null;
-    }
+    public void onCheckImeiResponse(CheckImeiResponse response) {
 
-    @Override
-    public int getMaxUserDataLength() {
-        return 0;
     }
 
     @Override
-    public int getMessageUserDataLengthOnSend() throws MAPException {
-        return 0;
-    }
+    public void onActivateTraceModeRequest_Mobility(ActivateTraceModeRequest_Mobility ind) {
 
-    @Override
-    public int getMessageUserDataLengthOnClose(boolean prearrangedEnd) throws MAPException {
-        return 0;
     }
 
     @Override
-    public void addEricssonData(IMSI imsi, AddressString vlrNo) {
+    public void onActivateTraceModeResponse_Mobility(ActivateTraceModeResponse_Mobility ind) {
 
     }
 }

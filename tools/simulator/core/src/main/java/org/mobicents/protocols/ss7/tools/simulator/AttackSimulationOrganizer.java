@@ -20,7 +20,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private boolean waitForM3UALink() {
         while (true) {
             try {
-                Thread.sleep(500);
+                Thread.sleep(100);
                 if(attackClient.getM3uaMan().getState().contains("ACTIVE") && attackServer.getM3uaMan().getState().contains("ACTIVE"))
                     return true;
             } catch (InterruptedException e) {

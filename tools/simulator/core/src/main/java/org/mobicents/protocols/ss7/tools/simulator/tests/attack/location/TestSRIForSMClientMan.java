@@ -472,8 +472,6 @@ public class TestSRIForSMClientMan extends TesterBase implements TestSRIForSMCli
         this.testerHost.sendNotif(SOURCE_NAME, "SRIForSM Client has been started", "", Level.INFO);
         isStarted = true;
 
-        this.testerHost.getSccpMan().setLocalSsn(6);
-
         return true;
     }
 
