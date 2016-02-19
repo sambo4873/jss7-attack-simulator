@@ -33,6 +33,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     public void start() {
+        Random rng = new Random();
         startAttackSimulationHosts();
 
         int sentSRINum = 0;
@@ -62,16 +63,15 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.attackServer.checkStore();
 
             if(sentSRINum < 20) {
-                this.sendRandomMessage();
+                this.sendRandomMessage(rng);
                 sentSRINum++;
             }
         }
     }
 
-    private void sendRandomMessage() {
-        Random rng = new Random();
+    private void sendRandomMessage(Random rng) {
 
-        switch(rng.nextInt(3)) {
+        switch(rng.nextInt(4)) {
             case 0:
                 this.attackServer.getTestSmsServerMan().performSRIForSM("123123123");
                 break;
