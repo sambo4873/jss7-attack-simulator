@@ -1,5 +1,7 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
+import java.util.Random;
+
 /**
  * @author Kristoffer Jensen
  */
@@ -60,18 +62,30 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.attackServer.checkStore();
 
             if(sentSRINum < 20) {
-                if(sentSRINum == 5) {
-                    this.attackClient.getSccpMan().setLocalSsn(8);
-                    this.attackClient.getConfigurationData().getSccpConfigurationData().setLocalSsn(8);
-                }
-
-                this.attackServer.getTestSmsServerMan().performSRIForSM("123123123");
+                this.sendRandomMessage();
                 sentSRINum++;
-
-                if(sentSRINum == 5) {
-                    this.attackClient.getConfigurationData().getSccpConfigurationData().setLocalSsn(6);
-                }
             }
+        }
+    }
+
+    private void sendRandomMessage() {
+        Random rng = new Random();
+
+        switch(rng.nextInt(3)) {
+            case 0:
+                this.attackServer.getTestSmsServerMan().performSRIForSM("123123123");
+                break;
+            case 1:
+                this.attackServer.getTestSmsServerMan().performMtForwardSM("MSG", "81238912831923", "37271", "998319283");
+                break;
+            case 2:
+                this.attackClient.getTestSmsClientMan().performAlertServiceCentre("128381928");
+                break;
+            case 3:
+                this.attackClient.getTestSmsClientMan().performMoForwardSM("MSG", "7123984", "810740293874");
+                break;
+            default:
+                break;
         }
     }
 
