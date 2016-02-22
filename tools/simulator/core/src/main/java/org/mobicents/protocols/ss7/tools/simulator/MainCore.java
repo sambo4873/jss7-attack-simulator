@@ -49,6 +49,7 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.CapManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.level3.CapManStandardMBean;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapManStandardMBean;
+import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostMBean;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostStandardMBean;
@@ -427,11 +428,9 @@ public class MainCore {
 
         System.out.println("Loading simulation hosts...");
 
-        AttackSimulationHost attackSimulationClient = new AttackSimulationHost("attackClient", sim_home, AttackSimulationHost.AttackType.SMS_CLIENT);
-
-        AttackSimulationHost attackSimulationServer = new AttackSimulationHost("attackServer", sim_home, AttackSimulationHost.AttackType.SMS_SERVER);
-
-        AttackSimulationOrganizer attackSimulationOrganizer = new AttackSimulationOrganizer(attackSimulationServer, attackSimulationClient);
+        AttackTesterHost attackTesterHostClient = new AttackTesterHost("attackClient", sim_home, AttackTesterHost.AttackType.SMS_CLIENT);
+        AttackTesterHost attacktesterHostServer = new AttackTesterHost("attackServer", sim_home, AttackTesterHost.AttackType.SMS_SERVER);
+        AttackSimulationOrganizer attackSimulationOrganizer = new AttackSimulationOrganizer(attackTesterHostClient, attacktesterHostServer);
 
         System.out.println("Simulation hosts loaded, starting simulation...");
 

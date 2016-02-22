@@ -1,9 +1,19 @@
-package org.mobicents.protocols.ss7.tools.simulator;
+package org.mobicents.protocols.ss7.tools.simulator.management;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.Properties;
+
+import javax.management.Notification;
+
+import javafx.scene.paint.Stop;
 import javolution.text.TextBuilder;
 import javolution.xml.XMLBinding;
 import javolution.xml.XMLObjectReader;
 import javolution.xml.XMLObjectWriter;
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -22,15 +32,12 @@ import org.mobicents.protocols.ss7.mtp.Mtp3UserPart;
 import org.mobicents.protocols.ss7.mtp.RoutingLabelFormat;
 import org.mobicents.protocols.ss7.sccp.SccpProtocolVersion;
 import org.mobicents.protocols.ss7.sccp.SccpStack;
+import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
 import org.mobicents.protocols.ss7.tools.simulator.common.ConfigurationData;
-import org.mobicents.protocols.ss7.tools.simulator.level1.DialogicConfigurationData_OldFormat;
-import org.mobicents.protocols.ss7.tools.simulator.level1.M3uaConfigurationData;
-import org.mobicents.protocols.ss7.tools.simulator.level1.M3uaConfigurationData_OldFormat;
-import org.mobicents.protocols.ss7.tools.simulator.level1.M3uaMan;
+import org.mobicents.protocols.ss7.tools.simulator.level1.*;
 import org.mobicents.protocols.ss7.tools.simulator.level2.*;
 import org.mobicents.protocols.ss7.tools.simulator.level3.*;
-import org.mobicents.protocols.ss7.tools.simulator.management.*;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientMan;
@@ -43,48 +50,44 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerConfigurationData_OldFormat;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerMan;
 
-import javax.management.Notification;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.util.Properties;
-
-import static org.mobicents.protocols.ss7.tools.simulator.AttackSimulationHost.AttackType.*;
-
 /**
  * @author Kristoffer Jensen
  */
-public class AttackSimulationHost extends TesterHost implements Stoppable {
+public class AttackTesterHost extends TesterHost implements TesterHostMBean, Stoppable {
+    private static final Logger logger = Logger.getLogger(AttackTesterHost.class);
 
-    private static final Logger logger = Logger.getLogger(AttackSimulationHost.class);
+    private static final String TESTER_HOST_PERSIST_DIR_KEY = "testerhost.persist.dir";
+    private static final String USER_DIR_KEY = "user.dir";
+    public static String SOURCE_NAME = "ATTACK_HOST";
+    public static String SS7_EVENT = "SS7Event";
 
     private static final String CLASS_ATTRIBUTE = "type";
     private static final String TAB_INDENT = "\t";
     private static final String PERSIST_FILE_NAME_OLD = "simulator.xml";
     private static final String PERSIST_FILE_NAME = "simulator2.xml";
     private static final String CONFIGURATION_DATA = "configurationData";
-    private static final String TESTER_HOST_PERSIST_DIR_KEY = "testerhost.persist.dir";
-    private static final String USER_DIR_KEY = "user.dir";
 
-    private final String SOURCE_NAME = "ATTACK_HOST";
+    public static String SIMULATOR_HOME_VAR = "SIMULATOR_HOME";
+
     private final String appName;
     private String persistDir = null;
     private final TextBuilder persistFile = TextBuilder.newInstance();
     private static final XMLBinding binding = new XMLBinding();
 
+    // SETTINGS
     private boolean isStarted = false;
     private boolean needQuit = false;
-    private long sequenceNumber = 0;
     private boolean needStore = false;
-
     private ConfigurationData configurationData = new ConfigurationData();
+    private long sequenceNumber = 0;
 
+    // Layers
     private Stoppable instance_L1_B = null;
     private Stoppable instance_L2_B = null;
     private Stoppable instance_L3_B = null;
     private Stoppable instance_TestTask_B = null;
 
+    // levels
     M3uaMan m3ua;
     SccpMan sccp;
     MapMan map;
@@ -100,65 +103,19 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
     TestSRIForSMClientMan testSRIForSMClientMan;
     TestSRIForSMServerMan testSRIForSMServerMan;
 
-
     private AttackType attackType;
 
-    public AttackSimulationHost() {
-        super();
+    // testers
+
+    public AttackTesterHost() {
         this.appName = null;
     }
 
-    public AttackSimulationHost(String appName, String persistDir, AttackType attackType) {
+    public AttackTesterHost(String appName, String persistDir, AttackType attackType) {
+        this.attackType = attackType;
         this.appName = appName;
         this.persistDir = persistDir;
-        this.attackType = attackType;
 
-        this.setupLayers(appName);
-        this.setupLog4j(appName);
-
-        //this.serverHost.addNotificationListener(this, null, null);
-
-        switch(attackType) {
-            case SMS_SERVER:
-                this.configureAttackServer();
-                break;
-            case SMS_CLIENT:
-                this.configureAttackClient();
-                break;
-            default:
-                break;
-        }
-
-        TextBuilder persistFileOld = new TextBuilder();
-
-
-        if (persistDir != null) {
-            persistFileOld.append(persistDir).append(File.separator).append(this.appName).append("_")
-                    .append(PERSIST_FILE_NAME_OLD);
-            this.persistFile.append(persistDir).append(File.separator).append(this.appName).append("_")
-                    .append(PERSIST_FILE_NAME);
-        } else {
-            persistFileOld.append(System.getProperty(TESTER_HOST_PERSIST_DIR_KEY, System.getProperty(USER_DIR_KEY)))
-                    .append(File.separator).append(this.appName).append("_").append(PERSIST_FILE_NAME_OLD);
-            this.persistFile.append(System.getProperty(TESTER_HOST_PERSIST_DIR_KEY, System.getProperty(USER_DIR_KEY)))
-                    .append(File.separator).append(this.appName).append("_").append(PERSIST_FILE_NAME);
-        }
-
-        File fnOld = new File(persistFileOld.toString());
-        File fn = new File(persistFile.toString());
-
-        if (this.loadOld(fnOld)) {
-            this.store();
-        } else {
-            this.load(fn);
-        }
-        if (fnOld.exists())
-            fnOld.delete();
-
-        start();
-    }
-
-    private void setupLayers(String appName) {
         this.m3ua = new M3uaMan(appName);
         this.m3ua.setTesterHost(this);
 
@@ -200,8 +157,49 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
         this.testSRIForSMServerMan = new TestSRIForSMServerMan(appName);
         this.testSRIForSMServerMan.setTesterHost(this);
-    }
 
+        this.setupLog4j(appName);
+
+        binding.setClassAttribute(CLASS_ATTRIBUTE);
+
+        this.persistFile.clear();
+        TextBuilder persistFileOld = new TextBuilder();
+
+        if (persistDir != null) {
+            persistFileOld.append(persistDir).append(File.separator).append(this.appName).append("_")
+                    .append(PERSIST_FILE_NAME_OLD);
+            this.persistFile.append(persistDir).append(File.separator).append(this.appName).append("_")
+                    .append(PERSIST_FILE_NAME);
+        } else {
+            persistFileOld.append(System.getProperty(TESTER_HOST_PERSIST_DIR_KEY, System.getProperty(USER_DIR_KEY)))
+                    .append(File.separator).append(this.appName).append("_").append(PERSIST_FILE_NAME_OLD);
+            this.persistFile.append(System.getProperty(TESTER_HOST_PERSIST_DIR_KEY, System.getProperty(USER_DIR_KEY)))
+                    .append(File.separator).append(this.appName).append("_").append(PERSIST_FILE_NAME);
+        }
+
+        File fnOld = new File(persistFileOld.toString());
+        File fn = new File(persistFile.toString());
+
+        if (this.loadOld(fnOld)) {
+            this.store();
+        } else {
+            this.load(fn);
+        }
+        if (fnOld.exists())
+            fnOld.delete();
+
+
+        switch(attackType) {
+            case SMS_SERVER:
+                this.configureAttackServer();
+                break;
+            case SMS_CLIENT:
+                this.configureAttackClient();
+                break;
+            default:
+                break;
+        }
+    }
 
     private void configureAttackServer() {
 
@@ -409,7 +407,6 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         testSmsServerConfigurationData.setVlrSsn(8);
     }
 
-
     @Override
     public ConfigurationData getConfigurationData() {
         return this.configurationData;
@@ -418,6 +415,11 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
     @Override
     public M3uaMan getM3uaMan() {
         return this.m3ua;
+    }
+
+    @Override
+    public DialogicMan getDialogicMan() {
+        return this.dialogic;
     }
 
     @Override
@@ -485,6 +487,27 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         return this.testSRIForSMServerMan;
     }
 
+    private void setupLog4j(String appName) {
+        String propFileName = appName + ".log4j.properties";
+        File f = new File("./" + propFileName);
+        if (f.exists()) {
+
+            try {
+                InputStream inStreamLog4j = new FileInputStream(f);
+                Properties propertiesLog4j = new Properties();
+
+                propertiesLog4j.load(inStreamLog4j);
+                PropertyConfigurator.configure(propertiesLog4j);
+            } catch (Exception e) {
+                e.printStackTrace();
+                BasicConfigurator.configure();
+            }
+        } else {
+            BasicConfigurator.configure();
+        }
+
+        logger.debug("log4j configured");
+    }
 
     @Override
     public void sendNotif(String source, String msg, Throwable e, Level logLevel) {
@@ -497,11 +520,6 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         this.doSendNotif(source, msg + " - " + e.toString(), sb.toString());
 
         logger.log(logLevel, msg, e);
-        // if (showInConsole) {
-        // logger.error(msg, e);
-        // } else {
-        // logger.debug(msg, e);
-        // }
     }
 
     @Override
@@ -510,20 +528,23 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         this.doSendNotif(source, msg, userData);
 
         logger.log(Level.INFO, msg + "\n" + userData);
-//        logger.log(logLevel, msg + "\n" + userData);
-
-        // if (showInConsole) {
-        // logger.warn(msg);
-        // } else {
-        // logger.debug(msg);
-        // }
     }
 
     private synchronized void doSendNotif(String source, String msg, String userData) {
-        Notification notif = new Notification(SS7_EVENT + "-" + source, "TesterHost", ++sequenceNumber,
+        Notification notif = new Notification(SS7_EVENT + "-" + source, "AttackTesterHost", ++sequenceNumber,
                 System.currentTimeMillis(), msg);
         notif.setUserData(userData);
         this.sendNotification(notif);
+    }
+
+    @Override
+    public boolean isNeedQuit() {
+        return needQuit;
+    }
+
+    @Override
+    public boolean isStarted() {
+        return isStarted;
     }
 
     @Override
@@ -591,6 +612,11 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
     }
 
     @Override
+    public String getState() {
+        return AttackTesterHost.SOURCE_NAME + ": " + (this.isStarted() ? "Started" : "Stopped");
+    }
+
+    @Override
     public String getL1State() {
         if (this.instance_L1_B != null)
             return this.instance_L1_B.getState();
@@ -622,19 +648,25 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
             return "";
     }
 
+
+
+
     @Override
     public void start() {
+
+        this.store();
         this.stop();
 
+        boolean started;
+        Mtp3UserPart mtp3UserPart;
+
         // Start L1
-        boolean started = false;
-        Mtp3UserPart mtp3UserPart = null;
         this.instance_L1_B = this.m3ua;
         started = this.m3ua.start();
         mtp3UserPart = this.m3ua.getMtp3UserPart();
 
         if(!started) {
-            this.sendNotif(this.SOURCE_NAME, "Layer 1 has not started.", "", Level.WARN);
+            this.sendNotif(AttackTesterHost.SOURCE_NAME, "Layer 1 has not started.", "", Level.WARN);
             this.stop();
             return;
         }
@@ -643,7 +675,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         started = false;
         SccpStack sccpStack = null;
         if (mtp3UserPart == null) {
-            this.sendNotif(this.SOURCE_NAME, "Error initializing SCCP: No Mtp3UserPart is defined at L1", "", Level.WARN);
+            this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SCCP: No Mtp3UserPart is defined at L1", "", Level.WARN);
         } else {
             this.instance_L2_B = this.sccp;
             this.sccp.setMtp3UserPart(mtp3UserPart);
@@ -652,7 +684,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         }
 
         if(!started) {
-            this.sendNotif(this.SOURCE_NAME, "Layer 2 has not started.", "", Level.WARN);
+            this.sendNotif(AttackTesterHost.SOURCE_NAME, "Layer 2 has not started.", "", Level.WARN);
             this.stop();
             return;
         }
@@ -665,7 +697,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         switch (this.configurationData.getInstance_L3().intValue()) {
             case Instance_L3.VAL_MAP:
                 if (sccpStack == null) {
-                    this.sendNotif(this.SOURCE_NAME, "Error initializing TCAP+MAP: No SccpStack is defined at L2", "",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing TCAP+MAP: No SccpStack is defined at L2", "",
                             Level.WARN);
                 } else {
                     this.instance_L3_B = this.map;
@@ -676,7 +708,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
                 break;
             case Instance_L3.VAL_CAP:
                 if (sccpStack == null) {
-                    this.sendNotif(this.SOURCE_NAME, "Error initializing TCAP+CAP: No SccpStack is defined at L2", "",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing TCAP+CAP: No SccpStack is defined at L2", "",
                             Level.WARN);
                 } else {
                     this.instance_L3_B = this.cap;
@@ -688,12 +720,12 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             default:
                 // TODO: implement others test tasks ...
-                this.sendNotif(this.SOURCE_NAME, "Instance_L3." + this.configurationData.getInstance_L3().toString()
+                this.sendNotif(AttackTesterHost.SOURCE_NAME, "Instance_L3." + this.configurationData.getInstance_L3().toString()
                         + " has not been implemented yet", "", Level.WARN);
                 break;
         }
         if (!started) {
-            this.sendNotif(this.SOURCE_NAME, "Layer 3 has not started", "", Level.WARN);
+            this.sendNotif(AttackTesterHost.SOURCE_NAME, "Layer 3 has not started", "", Level.WARN);
             this.stop();
             return;
         }
@@ -703,7 +735,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         switch (this.configurationData.getInstance_TestTask().intValue()) {
             case Instance_TestTask.VAL_USSD_TEST_CLIENT:
                 if (curMap == null) {
-                    this.sendNotif(this.SOURCE_NAME,
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME,
                             "Error initializing USSD_TEST_CLIENT: No MAP stack is defined at L3", "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testUssdClientMan;
@@ -714,7 +746,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             case Instance_TestTask.VAL_USSD_TEST_SERVER:
                 if (curMap == null) {
-                    this.sendNotif(this.SOURCE_NAME,
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME,
                             "Error initializing USSD_TEST_SERVER: No MAP stack is defined at L3", "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testUssdServerMan;
@@ -725,7 +757,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             case Instance_TestTask.VAL_SMS_TEST_CLIENT:
                 if (curMap == null) {
-                    this.sendNotif(this.SOURCE_NAME, "Error initializing SMS_TEST_CLIENT: No MAP stack is defined at L3",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SMS_TEST_CLIENT: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testSmsClientMan;
@@ -736,7 +768,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             case Instance_TestTask.VAL_SMS_TEST_SERVER:
                 if (curMap == null) {
-                    this.sendNotif(this.SOURCE_NAME, "Error initializing SMS_TEST_SERVER: No MAP stack is defined at L3",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SMS_TEST_SERVER: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testSmsServerMan;
@@ -747,7 +779,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             case Instance_TestTask.VAL_CAP_TEST_SCF:
                 if (curCap == null) {
-                    this.sendNotif(this.SOURCE_NAME,
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME,
                             "Error initializing VAL_CAP_TEST_SCF: No CAP stack is defined at L3", "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testCapScfMan;
@@ -758,7 +790,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             case Instance_TestTask.VAL_CAP_TEST_SSF:
                 if (curCap == null) {
-                    this.sendNotif(this.SOURCE_NAME,
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME,
                             "Error initializing VAL_CAP_TEST_SSF: No CAP stack is defined at L3", "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testCapSsfMan;
@@ -769,7 +801,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             case Instance_TestTask.VAL_ATI_TEST_CLIENT:
                 if (curMap == null) {
-                    this.sendNotif(this.SOURCE_NAME, "Error initializing ATI_TEST_CLIENT: No MAP stack is defined at L3",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing ATI_TEST_CLIENT: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testAtiClientMan;
@@ -780,7 +812,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             case Instance_TestTask.VAL_ATI_TEST_SERVER:
                 if (curMap == null) {
-                    this.sendNotif(this.SOURCE_NAME, "Error initializing ATI_TEST_SERVER: No MAP stack is defined at L3",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing ATI_TEST_SERVER: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testAtiServerMan;
@@ -791,7 +823,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             case Instance_TestTask.VAL_SRI_ATTACK_TEST_CLIENT:
                 if (curMap == null) {
-                    this.sendNotif(this.SOURCE_NAME, "Error initializing SRI_ATTACK_CLIENT: No MAP stack is defined at L3",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SRI_ATTACK_CLIENT: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testSRIForSMClientMan;
@@ -802,7 +834,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             case Instance_TestTask.VAL_SRI_ATTACK_TEST_SERVER:
                 if (curMap == null) {
-                    this.sendNotif(this.SOURCE_NAME, "Error initializing SRI_ATTACK_SERVER: No MAP stack is defined at L3",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SRI_ATTACK_SERVER: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
                     this.instance_TestTask_B = this.testSRIForSMServerMan;
@@ -813,13 +845,13 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
             default:
                 // TODO: implement others test tasks ...
-                this.sendNotif(this.SOURCE_NAME, "Instance_TestTask."
+                this.sendNotif(AttackTesterHost.SOURCE_NAME, "Instance_TestTask."
                                 + this.configurationData.getInstance_TestTask().toString() + " has not been implemented yet", "",
                         Level.WARN);
                 break;
         }
         if (!started) {
-            this.sendNotif(this.SOURCE_NAME, "Testing task has not started", "", Level.WARN);
+            this.sendNotif(AttackTesterHost.SOURCE_NAME, "Testing task has not started", "", Level.WARN);
             this.stop();
             return;
         }
@@ -829,6 +861,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
 
     @Override
     public void stop() {
+
         this.isStarted = false;
 
         // TestTask
@@ -873,25 +906,63 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
     }
 
     @Override
-    public String getState() {
-        return this.SOURCE_NAME + ": " + (this.isStarted() ? "Started" : "Stopped");
-    }
-
-    @Override
     public void quit() {
         this.stop();
+        this.store();
         this.needQuit = true;
     }
 
     @Override
+    public void putInstance_L1Value(String val) {
+        Instance_L1 x = Instance_L1.createInstance(val);
+        if (x != null)
+            this.setInstance_L1(x);
+    }
+
+    @Override
+    public void putInstance_L2Value(String val) {
+        Instance_L2 x = Instance_L2.createInstance(val);
+        if (x != null)
+            this.setInstance_L2(x);
+    }
+
+    @Override
+    public void putInstance_L3Value(String val) {
+        Instance_L3 x = Instance_L3.createInstance(val);
+        if (x != null)
+            this.setInstance_L3(x);
+    }
+
+    @Override
+    public void putInstance_TestTaskValue(String val) {
+        Instance_TestTask x = Instance_TestTask.createInstance(val);
+        if (x != null)
+            this.setInstance_TestTask(x);
+    }
+
+    @Override
+    public String getName() {
+        return appName;
+    }
+
+    @Override
+    public String getPersistDir() {
+        return persistDir;
+    }
+
+//    public void setPersistDir(String persistDir) {
+//        this.persistDir = persistDir;
+//    }
+
+    @Override
     public void markStore() {
-        this.needStore = true;
+        needStore = true;
     }
 
     @Override
     public void checkStore() {
-        if (this.needStore) {
-            this.needStore = false;
+        if (needStore) {
+            needStore = false;
             this.store();
         }
     }
@@ -939,38 +1010,6 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
         }
     }
 
-    private void setupLog4j(String appName) {
-
-        // InputStream inStreamLog4j = getClass().getResourceAsStream("/log4j.properties");
-
-        String propFileName = appName + ".log4j.properties";
-        File f = new File("./" + propFileName);
-        if (f.exists()) {
-
-            try {
-                InputStream inStreamLog4j = new FileInputStream(f);
-                Properties propertiesLog4j = new Properties();
-
-                propertiesLog4j.load(inStreamLog4j);
-                PropertyConfigurator.configure(propertiesLog4j);
-            } catch (Exception e) {
-                e.printStackTrace();
-                BasicConfigurator.configure();
-            }
-        } else {
-            BasicConfigurator.configure();
-        }
-
-        // logger.setLevel(Level.TRACE);
-        logger.debug("log4j configured");
-
-    }
-
-    @Override
-    public String getName() {
-        return this.appName;
-    }
-
     private boolean loadOld(File fn) {
 
         XMLObjectReader reader = null;
@@ -1007,6 +1046,11 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
             this.m3ua.setM3uaDpc(_m3ua.getDpc());
             this.m3ua.setM3uaOpc(_m3ua.getOpc());
             this.m3ua.setM3uaSi(_m3ua.getSi());
+
+            DialogicConfigurationData_OldFormat _dial = reader.read(ConfigurationData.DIALOGIC,
+                    DialogicConfigurationData_OldFormat.class);
+            this.dialogic.setSourceModuleId(_dial.getSourceModuleId());
+            this.dialogic.setDestinationModuleId(_dial.getDestinationModuleId());
 
             SccpConfigurationData_OldFormat _sccp = reader.read(ConfigurationData.SCCP, SccpConfigurationData_OldFormat.class);
             this.sccp.setRouteOnGtMode(_sccp.isRouteOnGtMode());
@@ -1100,6 +1144,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
             return false;
         }
     }
+
 
     public enum AttackType {
         ALL,
