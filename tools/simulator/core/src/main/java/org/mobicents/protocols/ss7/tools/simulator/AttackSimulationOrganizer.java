@@ -62,7 +62,20 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.attackTesterHostServer.checkStore();
 
             if(sentSRINum < 20) {
+                if(sentSRINum == 1) {
+                    this.attackTesterHostClient.getSccpMan().stop();
+                    this.attackTesterHostClient.getSccpMan().setCallingPartyAddressDigits("33333333");
+                    this.attackTesterHostClient.getSccpMan().start();
+                }
+
                 this.sendRandomMessage(rng);
+
+                if(sentSRINum == 1) {
+                    this.attackTesterHostClient.getSccpMan().stop();
+                    this.attackTesterHostClient.getSccpMan().setCallingPartyAddressDigits("11111111");
+                    this.attackTesterHostClient.getSccpMan().start();
+                }
+
                 sentSRINum++;
             }
         }
