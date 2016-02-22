@@ -223,7 +223,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         int localSpc = 1,
                 localSsn = 8,
                 remoteSpc = 2,
-                remoteSsn = 8;
+                remoteSsn = 6;
         boolean routeonGtMode = true;
         String callingPartyAddressDigits = "22222222";
 
@@ -372,7 +372,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         this.setInstance_TestTask(Instance_TestTask.createInstance("SMS_TEST_CLIENT"));
         TestSmsClientConfigurationData testSmsClientConfigurationData = this.getConfigurationData().getTestSmsClientConfigurationData();
 
-        //testSmsClientConfigurationData.setAddressNature();
+        testSmsClientConfigurationData.setAddressNature(AddressNature.international_number);
         testSmsClientConfigurationData.setContinueDialog(false);
         testSmsClientConfigurationData.setMapProtocolVersion(MapProtocolVersion.createInstance("MAP protocol version 3"));
         testSmsClientConfigurationData.setMtFSMReaction(MtFSMReaction.createInstance("Return success"));
@@ -405,7 +405,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         testSmsServerConfigurationData.setNumberingPlan(org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan.ISDN);
         testSmsServerConfigurationData.setNumberingPlanIdentification(NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
         testSmsServerConfigurationData.setSendSrsmdsIfError(false);
-        testSmsServerConfigurationData.setServiceCenterAddress("8888");
+        testSmsServerConfigurationData.setServiceCenterAddress("45454545");
         testSmsServerConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
         testSmsServerConfigurationData.setTypeOfNumber(TypeOfNumber.InternationalNumber);
         testSmsServerConfigurationData.setVlrSsn(8);
