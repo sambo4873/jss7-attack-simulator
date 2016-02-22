@@ -961,7 +961,7 @@ public class AttackSimulationHost extends TesterHost implements Stoppable {
             BasicConfigurator.configure();
         }
 
-        // logger.setLevel(Level.TRACE);
+        logger.setLevel(Level.WARN);
         logger.debug("log4j configured");
 
     }
