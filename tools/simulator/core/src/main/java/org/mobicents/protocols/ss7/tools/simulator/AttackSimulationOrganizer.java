@@ -61,19 +61,19 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.attackTesterHostClient.checkStore();
             this.attackTesterHostServer.checkStore();
 
-            if(sentSRINum < 20) {
+            if(sentSRINum < 2) {
                 if(sentSRINum == 1) {
-                    this.attackTesterHostClient.getSccpMan().stop();
-                    this.attackTesterHostClient.getSccpMan().setCallingPartyAddressDigits("33333333");
-                    this.attackTesterHostClient.getSccpMan().start();
+                    this.attackTesterHostServer.getSccpMan().stop();
+                    this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("33333333");
+                    this.attackTesterHostServer.getSccpMan().start();
                 }
 
                 this.sendRandomMessage(rng);
 
                 if(sentSRINum == 1) {
-                    this.attackTesterHostClient.getSccpMan().stop();
-                    this.attackTesterHostClient.getSccpMan().setCallingPartyAddressDigits("11111111");
-                    this.attackTesterHostClient.getSccpMan().start();
+                    this.attackTesterHostServer.getSccpMan().stop();
+                    this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("11111111");
+                    this.attackTesterHostServer.getSccpMan().start();
                 }
 
                 sentSRINum++;
@@ -82,6 +82,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage(Random rng) {
+        this.attackTesterHostServer.getTestAttackServer().performSRIForSM("123123123");
+
         switch(rng.nextInt(4)) {
             case 0:
                 this.attackTesterHostServer.getTestAttackServer().performSRIForSM("123123123");
