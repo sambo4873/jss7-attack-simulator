@@ -67,6 +67,8 @@ public class AttackSimulationOrganizer implements Stoppable {
 
                     //this.attackTesterHostClient.getSccpMan().setRemoteSsn(6);
                     this.attackTesterHostClient.getSccpMan().setLocalSsn(8);
+                    //this.attackTesterHostClient.getTestAttackClient().setSmscSsn(8);
+                    //this.attackTesterHostClient.getTestAttackClient().set;
                 }
 
                 this.sendRandomMessage(rng);
@@ -93,7 +95,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.attackTesterHostServer.getTestAttackServer().setHlrSsn(6);
 
         //Sets local SSN for SRI on receiver
-        this.attackTesterHostClient.
+        //this.attackTesterHostClient.
 
     }
 
