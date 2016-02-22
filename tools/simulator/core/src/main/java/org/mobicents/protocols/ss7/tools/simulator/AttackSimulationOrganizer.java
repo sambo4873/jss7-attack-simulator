@@ -67,7 +67,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
                     //this.attackTesterHostClient.getSccpMan().setRemoteSsn(6);
                     this.attackTesterHostClient.getSccpMan().setLocalSsn(8);
-                    //this.attackTesterHostClient.getTestAttackClient().setSmscSsn(8);
+                    this.attackTesterHostClient.getTestAttackClient().setSmscSsn(5);
                     //this.attackTesterHostClient.getTestAttackClient().set;
                 }
 
@@ -76,6 +76,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 if(sentSRINum == 1) {
                     //this.attackTesterHostClient.getSccpMan().setRemoteSsn(8);
                     this.attackTesterHostClient.getSccpMan().setLocalSsn(6);
+                    this.attackTesterHostClient.getTestAttackClient().setSmscSsn(8);
                 }
 
                 sentSRINum++;
