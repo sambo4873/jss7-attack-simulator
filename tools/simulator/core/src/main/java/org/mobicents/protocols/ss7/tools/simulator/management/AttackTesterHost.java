@@ -226,7 +226,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         //////// L2 Configuration Data //////////
 
         int localSpc = 1,
-                localSsn = 6,
+                localSsn = 8,
                 remoteSpc = 2,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
