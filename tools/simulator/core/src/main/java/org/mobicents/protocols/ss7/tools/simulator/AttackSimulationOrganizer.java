@@ -63,17 +63,13 @@ public class AttackSimulationOrganizer implements Stoppable {
 
             if(sentSRINum < 2) {
                 if(sentSRINum == 1) {
-                    this.attackTesterHostServer.getSccpMan().stop();
                     this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("33333333");
-                    this.attackTesterHostServer.getSccpMan().start();
                 }
 
                 this.sendRandomMessage(rng);
 
                 if(sentSRINum == 1) {
-                    this.attackTesterHostServer.getSccpMan().stop();
                     this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("11111111");
-                    this.attackTesterHostServer.getSccpMan().start();
                 }
 
                 sentSRINum++;
