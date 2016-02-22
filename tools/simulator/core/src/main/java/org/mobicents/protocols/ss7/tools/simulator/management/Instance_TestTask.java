@@ -45,6 +45,8 @@ public class Instance_TestTask extends EnumeratedBase {
     public static final int VAL_ATI_TEST_SERVER = 8;
     public static final int VAL_SRI_ATTACK_TEST_CLIENT = 9;
     public static final int VAL_SRI_ATTACK_TEST_SERVER = 10;
+    public static final int VAL_ATTACK_CLIENT = 11;
+    public static final int VAL_ATTACK_SERVER = 12;
 
     private static Hashtable<String, Integer> stringMap = new Hashtable<String, Integer>();
     private static Hashtable<Integer, String> intMap = new Hashtable<Integer, String>();
@@ -61,6 +63,9 @@ public class Instance_TestTask extends EnumeratedBase {
         intMap.put(VAL_ATI_TEST_SERVER, "ATI_TEST_SERVER");
         intMap.put(VAL_SRI_ATTACK_TEST_CLIENT, "SRI_ATTACK_TEST_CLIENT");
         intMap.put(VAL_SRI_ATTACK_TEST_SERVER, "SRI_ATTACK_TEST_SERVER");
+        intMap.put(VAL_ATTACK_CLIENT, "ATTACK_TEST_CLIENT");
+        intMap.put(VAL_ATTACK_SERVER, "ATTACK_TEST_SERVER");
+
 
         stringMap.put("NO", VAL_NO);
         stringMap.put("USSD_TEST_CLIENT", VAL_USSD_TEST_CLIENT);
@@ -73,6 +78,8 @@ public class Instance_TestTask extends EnumeratedBase {
         stringMap.put("ATI_TEST_SERVER", VAL_ATI_TEST_SERVER);
         stringMap.put("SRI_ATTACK_TEST_CLIENT", VAL_SRI_ATTACK_TEST_CLIENT);
         stringMap.put("SRI_ATTACK_TEST_SERVER", VAL_SRI_ATTACK_TEST_SERVER);
+        stringMap.put("ATTACK_TEST_CLIENT", VAL_ATTACK_CLIENT);
+        stringMap.put("ATTACK_TEST_SERVER", VAL_ATTACK_SERVER);
     }
 
     public Instance_TestTask() {

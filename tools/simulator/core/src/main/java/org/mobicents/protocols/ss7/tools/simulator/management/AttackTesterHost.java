@@ -37,17 +37,13 @@ import org.mobicents.protocols.ss7.tools.simulator.common.ConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.level1.*;
 import org.mobicents.protocols.ss7.tools.simulator.level2.*;
 import org.mobicents.protocols.ss7.tools.simulator.level3.*;
-import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientMan;
-import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerMan;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientMan;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerMan;
-import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfMan;
-import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClient;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClientConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServer;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServerConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientConfigurationData_OldFormat;
-import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerConfigurationData_OldFormat;
-import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerMan;
 
 /**
  * @author Kristoffer Jensen
@@ -91,16 +87,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     SccpMan sccp;
     MapMan map;
     CapMan cap;
-    TestUssdClientMan testUssdClientMan;
-    TestUssdServerMan testUssdServerMan;
-    TestSmsClientMan testSmsClientMan;
-    TestSmsServerMan testSmsServerMan;
-    TestCapSsfMan testCapSsfMan;
-    TestCapScfMan testCapScfMan;
-    TestAtiClientMan testAtiClientMan;
-    TestAtiServerMan testAtiServerMan;
-    TestSRIForSMClientMan testSRIForSMClientMan;
-    TestSRIForSMServerMan testSRIForSMServerMan;
+    TestAttackClient testAttackClient;
+    TestAttackServer testAttackServer;
 
     private AttackType attackType;
 
@@ -127,35 +115,11 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         this.cap = new CapMan(appName);
         this.cap.setTesterHost(this);
 
-        this.testUssdClientMan = new TestUssdClientMan(appName);
-        this.testUssdClientMan.setTesterHost(this);
+        this.testAttackClient = new TestAttackClient(appName);
+        this.testAttackClient.setTesterHost(this);
 
-        this.testUssdServerMan = new TestUssdServerMan(appName);
-        this.testUssdServerMan.setTesterHost(this);
-
-        this.testSmsClientMan = new TestSmsClientMan(appName);
-        this.testSmsClientMan.setTesterHost(this);
-
-        this.testSmsServerMan = new TestSmsServerMan(appName);
-        this.testSmsServerMan.setTesterHost(this);
-
-        this.testCapSsfMan = new TestCapSsfMan(appName);
-        this.testCapSsfMan.setTesterHost(this);
-
-        this.testCapScfMan = new TestCapScfMan(appName);
-        this.testCapScfMan.setTesterHost(this);
-
-        this.testAtiClientMan = new TestAtiClientMan(appName);
-        this.testAtiClientMan.setTesterHost(this);
-
-        this.testAtiServerMan = new TestAtiServerMan(appName);
-        this.testAtiServerMan.setTesterHost(this);
-
-        this.testSRIForSMClientMan = new TestSRIForSMClientMan(appName);
-        this.testSRIForSMClientMan.setTesterHost(this);
-
-        this.testSRIForSMServerMan = new TestSRIForSMServerMan(appName);
-        this.testSRIForSMServerMan.setTesterHost(this);
+        this.testAttackServer = new TestAttackServer(appName);
+        this.testAttackServer.setTesterHost(this);
 
         this.setupLog4j(appName);
 
@@ -176,23 +140,15 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                     .append(File.separator).append(this.appName).append("_").append(PERSIST_FILE_NAME);
         }
 
-        File fnOld = new File(persistFileOld.toString());
         File fn = new File(persistFile.toString());
-
-        if (this.loadOld(fnOld)) {
-            this.store();
-        } else {
-            this.load(fn);
-        }
-        if (fnOld.exists())
-            fnOld.delete();
+        this.load(fn);
 
 
         switch(attackType) {
-            case SMS_SERVER:
+            case ATTACK_SERVER:
                 this.configureAttackServer();
                 break;
-            case SMS_CLIENT:
+            case ATTACK_CLIENT:
                 this.configureAttackClient();
                 break;
             default:
@@ -246,7 +202,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         configureL1(dpc, isSctpServer, localHost, localPort, ipspType, opc, remoteHost, remotePort);
         configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
         configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
-        configureSMSTestServer();
+        configureTestAttackServer();
     }
 
     private void configureAttackClient() {
@@ -298,7 +254,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         configureL1(dpc, isSctpServer, localHost, localPort, ipspType, opc, remoteHost, remotePort);
         configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
         configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
-        configureSMSTestClient();
+        configureTestAttackClient();
     }
 
     public void configureL1(int dpc, boolean isSctpServer, String localHost, int localPort, IPSPType ipspType, int opc, String remoteHost, int remotePort) {
@@ -368,47 +324,47 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         mapConfigurationData.setRemoteAddressDigits(remoteAddressDigits);
     }
 
-    public void configureSMSTestClient() {
-        this.setInstance_TestTask(Instance_TestTask.createInstance("SMS_TEST_CLIENT"));
-        TestSmsClientConfigurationData testSmsClientConfigurationData = this.getConfigurationData().getTestSmsClientConfigurationData();
+    public void configureTestAttackClient() {
+        this.setInstance_TestTask(Instance_TestTask.createInstance("ATTACK_TEST_CLIENT"));
+        TestAttackClientConfigurationData testAttackClientConfigurationData = this.getConfigurationData().getTestAttackClientConfigurationData();
 
-        testSmsClientConfigurationData.setAddressNature(AddressNature.international_number);
-        testSmsClientConfigurationData.setContinueDialog(false);
-        testSmsClientConfigurationData.setMapProtocolVersion(MapProtocolVersion.createInstance("MAP protocol version 3"));
-        testSmsClientConfigurationData.setMtFSMReaction(MtFSMReaction.createInstance("Return success"));
-        testSmsClientConfigurationData.setNationalLanguageCode(0);
-        testSmsClientConfigurationData.setNumberingPlan(org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan.ISDN);
-        testSmsClientConfigurationData.setNumberingPlanIdentification(NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
-        testSmsClientConfigurationData.setOneNotificationFor100Dialogs(false);
-        testSmsClientConfigurationData.setReportSMDeliveryStatusReaction(ReportSMDeliveryStatusReaction.createInstance("Return success"));
-        testSmsClientConfigurationData.setReturn20PersDeliveryErrors(false);
-        testSmsClientConfigurationData.setServiceCenterAddress("45454545");
-        testSmsClientConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
-        testSmsClientConfigurationData.setSmscSsn(8);
-        testSmsClientConfigurationData.setSRIInformServiceCenter(SRIInformServiceCenter.createInstance("No data in MWD file"));
-        testSmsClientConfigurationData.setSRIReaction(SRIReaction.createInstance("Return success"));
-        testSmsClientConfigurationData.setSriResponseImsi("1234567890");
-        testSmsClientConfigurationData.setSriResponseVlr("0987654321");
-        testSmsClientConfigurationData.setSRIScAddressNotIncluded(false);
-        testSmsClientConfigurationData.setTypeOfNumber(TypeOfNumber.InternationalNumber);
+        testAttackClientConfigurationData.setAddressNature(AddressNature.international_number);
+        testAttackClientConfigurationData.setContinueDialog(false);
+        testAttackClientConfigurationData.setMapProtocolVersion(MapProtocolVersion.createInstance("MAP protocol version 3"));
+        testAttackClientConfigurationData.setMtFSMReaction(MtFSMReaction.createInstance("Return success"));
+        testAttackClientConfigurationData.setNationalLanguageCode(0);
+        testAttackClientConfigurationData.setNumberingPlan(org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan.ISDN);
+        testAttackClientConfigurationData.setNumberingPlanIdentification(NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
+        testAttackClientConfigurationData.setOneNotificationFor100Dialogs(false);
+        testAttackClientConfigurationData.setReportSMDeliveryStatusReaction(ReportSMDeliveryStatusReaction.createInstance("Return success"));
+        testAttackClientConfigurationData.setReturn20PersDeliveryErrors(false);
+        testAttackClientConfigurationData.setServiceCenterAddress("45454545");
+        testAttackClientConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
+        testAttackClientConfigurationData.setSmscSsn(8);
+        testAttackClientConfigurationData.setSRIInformServiceCenter(SRIInformServiceCenter.createInstance("No data in MWD file"));
+        testAttackClientConfigurationData.setSRIReaction(SRIReaction.createInstance("Return success"));
+        testAttackClientConfigurationData.setSriResponseImsi("1234567890");
+        testAttackClientConfigurationData.setSriResponseVlr("0987654321");
+        testAttackClientConfigurationData.setSRIScAddressNotIncluded(false);
+        testAttackClientConfigurationData.setTypeOfNumber(TypeOfNumber.InternationalNumber);
 
     }
 
-    public void configureSMSTestServer() {
-        this.setInstance_TestTask(Instance_TestTask.createInstance("SMS_TEST_SERVER"));
-        TestSmsServerConfigurationData testSmsServerConfigurationData = this.getConfigurationData().getTestSmsServerConfigurationData();
+    public void configureTestAttackServer() {
+        this.setInstance_TestTask(Instance_TestTask.createInstance("ATTACK_TEST_SERVER"));
+        TestAttackServerConfigurationData testAttackServerConfigurationData = this.getConfigurationData().getTestAttackServerConfigurationData();
 
-        testSmsServerConfigurationData.setAddressNature(AddressNature.international_number);
-        testSmsServerConfigurationData.setGprsSupportIndicator(false);
-        testSmsServerConfigurationData.setHlrSsn(6);
-        testSmsServerConfigurationData.setMapProtocolVersion(MapProtocolVersion.createInstance("MAP protocol version 3"));
-        testSmsServerConfigurationData.setNumberingPlan(org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan.ISDN);
-        testSmsServerConfigurationData.setNumberingPlanIdentification(NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
-        testSmsServerConfigurationData.setSendSrsmdsIfError(false);
-        testSmsServerConfigurationData.setServiceCenterAddress("45454545");
-        testSmsServerConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
-        testSmsServerConfigurationData.setTypeOfNumber(TypeOfNumber.InternationalNumber);
-        testSmsServerConfigurationData.setVlrSsn(8);
+        testAttackServerConfigurationData.setAddressNature(AddressNature.international_number);
+        testAttackServerConfigurationData.setGprsSupportIndicator(false);
+        testAttackServerConfigurationData.setHlrSsn(6);
+        testAttackServerConfigurationData.setMapProtocolVersion(MapProtocolVersion.createInstance("MAP protocol version 3"));
+        testAttackServerConfigurationData.setNumberingPlan(org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan.ISDN);
+        testAttackServerConfigurationData.setNumberingPlanIdentification(NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
+        testAttackServerConfigurationData.setSendSrsmdsIfError(false);
+        testAttackServerConfigurationData.setServiceCenterAddress("45454545");
+        testAttackServerConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
+        testAttackServerConfigurationData.setTypeOfNumber(TypeOfNumber.InternationalNumber);
+        testAttackServerConfigurationData.setVlrSsn(8);
     }
 
     @Override
@@ -419,11 +375,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     @Override
     public M3uaMan getM3uaMan() {
         return this.m3ua;
-    }
-
-    @Override
-    public DialogicMan getDialogicMan() {
-        return this.dialogic;
     }
 
     @Override
@@ -441,54 +392,12 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         return this.cap;
     }
 
-    @Override
-    public TestUssdClientMan getTestUssdClientMan() {
-        return this.testUssdClientMan;
+    public TestAttackClient getTestAttackClient() {
+        return this.testAttackClient;
     }
 
-    @Override
-    public TestUssdServerMan getTestUssdServerMan() {
-        return this.testUssdServerMan;
-    }
-
-    @Override
-    public TestSmsClientMan getTestSmsClientMan() {
-        return this.testSmsClientMan;
-    }
-
-    @Override
-    public TestSmsServerMan getTestSmsServerMan() {
-        return this.testSmsServerMan;
-    }
-
-    @Override
-    public TestCapSsfMan getTestCapSsfMan() {
-        return this.testCapSsfMan;
-    }
-
-    @Override
-    public TestCapScfMan getTestCapScfMan() {
-        return this.testCapScfMan;
-    }
-
-    @Override
-    public TestAtiClientMan getTestAtiClientMan() {
-        return this.testAtiClientMan;
-    }
-
-    @Override
-    public TestAtiServerMan getTestAtiServerMan() {
-        return this.testAtiServerMan;
-    }
-
-    @Override
-    public TestSRIForSMClientMan getTestSRIForSMClientMan() {
-        return this.testSRIForSMClientMan;
-    }
-
-    @Override
-    public TestSRIForSMServerMan getTestSRIForSMServerMan() {
-        return this.testSRIForSMServerMan;
+    public TestAttackServer getTestAttackServer() {
+        return this.testAttackServer;
     }
 
     private void setupLog4j(String appName) {
@@ -652,9 +561,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             return "";
     }
 
-
-
-
     @Override
     public void start() {
 
@@ -737,113 +643,25 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         // Start Testers
         started = false;
         switch (this.configurationData.getInstance_TestTask().intValue()) {
-            case Instance_TestTask.VAL_USSD_TEST_CLIENT:
+            case Instance_TestTask.VAL_ATTACK_CLIENT:
                 if (curMap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME,
-                            "Error initializing USSD_TEST_CLIENT: No MAP stack is defined at L3", "", Level.WARN);
-                } else {
-                    this.instance_TestTask_B = this.testUssdClientMan;
-                    this.testUssdClientMan.setMapMan(curMap);
-                    started = this.testUssdClientMan.start();
-                }
-                break;
-
-            case Instance_TestTask.VAL_USSD_TEST_SERVER:
-                if (curMap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME,
-                            "Error initializing USSD_TEST_SERVER: No MAP stack is defined at L3", "", Level.WARN);
-                } else {
-                    this.instance_TestTask_B = this.testUssdServerMan;
-                    this.testUssdServerMan.setMapMan(curMap);
-                    started = this.testUssdServerMan.start();
-                }
-                break;
-
-            case Instance_TestTask.VAL_SMS_TEST_CLIENT:
-                if (curMap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SMS_TEST_CLIENT: No MAP stack is defined at L3",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing ATTACK_CLIENT: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
-                    this.instance_TestTask_B = this.testSmsClientMan;
-                    this.testSmsClientMan.setMapMan(curMap);
-                    started = this.testSmsClientMan.start();
+                    this.instance_TestTask_B = this.testAttackClient;
+                    this.testAttackClient.setMapMan(curMap);
+                    started = this.testAttackClient.start();
                 }
                 break;
 
-            case Instance_TestTask.VAL_SMS_TEST_SERVER:
+            case Instance_TestTask.VAL_ATTACK_SERVER:
                 if (curMap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SMS_TEST_SERVER: No MAP stack is defined at L3",
+                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing ATTACK_SERVER: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
-                    this.instance_TestTask_B = this.testSmsServerMan;
-                    this.testSmsServerMan.setMapMan(curMap);
-                    started = this.testSmsServerMan.start();
-                }
-                break;
-
-            case Instance_TestTask.VAL_CAP_TEST_SCF:
-                if (curCap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME,
-                            "Error initializing VAL_CAP_TEST_SCF: No CAP stack is defined at L3", "", Level.WARN);
-                } else {
-                    this.instance_TestTask_B = this.testCapScfMan;
-                    this.testCapScfMan.setCapMan(curCap);
-                    started = this.testCapScfMan.start();
-                }
-                break;
-
-            case Instance_TestTask.VAL_CAP_TEST_SSF:
-                if (curCap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME,
-                            "Error initializing VAL_CAP_TEST_SSF: No CAP stack is defined at L3", "", Level.WARN);
-                } else {
-                    this.instance_TestTask_B = this.testCapSsfMan;
-                    this.testCapSsfMan.setCapMan(curCap);
-                    started = this.testCapSsfMan.start();
-                }
-                break;
-
-            case Instance_TestTask.VAL_ATI_TEST_CLIENT:
-                if (curMap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing ATI_TEST_CLIENT: No MAP stack is defined at L3",
-                            "", Level.WARN);
-                } else {
-                    this.instance_TestTask_B = this.testAtiClientMan;
-                    this.testAtiClientMan.setMapMan(curMap);
-                    started = this.testAtiClientMan.start();
-                }
-                break;
-
-            case Instance_TestTask.VAL_ATI_TEST_SERVER:
-                if (curMap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing ATI_TEST_SERVER: No MAP stack is defined at L3",
-                            "", Level.WARN);
-                } else {
-                    this.instance_TestTask_B = this.testAtiServerMan;
-                    this.testAtiServerMan.setMapMan(curMap);
-                    started = this.testAtiServerMan.start();
-                }
-                break;
-
-            case Instance_TestTask.VAL_SRI_ATTACK_TEST_CLIENT:
-                if (curMap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SRI_ATTACK_CLIENT: No MAP stack is defined at L3",
-                            "", Level.WARN);
-                } else {
-                    this.instance_TestTask_B = this.testSRIForSMClientMan;
-                    this.testSRIForSMClientMan.setMapMan(curMap);
-                    started = this.testSRIForSMClientMan.start();
-                }
-                break;
-
-            case Instance_TestTask.VAL_SRI_ATTACK_TEST_SERVER:
-                if (curMap == null) {
-                    this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SRI_ATTACK_SERVER: No MAP stack is defined at L3",
-                            "", Level.WARN);
-                } else {
-                    this.instance_TestTask_B = this.testSRIForSMServerMan;
-                    this.testSRIForSMServerMan.setMapMan(curMap);
-                    started = this.testSRIForSMServerMan.start();
+                    this.instance_TestTask_B = this.testAttackServer;
+                    this.testAttackServer.setMapMan(curMap);
+                    started = this.testAttackServer.start();
                 }
                 break;
 
@@ -1014,147 +832,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         }
     }
 
-    private boolean loadOld(File fn) {
-
-        XMLObjectReader reader = null;
-        try {
-            if (!fn.exists()) {
-                // this.sendNotif(SOURCE_NAME, "Error while reading the Host state from file: file not found: " + persistFile,
-                // "", Level.WARN);
-                return false;
-            }
-
-            reader = XMLObjectReader.newInstance(new FileInputStream(fn));
-
-            reader.setBinding(binding);
-            this.configurationData.setInstance_L1(Instance_L1.createInstance(reader.read(ConfigurationData.INSTANCE_L1,
-                    String.class)));
-            this.configurationData.setInstance_L2(Instance_L2.createInstance(reader.read(ConfigurationData.INSTANCE_L2,
-                    String.class)));
-            this.configurationData.setInstance_L3(Instance_L3.createInstance(reader.read(ConfigurationData.INSTANCE_L3,
-                    String.class)));
-            this.configurationData.setInstance_TestTask(Instance_TestTask.createInstance(reader.read(
-                    ConfigurationData.INSTANCE_TESTTASK, String.class)));
-
-            M3uaConfigurationData_OldFormat _m3ua = reader.read(ConfigurationData.M3UA, M3uaConfigurationData_OldFormat.class);
-            this.m3ua.setSctpLocalHost(_m3ua.getLocalHost());
-            this.m3ua.setSctpLocalPort(_m3ua.getLocalPort());
-            this.m3ua.setSctpRemoteHost(_m3ua.getRemoteHost());
-            this.m3ua.setSctpRemotePort(_m3ua.getRemotePort());
-            this.configurationData.getM3uaConfigurationData().setIpChannelType(_m3ua.getIpChannelType());
-            this.m3ua.setSctpIsServer(_m3ua.getIsSctpServer());
-            this.m3ua.doSetExtraHostAddresses(_m3ua.getSctpExtraHostAddresses());
-            this.configurationData.getM3uaConfigurationData().setM3uaFunctionality(_m3ua.getM3uaFunctionality());
-            this.configurationData.getM3uaConfigurationData().setM3uaIPSPType(_m3ua.getM3uaIPSPType());
-            this.configurationData.getM3uaConfigurationData().setM3uaExchangeType(_m3ua.getM3uaExchangeType());
-            this.m3ua.setM3uaDpc(_m3ua.getDpc());
-            this.m3ua.setM3uaOpc(_m3ua.getOpc());
-            this.m3ua.setM3uaSi(_m3ua.getSi());
-
-            DialogicConfigurationData_OldFormat _dial = reader.read(ConfigurationData.DIALOGIC,
-                    DialogicConfigurationData_OldFormat.class);
-            this.dialogic.setSourceModuleId(_dial.getSourceModuleId());
-            this.dialogic.setDestinationModuleId(_dial.getDestinationModuleId());
-
-            SccpConfigurationData_OldFormat _sccp = reader.read(ConfigurationData.SCCP, SccpConfigurationData_OldFormat.class);
-            this.sccp.setRouteOnGtMode(_sccp.isRouteOnGtMode());
-            this.sccp.setRemoteSpc(_sccp.getRemoteSpc());
-            this.sccp.setLocalSpc(_sccp.getLocalSpc());
-            this.sccp.setNi(_sccp.getNi());
-            this.sccp.setRemoteSsn(_sccp.getRemoteSsn());
-            this.sccp.setLocalSsn(_sccp.getLocalSsn());
-            this.sccp.setGlobalTitleType(_sccp.getGlobalTitleType());
-            this.sccp.setNatureOfAddress(new NatureOfAddressType(_sccp.getNatureOfAddress().getValue()));
-            this.sccp.setNumberingPlan(new NumberingPlanSccpType(_sccp.getNumberingPlan().getValue()));
-            this.sccp.setTranslationType(_sccp.getTranslationType());
-            this.sccp.setCallingPartyAddressDigits(_sccp.getCallingPartyAddressDigits());
-            // this.sccp.setExtraLocalAddressDigits(_sccp.getExtraLocalAddressDigits());
-
-            MapConfigurationData_OldFormat _map = reader.read(ConfigurationData.MAP, MapConfigurationData_OldFormat.class);
-            // this.map.setLocalSsn(_map.getLocalSsn());
-            // this.map.setRemoteSsn(_map.getRemoteSsn());
-            this.map.setRemoteAddressDigits(_map.getRemoteAddressDigits());
-            this.map.setOrigReference(_map.getOrigReference());
-            this.map.setOrigReferenceAddressNature(new AddressNatureType(_map.getOrigReferenceAddressNature().getIndicator()));
-            this.map.setOrigReferenceNumberingPlan(new NumberingPlanMapType(_map.getOrigReferenceNumberingPlan().getIndicator()));
-            this.map.setDestReference(_map.getDestReference());
-            this.map.setDestReferenceAddressNature(new AddressNatureType(_map.getDestReferenceAddressNature().getIndicator()));
-            this.map.setDestReferenceNumberingPlan(new NumberingPlanMapType(_map.getDestReferenceNumberingPlan().getIndicator()));
-
-            TestUssdClientConfigurationData_OldFormat _TestUssdClientMan = reader.read(ConfigurationData.TEST_USSD_CLIENT,
-                    TestUssdClientConfigurationData_OldFormat.class);
-            this.testUssdClientMan.setMsisdnAddress(_TestUssdClientMan.getMsisdnAddress());
-            this.testUssdClientMan.setMsisdnAddressNature(new AddressNatureType(_TestUssdClientMan.getMsisdnAddressNature()
-                    .getIndicator()));
-            this.testUssdClientMan.setMsisdnNumberingPlan(new NumberingPlanMapType(_TestUssdClientMan.getMsisdnNumberingPlan()
-                    .getIndicator()));
-            this.testUssdClientMan.setDataCodingScheme(_TestUssdClientMan.getDataCodingScheme());
-            this.testUssdClientMan.setAlertingPattern(_TestUssdClientMan.getAlertingPattern());
-            this.testUssdClientMan.setUssdClientAction(_TestUssdClientMan.getUssdClientAction());
-            this.testUssdClientMan.setAutoRequestString(_TestUssdClientMan.getAutoRequestString());
-            this.testUssdClientMan.setMaxConcurrentDialogs(_TestUssdClientMan.getMaxConcurrentDialogs());
-            this.testUssdClientMan.setOneNotificationFor100Dialogs(_TestUssdClientMan.isOneNotificationFor100Dialogs());
-
-            TestUssdServerConfigurationData_OldFormat _TestUssdServerMan = reader.read(ConfigurationData.TEST_USSD_SERVER,
-                    TestUssdServerConfigurationData_OldFormat.class);
-            this.testUssdServerMan.setMsisdnAddress(_TestUssdServerMan.getMsisdnAddress());
-            this.testUssdServerMan.setMsisdnAddressNature(new AddressNatureType(_TestUssdServerMan.getMsisdnAddressNature()
-                    .getIndicator()));
-            this.testUssdServerMan.setMsisdnNumberingPlan(new NumberingPlanMapType(_TestUssdServerMan.getMsisdnNumberingPlan()
-                    .getIndicator()));
-            this.testUssdServerMan.setDataCodingScheme(_TestUssdServerMan.getDataCodingScheme());
-            this.testUssdServerMan.setAlertingPattern(_TestUssdServerMan.getAlertingPattern());
-            this.testUssdServerMan.setProcessSsRequestAction(_TestUssdServerMan.getProcessSsRequestAction());
-            this.testUssdServerMan.setAutoResponseString(_TestUssdServerMan.getAutoResponseString());
-            this.testUssdServerMan.setAutoUnstructured_SS_RequestString(_TestUssdServerMan
-                    .getAutoUnstructured_SS_RequestString());
-            this.testUssdServerMan.setOneNotificationFor100Dialogs(_TestUssdServerMan.isOneNotificationFor100Dialogs());
-
-            TestSmsClientConfigurationData_OldFormat _TestSmsClientMan = reader.read(ConfigurationData.TEST_SMS_CLIENT,
-                    TestSmsClientConfigurationData_OldFormat.class);
-            this.testSmsClientMan.setAddressNature(new AddressNatureType(_TestSmsClientMan.getAddressNature().getIndicator()));
-            this.testSmsClientMan
-                    .setNumberingPlan(new NumberingPlanMapType(_TestSmsClientMan.getNumberingPlan().getIndicator()));
-            this.testSmsClientMan.setServiceCenterAddress(_TestSmsClientMan.getServiceCenterAddress());
-            this.testSmsClientMan.setMapProtocolVersion(_TestSmsClientMan.getMapProtocolVersion());
-            this.testSmsClientMan.setSRIResponseImsi(_TestSmsClientMan.getSriResponseImsi());
-            this.testSmsClientMan.setSRIResponseVlr(_TestSmsClientMan.getSriResponseVlr());
-            this.testSmsClientMan.setSmscSsn(_TestSmsClientMan.getSmscSsn());
-            this.testSmsClientMan.setTypeOfNumber(new TypeOfNumberType(_TestSmsClientMan.getTypeOfNumber().getCode()));
-            this.testSmsClientMan.setNumberingPlanIdentification(new NumberingPlanIdentificationType(_TestSmsClientMan
-                    .getNumberingPlanIdentification().getCode()));
-            this.testSmsClientMan.setSmsCodingType(_TestSmsClientMan.getSmsCodingType());
-
-            TestSmsServerConfigurationData_OldFormat _TestSmsServerMan = reader.read(ConfigurationData.TEST_SMS_SERVER,
-                    TestSmsServerConfigurationData_OldFormat.class);
-            this.testSmsServerMan.setAddressNature(new AddressNatureType(_TestSmsServerMan.getAddressNature().getIndicator()));
-            this.testSmsServerMan
-                    .setNumberingPlan(new NumberingPlanMapType(_TestSmsServerMan.getNumberingPlan().getIndicator()));
-            this.testSmsServerMan.setServiceCenterAddress(_TestSmsServerMan.getServiceCenterAddress());
-            this.testSmsServerMan.setMapProtocolVersion(_TestSmsServerMan.getMapProtocolVersion());
-            this.testSmsServerMan.setHlrSsn(_TestSmsServerMan.getHlrSsn());
-            this.testSmsServerMan.setVlrSsn(_TestSmsServerMan.getVlrSsn());
-            this.testSmsServerMan.setTypeOfNumber(new TypeOfNumberType(_TestSmsServerMan.getTypeOfNumber().getCode()));
-            this.testSmsServerMan.setNumberingPlanIdentification(new NumberingPlanIdentificationType(_TestSmsServerMan
-                    .getNumberingPlanIdentification().getCode()));
-            this.testSmsServerMan.setSmsCodingType(_TestSmsServerMan.getSmsCodingType());
-
-            reader.close();
-
-            return true;
-
-        } catch (Exception ex) {
-            this.sendNotif(SOURCE_NAME, "Error while reading the Host state from file", ex, Level.WARN);
-            return false;
-        }
-    }
-
-
     public enum AttackType {
         ALL,
-        SMS_CLIENT,
-        SMS_SERVER,
-        LOCATION_SRIFORSM,
-        INTERCEPT_SMS
+        ATTACK_CLIENT,
+        ATTACK_SERVER,
     }
 }

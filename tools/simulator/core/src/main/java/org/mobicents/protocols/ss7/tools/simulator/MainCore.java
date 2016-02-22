@@ -428,8 +428,8 @@ public class MainCore {
 
         System.out.println("Loading simulation hosts...");
 
-        AttackTesterHost attackTesterHostClient = new AttackTesterHost("attackClient", sim_home, AttackTesterHost.AttackType.SMS_CLIENT);
-        AttackTesterHost attacktesterHostServer = new AttackTesterHost("attackServer", sim_home, AttackTesterHost.AttackType.SMS_SERVER);
+        AttackTesterHost attackTesterHostClient = new AttackTesterHost("attackClient", sim_home, AttackTesterHost.AttackType.ATTACK_CLIENT);
+        AttackTesterHost attacktesterHostServer = new AttackTesterHost("attackServer", sim_home, AttackTesterHost.AttackType.ATTACK_SERVER);
         AttackSimulationOrganizer attackSimulationOrganizer = new AttackSimulationOrganizer(attackTesterHostClient, attacktesterHostServer);
 
         System.out.println("Simulation hosts loaded, starting simulation...");
