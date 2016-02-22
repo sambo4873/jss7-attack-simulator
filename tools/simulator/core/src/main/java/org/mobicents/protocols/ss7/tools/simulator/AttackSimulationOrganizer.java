@@ -65,51 +65,36 @@ public class AttackSimulationOrganizer implements Stoppable {
             if(sentSRINum < 3) {
                 if(sentSRINum == 1) {
 
-                    this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("33333333");
-
-                    int newRemoteSsn = 8;
-
-                    try {
-                        this.attackTesterHostServer.getSccpMan().getSccpStack().getSccpResource().modifyRemoteSsn(1, this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getRemoteSpc(), newRemoteSsn, 0, false);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.exit(-1);
-                    }
-
-                    //this.attackTesterHostServer.getSccpMan().setLocalSsn(6);
-                    this.attackTesterHostServer.getSccpMan().setRemoteSsn(8);
-                    this.attackTesterHostServer.getTestAttackServer().setHlrSsn(8);
-                    //this.attackTesterHostServer.getTestAttackServer().setVlrSsn(14);
-
-                    this.attackTesterHostClient.getSccpMan().setRemoteSsn(6);
+                    //this.attackTesterHostClient.getSccpMan().setRemoteSsn(6);
                     this.attackTesterHostClient.getSccpMan().setLocalSsn(8);
                 }
 
                 this.sendRandomMessage(rng);
 
                 if(sentSRINum == 1) {
-                    int newRemoteSsn = 6;
-
-                    try {
-                        this.attackTesterHostServer.getSccpMan().getSccpStack().getSccpResource().modifyRemoteSsn(1, this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getRemoteSpc(), newRemoteSsn, 0, false);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.exit(-1);
-                    }
-
-                    this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("22222222");
-                    this.attackTesterHostServer.getSccpMan().setLocalSsn(8);
-                    this.attackTesterHostServer.getSccpMan().setRemoteSsn(6);
-                    this.attackTesterHostServer.getTestAttackServer().setHlrSsn(6);
-                    this.attackTesterHostServer.getTestAttackServer().setVlrSsn(8);
-
-                    this.attackTesterHostClient.getSccpMan().setRemoteSsn(8);
+                    //this.attackTesterHostClient.getSccpMan().setRemoteSsn(8);
                     this.attackTesterHostClient.getSccpMan().setLocalSsn(6);
                 }
 
                 sentSRINum++;
             }
         }
+    }
+
+    private void modifyCallingPartyAddressDigits(AttackTesterHost attackTesterHost, String cgGT) {
+        attackTesterHost.getSccpMan().setCallingPartyAddressDigits(cgGT);
+    }
+
+    private void sendSRIForSM() {
+        //Sets local SSN for SRI on sender
+        this.attackTesterHostServer.getSccpMan().setLocalSsn(8);
+
+        //Sets remote SSN for SRI on sender
+        this.attackTesterHostServer.getTestAttackServer().setHlrSsn(6);
+
+        //Sets local SSN for SRI on receiver
+        this.attackTesterHostClient.
+
     }
 
     private void sendRandomMessage(Random rng) {
