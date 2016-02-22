@@ -1,5 +1,6 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
+import org.mobicents.protocols.ss7.indicator.RoutingIndicator;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 
 import java.util.Random;
@@ -65,10 +66,22 @@ public class AttackSimulationOrganizer implements Stoppable {
                 if(sentSRINum == 1) {
 
                     this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("33333333");
-                    this.attackTesterHostServer.getSccpMan().setLocalSsn(6);
+
+                    int newLocalSsn = 6;
+
+                    try {
+                        this.attackTesterHostServer.getSccpMan().getSccpStack().getRouter().modifyRoutingAddress(2,
+                                this.attackTesterHostServer.getSccpMan().getSccpStack().getSccpProvider().getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
+                                        this.attackTesterHostServer.getSccpMan().createGlobalTitle(""),
+                                        this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getRemoteSpc(), newLocalSsn));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    //this.attackTesterHostServer.getSccpMan().setLocalSsn(6);
                     this.attackTesterHostServer.getSccpMan().setRemoteSsn(8);
-                    this.attackTesterHostServer.getTestAttackServer().setHlrSsn(12);
-                    this.attackTesterHostServer.getTestAttackServer().setVlrSsn(14);
+                    //this.attackTesterHostServer.getTestAttackServer().setHlrSsn(12);
+                    //this.attackTesterHostServer.getTestAttackServer().setVlrSsn(14);
 
                     this.attackTesterHostClient.getSccpMan().setRemoteSsn(6);
                     this.attackTesterHostClient.getSccpMan().setLocalSsn(8);
@@ -77,7 +90,19 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.sendRandomMessage(rng);
 
                 if(sentSRINum == 1) {
-                    this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("11111111");
+                    int oldLocalSsn = 8;
+
+                    try {
+                        this.attackTesterHostServer.getSccpMan().getSccpStack().getRouter().modifyRoutingAddress(2,
+                                this.attackTesterHostServer.getSccpMan().getSccpStack().getSccpProvider().getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
+                                        this.attackTesterHostServer.getSccpMan().createGlobalTitle(""),
+                                        this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getRemoteSpc(), oldLocalSsn));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                    this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("22222222");
                     this.attackTesterHostServer.getSccpMan().setLocalSsn(8);
                     this.attackTesterHostServer.getSccpMan().setRemoteSsn(6);
                     this.attackTesterHostServer.getTestAttackServer().setHlrSsn(6);
