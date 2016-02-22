@@ -67,15 +67,13 @@ public class AttackSimulationOrganizer implements Stoppable {
 
                     this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("33333333");
 
-                    int newLocalSsn = 6;
+                    int newRemoteSsn = 8;
 
                     try {
-                        this.attackTesterHostServer.getSccpMan().getSccpStack().getRouter().modifyRoutingAddress(2,
-                                this.attackTesterHostServer.getSccpMan().getSccpStack().getSccpProvider().getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
-                                        this.attackTesterHostServer.getSccpMan().createGlobalTitle(""),
-                                        this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getLocalSpc(), newLocalSsn));
+                        this.attackTesterHostServer.getSccpMan().getSccpStack().getSccpResource().modifyRemoteSsn(1, this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getRemoteSpc(), newRemoteSsn, 0, false);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        System.exit(-1);
                     }
 
                     //this.attackTesterHostServer.getSccpMan().setLocalSsn(6);
@@ -90,17 +88,14 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.sendRandomMessage(rng);
 
                 if(sentSRINum == 1) {
-                    int oldLocalSsn = 8;
+                    int newRemoteSsn = 6;
 
                     try {
-                        this.attackTesterHostServer.getSccpMan().getSccpStack().getRouter().modifyRoutingAddress(2,
-                                this.attackTesterHostServer.getSccpMan().getSccpStack().getSccpProvider().getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
-                                        this.attackTesterHostServer.getSccpMan().createGlobalTitle(""),
-                                        this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getRemoteSpc(), oldLocalSsn));
+                        this.attackTesterHostServer.getSccpMan().getSccpStack().getSccpResource().modifyRemoteSsn(1, this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getRemoteSpc(), newRemoteSsn, 0, false);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        System.exit(-1);
                     }
-
 
                     this.attackTesterHostServer.getSccpMan().setCallingPartyAddressDigits("22222222");
                     this.attackTesterHostServer.getSccpMan().setLocalSsn(8);
