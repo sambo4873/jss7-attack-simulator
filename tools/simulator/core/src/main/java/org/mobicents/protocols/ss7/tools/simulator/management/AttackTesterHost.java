@@ -8,7 +8,6 @@ import java.util.Properties;
 
 import javax.management.Notification;
 
-import javafx.scene.paint.Stop;
 import javolution.text.TextBuilder;
 import javolution.xml.XMLBinding;
 import javolution.xml.XMLObjectReader;
