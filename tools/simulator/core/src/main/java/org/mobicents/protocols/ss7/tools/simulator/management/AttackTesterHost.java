@@ -220,12 +220,12 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 2,
+        int localSpc = 1,
                 localSsn = 8,
-                remoteSpc = 1,
+                remoteSpc = 2,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "000000000000002";
+        String callingPartyAddressDigits = "22222222";
 
         ////////////////////////////////////////
 
@@ -234,7 +234,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "000000000000001";
+                remoteAddressDigits = "11111111";
 
         ////////////////////////////////////////
 
@@ -269,12 +269,12 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 1,
+        int localSpc = 2,
                 localSsn = 6,
-                remoteSpc = 2,
+                remoteSpc = 1,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "000000000000001";
+        String callingPartyAddressDigits = "11111111";
 
         ////////////////////////////////////////
 
@@ -283,7 +283,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "000000000000002";
+                remoteAddressDigits = "22222222";
 
         ////////////////////////////////////////
 
@@ -306,22 +306,27 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         M3uaConfigurationData m3uaConfigurationData = this.getConfigurationData().getM3uaConfigurationData();
 
         m3uaConfigurationData.setDpc(dpc);
+        m3uaConfigurationData.setDpc2(0);
         m3uaConfigurationData.setIpChannelType(IpChannelType.SCTP);
         m3uaConfigurationData.setIsSctpServer(isSctpServer);
         m3uaConfigurationData.setLocalHost(localHost);
+        m3uaConfigurationData.setLocalHost2("");
         m3uaConfigurationData.setLocalPort(localPort);
+        m3uaConfigurationData.setLocalPort2(0);
         m3uaConfigurationData.setM3uaExchangeType(ExchangeType.SE);
         m3uaConfigurationData.setM3uaFunctionality(Functionality.IPSP);
         m3uaConfigurationData.setM3uaIPSPType(ipspType);
         m3uaConfigurationData.setNetworkAppearance(102L);
         m3uaConfigurationData.setOpc(opc);
+        m3uaConfigurationData.setOpc2(0);
         m3uaConfigurationData.setRemoteHost(remoteHost);
+        m3uaConfigurationData.setRemoteHost2("");
         m3uaConfigurationData.setRemotePort(remotePort);
+        m3uaConfigurationData.setRemotePort2(0);
         m3uaConfigurationData.setRoutingContext(101L);
         m3uaConfigurationData.setRoutingLabelFormat(RoutingLabelFormat.ITU);
         m3uaConfigurationData.setSi(3);
         m3uaConfigurationData.setStorePcapTrace(false);
-        m3uaConfigurationData.setTrafficModeType(TrafficModeType.Loadshare);
         m3uaConfigurationData.setTrafficModeType(TrafficModeType.Loadshare);
 
         this.setInstance_L1(Instance_L1.createInstance("M3UA"));
@@ -377,13 +382,13 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         testSmsClientConfigurationData.setOneNotificationFor100Dialogs(false);
         testSmsClientConfigurationData.setReportSMDeliveryStatusReaction(ReportSMDeliveryStatusReaction.createInstance("Return success"));
         testSmsClientConfigurationData.setReturn20PersDeliveryErrors(false);
-        //testSmsClientConfigurationData.setServiceCenterAddress();
+        testSmsClientConfigurationData.setServiceCenterAddress("45454545");
         testSmsClientConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
         testSmsClientConfigurationData.setSmscSsn(8);
         testSmsClientConfigurationData.setSRIInformServiceCenter(SRIInformServiceCenter.createInstance("No data in MWD file"));
         testSmsClientConfigurationData.setSRIReaction(SRIReaction.createInstance("Return success"));
         testSmsClientConfigurationData.setSriResponseImsi("1234567890");
-        testSmsClientConfigurationData.setSriResponseVlr("11111111");
+        testSmsClientConfigurationData.setSriResponseVlr("0987654321");
         testSmsClientConfigurationData.setSRIScAddressNotIncluded(false);
         testSmsClientConfigurationData.setTypeOfNumber(TypeOfNumber.InternationalNumber);
 
@@ -400,7 +405,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         testSmsServerConfigurationData.setNumberingPlan(org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan.ISDN);
         testSmsServerConfigurationData.setNumberingPlanIdentification(NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
         testSmsServerConfigurationData.setSendSrsmdsIfError(false);
-        //testSmsServerConfigurationData.setServiceCenterAddress();
+        testSmsServerConfigurationData.setServiceCenterAddress("8888");
         testSmsServerConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
         testSmsServerConfigurationData.setTypeOfNumber(TypeOfNumber.InternationalNumber);
         testSmsServerConfigurationData.setVlrSsn(8);
