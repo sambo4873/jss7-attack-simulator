@@ -179,7 +179,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         int localSpc = 2,
                 localSsn = 8,
                 remoteSpc = 1,
-                remoteSsn = 6;
+                remoteSsn = 8;
         boolean routeonGtMode = true;
         String callingPartyAddressDigits = "22222222";
 
