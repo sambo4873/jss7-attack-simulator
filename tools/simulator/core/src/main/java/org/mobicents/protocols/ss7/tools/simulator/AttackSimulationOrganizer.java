@@ -78,7 +78,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                         e.printStackTrace();
                     }
 
-                    this.attackTesterHostServer.getSccpMan().setLocalSsn(6);
+                    //this.attackTesterHostServer.getSccpMan().setLocalSsn(6);
                     this.attackTesterHostServer.getSccpMan().setRemoteSsn(8);
                     //this.attackTesterHostServer.getTestAttackServer().setHlrSsn(12);
                     //this.attackTesterHostServer.getTestAttackServer().setVlrSsn(14);
