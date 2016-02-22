@@ -67,49 +67,11 @@ public class AttackSimulationOrganizer implements Stoppable {
             if(sentSRINum < 3) {
                 if(sentSRINum == 1) {
 
-                    //this.attackTesterHostClient.getSccpMan().setRemoteSsn(6);
-                    this.attackTesterHostClient.getSccpMan().setLocalSsn(8);
-                    //this.attackTesterHostClient.getTestAttackClient().set;
-
-
-                    try {
-                        Router router = this.attackTesterHostClient.getSccpMan().getSccpStack().getRouter();
-                        ParameterFactory factory = this.attackTesterHostClient.getSccpMan().getSccpStack().getSccpProvider().getParameterFactory();
-                        int localSsn = 8;
-
-                        router.removeRoutingAddress(2);
-                        router.addRoutingAddress(2,
-                                factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
-                                        this.attackTesterHostClient.getSccpMan().createGlobalTitle(""),
-                                        this.attackTesterHostClient.getConfigurationData().getSccpConfigurationData().getLocalSpc(),
-                                        localSsn));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.exit(-1);
-                    }
                 }
 
                 this.sendRandomMessage(rng);
 
                 if(sentSRINum == 1) {
-                    //this.attackTesterHostClient.getSccpMan().setRemoteSsn(8);
-                    this.attackTesterHostClient.getSccpMan().setLocalSsn(6);
-
-                    try {
-                        Router router = this.attackTesterHostClient.getSccpMan().getSccpStack().getRouter();
-                        ParameterFactory factory = this.attackTesterHostClient.getSccpMan().getSccpStack().getSccpProvider().getParameterFactory();
-                        int localSsn = 6;
-
-                        router.removeRoutingAddress(2);
-                        router.addRoutingAddress(2,
-                                factory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
-                                        this.attackTesterHostClient.getSccpMan().createGlobalTitle(""),
-                                        this.attackTesterHostClient.getConfigurationData().getSccpConfigurationData().getLocalSpc(),
-                                        localSsn));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.exit(-1);
-                    }
                 }
 
                 sentSRINum++;

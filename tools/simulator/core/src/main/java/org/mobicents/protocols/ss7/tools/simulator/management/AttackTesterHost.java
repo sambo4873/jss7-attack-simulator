@@ -356,7 +356,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         testAttackServerConfigurationData.setAddressNature(AddressNature.international_number);
         testAttackServerConfigurationData.setGprsSupportIndicator(false);
-        testAttackServerConfigurationData.setHlrSsn(6);
+        testAttackServerConfigurationData.setHlrSsn(8);
         testAttackServerConfigurationData.setMapProtocolVersion(MapProtocolVersion.createInstance("MAP protocol version 3"));
         testAttackServerConfigurationData.setNumberingPlan(org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan.ISDN);
         testAttackServerConfigurationData.setNumberingPlanIdentification(NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
