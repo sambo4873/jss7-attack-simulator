@@ -72,23 +72,24 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage(Random rng) {
+        this.attackTesterHostClient.getTestSmsClientMan().performMoForwardSM("MSG", "7123984", "810740293874");
 
-        switch(rng.nextInt(4)) {
-            case 0:
-                this.attackTesterHostServer.getTestSmsServerMan().performSRIForSM("123123123");
-                break;
-            case 1:
-                this.attackTesterHostServer.getTestSmsServerMan().performMtForwardSM("MSG", "81238912831923", "37271", "998319283");
-                break;
-            case 2:
-                this.attackTesterHostClient.getTestSmsClientMan().performAlertServiceCentre("128381928");
-                break;
-            case 3:
-                this.attackTesterHostClient.getTestSmsClientMan().performMoForwardSM("MSG", "7123984", "810740293874");
-                break;
-            default:
-                break;
-        }
+        //switch(rng.nextInt(4)) {
+        //    case 0:
+        //        this.attackTesterHostServer.getTestSmsServerMan().performSRIForSM("123123123");
+        //        break;
+        //    case 1:
+        //        this.attackTesterHostServer.getTestSmsServerMan().performMtForwardSM("MSG", "81238912831923", "37271", "998319283");
+        //        break;
+        //    case 2:
+        //        this.attackTesterHostClient.getTestSmsClientMan().performAlertServiceCentre("128381928");
+        //        break;
+        //    case 3:
+        //        this.attackTesterHostClient.getTestSmsClientMan().performMoForwardSM("MSG", "7123984", "810740293874");
+        //        break;
+        //    default:
+        //        break;
+        //}
     }
 
     @Override
