@@ -73,12 +73,12 @@ public class AttackSimulationOrganizer implements Stoppable {
                         this.attackTesterHostServer.getSccpMan().getSccpStack().getRouter().modifyRoutingAddress(2,
                                 this.attackTesterHostServer.getSccpMan().getSccpStack().getSccpProvider().getParameterFactory().createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_DPC_AND_SSN,
                                         this.attackTesterHostServer.getSccpMan().createGlobalTitle(""),
-                                        this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getRemoteSpc(), newLocalSsn));
+                                        this.attackTesterHostServer.getConfigurationData().getSccpConfigurationData().getLocalSpc(), newLocalSsn));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                    //this.attackTesterHostServer.getSccpMan().setLocalSsn(6);
+                    this.attackTesterHostServer.getSccpMan().setLocalSsn(6);
                     this.attackTesterHostServer.getSccpMan().setRemoteSsn(8);
                     //this.attackTesterHostServer.getTestAttackServer().setHlrSsn(12);
                     //this.attackTesterHostServer.getTestAttackServer().setVlrSsn(14);
