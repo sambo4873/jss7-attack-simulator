@@ -25,10 +25,7 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.imei.CheckImeiRespon
 import org.mobicents.protocols.ss7.map.api.service.mobility.locationManagement.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeRequest_Mobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
+import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataRequest;
@@ -39,6 +36,9 @@ import org.mobicents.protocols.ss7.map.api.service.sms.*;
 import org.mobicents.protocols.ss7.map.api.service.supplementary.MAPServiceSupplementaryListener;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
 import org.mobicents.protocols.ss7.map.primitives.IMSIImpl;
+import org.mobicents.protocols.ss7.map.primitives.LMSIImpl;
+import org.mobicents.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
@@ -1504,12 +1504,33 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     public String doPerformProvideSubscriberInfoRequest() {
 
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
-        MAPApplicationContextVersion acv = MAPApplicationContextVersion.version2;
+        MAPApplicationContextVersion acv = MAPApplicationContextVersion.version3;
         MAPApplicationContextName acn = MAPApplicationContextName.subscriberInfoEnquiryContext;
 
         MAPApplicationContext mapAppContext = MAPApplicationContext.getInstance(acn, acv);
 
-        return "PerformSubscriberInfoRequest sent";
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(mapAppContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            IMSI imsi = new IMSIImpl("1234567890");
+            LMSI lmsi = new LMSIImpl();
+            RequestedInfo requestedInfo = new RequestedInfoImpl(true, true, null, true, null, true, true, true);
+            MAPExtensionContainer mapExtensionContainer = new MAPExtensionContainerImpl();
+            EMLPPPriority emlppPriority = EMLPPPriority.priorityLevel0;
+
+
+            curDialog.addProvideSubscriberInfoRequest(imsi, lmsi, requestedInfo, mapExtensionContainer, emlppPriority);
+            curDialog.send();
+
+            return "PerformSubscriberInfoRequest has been sent";
+
+        } catch (MAPException ex) {
+            return "Exception when sending ProvideSubscriberInfoRequest: " + ex.toString();
+        }
     }
 
     @Override
