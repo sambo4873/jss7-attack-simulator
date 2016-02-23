@@ -38,6 +38,7 @@ import org.mobicents.protocols.ss7.map.api.smstpdu.*;
 import org.mobicents.protocols.ss7.map.primitives.IMSIImpl;
 import org.mobicents.protocols.ss7.map.primitives.LMSIImpl;
 import org.mobicents.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
+import org.mobicents.protocols.ss7.map.service.mobility.MAPDialogMobilityImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
@@ -1532,9 +1533,12 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             MAPExtensionContainer mapExtensionContainer = new MAPExtensionContainerImpl();
             EMLPPPriority emlppPriority = EMLPPPriority.priorityLevel0;
 
-
-            curDialog.addProvideSubscriberInfoRequest(imsi, lmsi, requestedInfo, mapExtensionContainer, emlppPriority);
-            curDialog.send();
+            if(curDialog == null)
+                System.out.println("ERROR: curDialog is null");
+            else {
+                curDialog.addProvideSubscriberInfoRequest(imsi, lmsi, requestedInfo, mapExtensionContainer, emlppPriority);
+                curDialog.send();
+            }
 
             return "PerformSubscriberInfoRequest has been sent";
 
