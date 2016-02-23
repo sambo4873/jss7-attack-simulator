@@ -8,6 +8,9 @@ import org.mobicents.protocols.ss7.map.api.errors.CallBarringCause;
 import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
 import org.mobicents.protocols.ss7.map.api.primitives.*;
+import org.mobicents.protocols.ss7.map.api.service.callhandling.MAPServiceCallHandlingListener;
+import org.mobicents.protocols.ss7.map.api.service.lsm.MAPServiceLsmListener;
+import org.mobicents.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.MAPServiceMobilityListener;
 import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportResponse;
@@ -30,8 +33,12 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataResponse;
+import org.mobicents.protocols.ss7.map.api.service.oam.MAPServiceOamListener;
+import org.mobicents.protocols.ss7.map.api.service.pdpContextActivation.MAPServicePdpContextActivationListener;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
+import org.mobicents.protocols.ss7.map.api.service.supplementary.MAPServiceSupplementaryListener;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
+import org.mobicents.protocols.ss7.map.primitives.IMSIImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
@@ -1361,6 +1368,35 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             needSendClose = true;
     }
 
+    public String performUpdateLocationRequest() {
+
+        return doUpdateLocationRequest();
+    }
+
+    public String doUpdateLocationRequest() {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
+        MAPApplicationContextVersion vers = MAPApplicationContextVersion.version3;
+        MAPApplicationContextName acn = MAPApplicationContextName.networkLocUpContext;
+
+        MAPApplicationContext mapApplicationContext = MAPApplicationContext.getInstance(acn, vers);
+
+        try{
+
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility()
+                    .createNewDialog(mapApplicationContext,
+                            this.mapMan.createOrigAddress(),
+                            null,
+                            this.mapMan.createDestAddress(),
+                            null);
+
+        } catch (MAPException ex) {
+            return "Exception when sending UpdateLocationRequest :" + ex.toString();
+        }
+
+        return "UpdateLocationRequest has been sent";
+    }
+
     @Override
     public void onUpdateLocationRequest(UpdateLocationRequest ind) {
 
@@ -1461,9 +1497,23 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public String performProvideSubscriberInfoRequest() {
+        return doPerformProvideSubscriberInfoRequest();
+    }
+
+    public String doPerformProvideSubscriberInfoRequest() {
+
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPApplicationContextVersion acv = MAPApplicationContextVersion.version2;
+        MAPApplicationContextName acn = MAPApplicationContextName.subscriberInfoEnquiryContext;
+
+        MAPApplicationContext mapAppContext = MAPApplicationContext.getInstance(acn, acv);
+
+        return "PerformSubscriberInfoRequest sent";
+    }
+
     @Override
     public void onProvideSubscriberInfoRequest(ProvideSubscriberInfoRequest request) {
-
     }
 
     @Override
