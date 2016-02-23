@@ -1498,13 +1498,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     }
 
     public String performProvideSubscriberInfoRequest() {
+        System.out.println("--------------------SENDING SRI");
+
         return doPerformProvideSubscriberInfoRequest();
     }
 
     public String doPerformProvideSubscriberInfoRequest() {
 
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
-        MAPApplicationContextVersion acv = MAPApplicationContextVersion.version3;
+        MAPApplicationContextVersion acv = MAPApplicationContextVersion.version2;
         MAPApplicationContextName acn = MAPApplicationContextName.subscriberInfoEnquiryContext;
 
         MAPApplicationContext mapAppContext = MAPApplicationContext.getInstance(acn, acv);
