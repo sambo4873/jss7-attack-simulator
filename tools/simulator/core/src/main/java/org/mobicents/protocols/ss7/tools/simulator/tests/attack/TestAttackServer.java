@@ -313,10 +313,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         this.countAscResp = 0;
 
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
         mapProvider.getMAPServiceSms().acivate();
         mapProvider.getMAPServiceSms().addMAPServiceListener(this);
+
+        mapProvider.getMAPServiceMobility().acivate();
+        mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
+
         mapProvider.addMAPDialogListener(this);
-        this.testerHost.sendNotif(SOURCE_NAME, "SMS Server has been started", "", Level.INFO);
+        this.testerHost.sendNotif(SOURCE_NAME, "AttackServer has been started", "", Level.INFO);
         isStarted = true;
 
         return true;
@@ -328,7 +333,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         mapProvider.getMAPServiceSms().deactivate();
         mapProvider.getMAPServiceSms().removeMAPServiceListener(this);
         mapProvider.removeMAPDialogListener(this);
-        this.testerHost.sendNotif(SOURCE_NAME, "SMS Server has been stopped", "", Level.INFO);
+        this.testerHost.sendNotif(SOURCE_NAME, "AttackServer has been stopped", "", Level.INFO);
     }
 
     public void execute() {

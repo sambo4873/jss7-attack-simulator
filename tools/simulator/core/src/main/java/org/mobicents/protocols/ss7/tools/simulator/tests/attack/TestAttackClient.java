@@ -436,10 +436,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         this.countErrSent = 0;
 
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
         mapProvider.getMAPServiceSms().acivate();
         mapProvider.getMAPServiceSms().addMAPServiceListener(this);
+
+        mapProvider.getMAPServiceMobility().acivate();
+        mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
+
         mapProvider.addMAPDialogListener(this);
-        this.testerHost.sendNotif(SOURCE_NAME, "SMS Client has been started", "", Level.INFO);
+        this.testerHost.sendNotif(SOURCE_NAME, "AttackClient has been started", "", Level.INFO);
         isStarted = true;
 
         return true;
@@ -452,7 +457,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         mapProvider.getMAPServiceSms().deactivate();
         mapProvider.getMAPServiceSms().removeMAPServiceListener(this);
         mapProvider.removeMAPDialogListener(this);
-        this.testerHost.sendNotif(SOURCE_NAME, "SMS Client has been stopped", "", Level.INFO);
+        this.testerHost.sendNotif(SOURCE_NAME, "AttackClient has been stopped", "", Level.INFO);
     }
 
     @Override
