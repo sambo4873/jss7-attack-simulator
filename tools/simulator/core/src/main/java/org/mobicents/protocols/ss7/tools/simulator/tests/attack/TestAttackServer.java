@@ -1,10 +1,13 @@
 package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.spi.LocationInfo;
+import org.mobicents.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.mobicents.protocols.ss7.map.api.*;
 import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
 import org.mobicents.protocols.ss7.map.api.primitives.*;
+import org.mobicents.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.MAPServiceMobilityListener;
 import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportResponse;
@@ -19,14 +22,9 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.imei.CheckImeiRespon
 import org.mobicents.protocols.ss7.map.api.service.mobility.locationManagement.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeRequest_Mobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataResponse;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataResponse;
+import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.*;
+import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.*;
+import org.mobicents.protocols.ss7.map.api.service.oam.MSCSEventList;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
@@ -1163,8 +1161,64 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onProvideSubscriberInfoRequest(ProvideSubscriberInfoRequest request) {
+        if (!isStarted)
+            return;
 
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory mapParameterFactory = mapProvider.getMAPParameterFactory();
+        MAPDialogMobility curDialog = request.getMAPDialog();
+        long invokeId = request.getInvokeId();
+
+        try {
+            LocationInformation locationInformation = this.createLocationInformation(mapParameterFactory);
+            SubscriberState subscriberState = this.createSubscriberState(mapParameterFactory);
+            MAPExtensionContainer mapExtensionContainer = null;
+            LocationInformationGPRS locationInformationGPRS = null;
+            PSSubscriberState psSubscriberState = null;
+            IMEI imei = null;
+            MSClassmark2 msClassmark2 = null;
+            GPRSMSClass gprsmsClass = null;
+            MNPInfoRes mnpInfoRes = null;
+
+
+            SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation, subscriberState,
+                mapExtensionContainer, locationInformationGPRS, psSubscriberState, imei, msClassmark2, gprsmsClass,
+                mnpInfoRes);
+            subscriberInfo = mapParameterFactory.createSubscriberInfo(null, null, null, null, null, null, null, null, null);
+
+            curDialog.addProvideSubscriberInfoResponse(invokeId, subscriberInfo, null);
+            this.needSendClose = true;
+        } catch (MAPException ex) {
+            System.out.println("Exception when sending ProvideSubscriberInfoRequestRes: " + ex.toString());
+        }
     }
+
+    private SubscriberState createSubscriberState(MAPParameterFactory mapParameterFactory) {
+        return null;
+    }
+
+    private LocationInformation createLocationInformation(MAPParameterFactory mapParameterFactory) throws MAPException {
+        int ageOfLocationInformation = 0;
+        GeographicalInformation geographicalInformation = null;
+        ISDNAddressString vlrNumber = mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "22222222");
+        LocationNumberMap locationNumber = mapParameterFactory.createLocationNumberMap(new LocationNumberImpl());
+        CellGlobalIdOrServiceAreaIdOrLAI cellGlobalIdOrServiceAreaIdOrLAI = null;
+        MAPExtensionContainer mapExtensionContainer = null;
+        LSAIdentity lsaIdentity = null;
+        ISDNAddressString mscNumber = null;
+        GeodeticInformation geodeticInformation = null;
+        boolean currentLocationRetrieved = false;
+        boolean saiPresent = false;
+        LocationInformationEPS locationInformationEPS = null;
+        UserCSGInformation userCSGInformation = null;
+
+
+        return mapParameterFactory.createLocationInformation(ageOfLocationInformation, geographicalInformation,
+                vlrNumber, locationNumber, cellGlobalIdOrServiceAreaIdOrLAI, mapExtensionContainer,lsaIdentity,
+                mscNumber, geodeticInformation, currentLocationRetrieved, saiPresent, locationInformationEPS,
+                userCSGInformation);
+    }
+
 
     @Override
     public void onProvideSubscriberInfoResponse(ProvideSubscriberInfoResponse response) {
