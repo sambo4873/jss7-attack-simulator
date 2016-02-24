@@ -1504,7 +1504,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     }
 
     public String performProvideSubscriberInfoRequest() {
-        System.out.println("--------------------SENDING SRI");
+        System.out.println("--------------------SENDING PSI");
 
         String response = doPerformProvideSubscriberInfoRequest();
         System.out.println("RESPONSE: " + response);

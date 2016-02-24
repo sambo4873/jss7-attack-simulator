@@ -9,10 +9,7 @@ import org.mobicents.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCau
 import org.mobicents.protocols.ss7.map.api.primitives.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.MAPServiceMobilityListener;
-import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.AuthenticationFailureReportResponse;
-import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.SendAuthenticationInfoResponse;
+import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.ForwardCheckSSIndicationRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.ResetRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.RestoreDataRequest;
@@ -1170,21 +1167,21 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         long invokeId = request.getInvokeId();
 
         try {
-            LocationInformation locationInformation = this.createLocationInformation(mapParameterFactory);
-            SubscriberState subscriberState = this.createSubscriberState(mapParameterFactory);
-            MAPExtensionContainer mapExtensionContainer = null;
-            LocationInformationGPRS locationInformationGPRS = null;
-            PSSubscriberState psSubscriberState = null;
-            IMEI imei = null;
-            MSClassmark2 msClassmark2 = null;
-            GPRSMSClass gprsmsClass = null;
-            MNPInfoRes mnpInfoRes = null;
+            //LocationInformation locationInformation = this.createLocationInformation(mapParameterFactory);
+            //SubscriberState subscriberState = this.createSubscriberState(mapParameterFactory);
+            //MAPExtensionContainer mapExtensionContainer = null;
+            //LocationInformationGPRS locationInformationGPRS = null;
+            //PSSubscriberState psSubscriberState = null;
+            //IMEI imei = null;
+            //MSClassmark2 msClassmark2 = null;
+            //GPRSMSClass gprsmsClass = null;
+            //MNPInfoRes mnpInfoRes = null;
 
 
-            SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation, subscriberState,
-                mapExtensionContainer, locationInformationGPRS, psSubscriberState, imei, msClassmark2, gprsmsClass,
-                mnpInfoRes);
-            subscriberInfo = mapParameterFactory.createSubscriberInfo(null, null, null, null, null, null, null, null, null);
+            //SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation, subscriberState,
+            //    mapExtensionContainer, locationInformationGPRS, psSubscriberState, imei, msClassmark2, gprsmsClass,
+            //    mnpInfoRes);
+            SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(null, null, null, null, null, null, null, null, null);
 
             curDialog.addProvideSubscriberInfoResponse(invokeId, subscriberInfo, null);
             this.needSendClose = true;
