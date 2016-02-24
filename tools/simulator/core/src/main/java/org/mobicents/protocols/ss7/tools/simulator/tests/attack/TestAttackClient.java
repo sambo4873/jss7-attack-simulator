@@ -1515,10 +1515,13 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     public String doPerformProvideSubscriberInfoRequest() {
 
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
-        MAPApplicationContextVersion acv = MAPApplicationContextVersion.version2;
+        MAPApplicationContextVersion acv = MAPApplicationContextVersion.version3;
         MAPApplicationContextName acn = MAPApplicationContextName.subscriberInfoEnquiryContext;
 
         MAPApplicationContext mapAppContext = MAPApplicationContext.getInstance(acn, acv);
+
+        System.out.println("MAPApplicationContextVersion: " + mapAppContext.getApplicationContextVersion());
+        System.out.println("MAPApplicationContextName: " + mapAppContext.getApplicationContextName());
 
         try {
             MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(mapAppContext,
