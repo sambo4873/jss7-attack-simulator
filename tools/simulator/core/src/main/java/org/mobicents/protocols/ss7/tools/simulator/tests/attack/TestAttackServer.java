@@ -1221,7 +1221,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         LSAIdentity lsaIdentity = null;
         ISDNAddressString mscNumber = null;
         GeodeticInformation geodeticInformation = null;
-        boolean currentLocationRetrieved = false;
+        boolean currentLocationRetrieved = true;
         boolean saiPresent = false;
         LocationInformationEPS locationInformationEPS = null;
         UserCSGInformation userCSGInformation = null;
