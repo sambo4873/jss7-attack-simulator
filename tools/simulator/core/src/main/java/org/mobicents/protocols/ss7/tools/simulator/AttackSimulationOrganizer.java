@@ -63,7 +63,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         while (true) {
             try {
                 Thread.sleep(100);
-                if(attackTesterHostClient.getM3uaMan().getState().contains("ACTIVE") && attackTesterHostServer.getM3uaMan().getState().contains("ACTIVE"))
+                if(stp1.getM3uaMan().getState().contains("ACTIVE") && stp2.getM3uaMan().getState().contains("ACTIVE") && stp3.getM3uaMan().getState().contains("ACTIVE"))
                     return true;
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -78,8 +78,8 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         int sentSRINum = 0;
 
-        //if (!waitForM3UALinkLarge())
-        //    return;
+        if (!waitForM3UALinkLarge())
+            return;
 
         while (true) {
             try {
