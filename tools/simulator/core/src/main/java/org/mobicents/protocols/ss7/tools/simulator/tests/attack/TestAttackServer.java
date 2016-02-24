@@ -1186,8 +1186,8 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             //SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation, subscriberState,
             //    mapExtensionContainer, locationInformationGPRS, psSubscriberState, imei, msClassmark2, gprsmsClass,
             //    mnpInfoRes);
-            SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(null,
-                    null,
+            SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation,
+                    subscriberState,
                     mapExtensionContainer,
                     locationInformationGPRS,
                     psSubscriberState,
