@@ -1177,7 +1177,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             MAPExtensionContainer mapExtensionContainer = null;
             LocationInformationGPRS locationInformationGPRS = null;
             PSSubscriberState psSubscriberState = null;
-            IMEI imei = mapParameterFactory.createIMEI("1289398123123812938");
+            IMEI imei = mapParameterFactory.createIMEI("128939812312382");
             MSClassmark2 msClassmark2 = null;
             GPRSMSClass gprsmsClass = null;
             MNPInfoRes mnpInfoRes = null;
