@@ -33,6 +33,7 @@ import org.mobicents.protocols.ss7.sccp.SccpProtocolVersion;
 import org.mobicents.protocols.ss7.sccp.SccpStack;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
+import org.mobicents.protocols.ss7.tools.simulator.common.AttackConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.common.ConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.level1.*;
 import org.mobicents.protocols.ss7.tools.simulator.level2.*;
@@ -73,7 +74,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private boolean isStarted = false;
     private boolean needQuit = false;
     private boolean needStore = false;
-    private ConfigurationData configurationData = new ConfigurationData();
+    private AttackConfigurationData configurationData = new AttackConfigurationData();
     private long sequenceNumber = 0;
 
     // Layers
@@ -143,6 +144,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         File fn = new File(persistFile.toString());
         this.load(fn);
 
+        this.configurationData.setSccpConfigurationData(new AttackSccpConfigurationData());
 
         switch(attackType) {
             case ATTACK_SERVER:
@@ -199,8 +201,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         //////// L2 Configuration Data //////////
 
         int localSpc = 1,
+                localSpc2 = 0,
                 localSsn = 8,
                 remoteSpc = 2,
+                remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
         String callingPartyAddressDigits = "11111111";
@@ -222,7 +226,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
-        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
         configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
         configureTestAttackServer();
     }
@@ -254,8 +258,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         //////// L2 Configuration Data //////////
 
         int localSpc = 2,
+                localSpc2 = 0,
                 localSsn = 8,
                 remoteSpc = 3,
+                remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
         String callingPartyAddressDigits = "22222222";
@@ -285,7 +291,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
-        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
         configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
         configureTestAttackClient();
     }
@@ -317,8 +323,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         //////// L2 Configuration Data //////////
 
         int localSpc = 3,
+                localSpc2 = 0,
                 localSsn = 8,
                 remoteSpc = 4,
+                remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
         String callingPartyAddressDigits = "33333333";
@@ -340,7 +348,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
-        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
         configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
         configureTestAttackServer();
     }
@@ -372,8 +380,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         //////// L2 Configuration Data //////////
 
         int localSpc = 4,
+                localSpc2 = 0,
                 localSsn = 8,
                 remoteSpc = 1,
+                remoteSpc2 = 0,
                 remoteSsn = 5;
         boolean routeonGtMode = true;
         String callingPartyAddressDigits = "44444444";
@@ -395,7 +405,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
-        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
         configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
         configureTestAttackClient();
     }
@@ -427,8 +437,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         //////// L2 Configuration Data //////////
 
         int localSpc = 5,
+                localSpc2 = 0,
                 localSsn = 8,
                 remoteSpc = 4,
+                remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
         String callingPartyAddressDigits = "55555555";
@@ -450,7 +462,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
-        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
         configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
         configureTestAttackServer();
     }
@@ -505,10 +517,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         ///////////////////////////////////////////
 
 
-        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
-        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
-        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
-        configureTestAttackServer();
+        //configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        //configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        //configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        //configureTestAttackServer();
     }
 
     private void configureAttackClient() {
@@ -563,10 +575,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         ///////////////////////////////////////////
 
 
-        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
-        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
-        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
-        configureTestAttackClient();
+        //configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        //configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        //configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        //configureTestAttackClient();
     }
 
     public void configureL1(int dpc, int dpc2, boolean isSctpServer, String localHost, String localHost2, int localPort, int localPort2, IPSPType ipspType, int opc, int opc2, String remoteHost, String remoteHost2, int remotePort, int remotePort2) {
@@ -600,18 +612,20 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         this.setInstance_L1(Instance_L1.createInstance("M3UA"));
     }
 
-    public void configureL2(String callingPartyAddressDigits, int localSpc, int localSsn, int remoteSpc, int remoteSsn, boolean routeonGtMode) {
+    public void configureL2(String callingPartyAddressDigits, int localSpc, int localSpc2, int localSsn, int remoteSpc, int remoteSpc2, int remoteSsn, boolean routeonGtMode) {
         this.setInstance_L2(Instance_L2.createInstance("SCCP"));
-        SccpConfigurationData sccpConfigurationData = this.getConfigurationData().getSccpConfigurationData();
+        AttackSccpConfigurationData sccpConfigurationData = this.getConfigurationData().getSccpConfigurationData();
 
         sccpConfigurationData.setCallingPartyAddressDigits(callingPartyAddressDigits);
         sccpConfigurationData.setGlobalTitleType(GlobalTitleType.createInstance("Translation type, numbering plan, encoding scheme and NOA ind"));
         sccpConfigurationData.setLocalSpc(localSpc);
+        sccpConfigurationData.setLocalSpc2(localSpc2);
         sccpConfigurationData.setLocalSsn(localSsn);
         sccpConfigurationData.setNatureOfAddress(NatureOfAddress.INTERNATIONAL);
         sccpConfigurationData.setNi(2);
         sccpConfigurationData.setNumberingPlan(NumberingPlan.ISDN_MOBILE);
         sccpConfigurationData.setRemoteSpc(remoteSpc);
+        sccpConfigurationData.setRemoteSpc2(remoteSpc2);
         sccpConfigurationData.setRemoteSsn(remoteSsn);
         sccpConfigurationData.setRouteOnGtMode(routeonGtMode);
         sccpConfigurationData.setSccpProtocolVersion(SccpProtocolVersion.ITU);
@@ -680,7 +694,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     }
 
     @Override
-    public ConfigurationData getConfigurationData() {
+    public AttackConfigurationData getConfigurationData() {
         return this.configurationData;
     }
 
@@ -1132,7 +1146,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
             reader.setBinding(binding);
 
-            this.configurationData = reader.read(CONFIGURATION_DATA, ConfigurationData.class);
+            this.configurationData = reader.read(CONFIGURATION_DATA, AttackConfigurationData.class);
 
             reader.close();
 
