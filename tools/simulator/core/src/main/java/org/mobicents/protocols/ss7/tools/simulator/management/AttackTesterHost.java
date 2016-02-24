@@ -212,7 +212,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "";
+                remoteAddressDigits = "22222222";
 
         ////////////////////////////////////////
 
@@ -245,7 +245,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteHost = "127.0.0.1",
                 remoteHost2 = "127.0.0.1";
 
-        boolean isSctpServer = true;
+        boolean isSctpServer = false;
         IPSPType ipspType = IPSPType.CLIENT;
 
         ////////////////////////////////////////
@@ -267,7 +267,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "";
+                remoteAddressDigits = "11111111";
 
         ////////////////////////////////////////
 
@@ -363,7 +363,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteHost = "127.0.0.1",
                 remoteHost2 = "127.0.0.1";
 
-        boolean isSctpServer = true;
+        boolean isSctpServer = false;
         IPSPType ipspType = IPSPType.CLIENT;
 
         ////////////////////////////////////////
