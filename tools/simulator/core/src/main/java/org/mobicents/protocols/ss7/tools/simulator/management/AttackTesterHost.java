@@ -212,7 +212,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "22222222";
+                remoteAddressDigits = "";
 
         ////////////////////////////////////////
 
@@ -267,7 +267,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "11111111";
+                remoteAddressDigits = "";
 
         ////////////////////////////////////////
 
