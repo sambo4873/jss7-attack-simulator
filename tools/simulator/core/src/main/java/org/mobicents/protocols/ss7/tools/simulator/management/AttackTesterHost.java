@@ -151,22 +151,320 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             case ATTACK_CLIENT:
                 this.configureAttackClient();
                 break;
+            case STP_1:
+                this.configureSTP1();
+                break;
+            case STP_2:
+                this.configureSTP2();
+                break;
+            case STP_3:
+                this.configureSTP3();
+                break;
+            case STP_4:
+                this.configureSTP4();
+                break;
+            case STP_5:
+                this.configureSTP5();
+                break;
+
             default:
                 break;
         }
     }
+
+    private void configureSTP1() {
+
+        //////// L1 Configuration Data //////////
+
+        int dpc = 2,
+                dpc2 = 0,
+                opc = 1,
+                opc2 = 0,
+                localPort = 8011,
+                localPort2 = 0,
+                remotePort = 8012,
+                remotePort2 = 0;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = 1,
+                localSsn = 8,
+                remoteSpc = 2,
+                remoteSsn = 8;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = "11111111";
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = "";
+
+        ////////////////////////////////////////
+
+
+        //////// Test Configuration Data //////////
+        ///////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        configureTestAttackServer();
+    }
+
+    private void configureSTP2() {
+
+        //////// L1 Configuration Data //////////
+
+        int dpc = 1,
+                dpc2 = 4,
+                opc = 2,
+                opc2 = 3,
+                localPort = 8012,
+                localPort2 = 8013,
+                remotePort = 8011,
+                remotePort2 = 8014;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "127.0.0.1",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "127.0.0.1";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = 2,
+                localSsn = 8,
+                remoteSpc = 3,
+                remoteSsn = 8;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = "22222222";
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = "";
+
+        ////////////////////////////////////////
+
+
+        //////// Test Configuration Data //////////
+        ///////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        configureTestAttackClient();
+    }
+
+    private void configureSTP3() {
+
+        //////// L1 Configuration Data //////////
+
+        int dpc = 3,
+                dpc2 = 6,
+                opc = 4,
+                opc2 = 5,
+                localPort = 8014,
+                localPort2 = 8015,
+                remotePort = 8013,
+                remotePort2 = 8016;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "127.0.0.1",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "127.0.0.1";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = 3,
+                localSsn = 8,
+                remoteSpc = 4,
+                remoteSsn = 8;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = "33333333";
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = "";
+
+        ////////////////////////////////////////
+
+
+        //////// Test Configuration Data //////////
+        ///////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        configureTestAttackServer();
+    }
+
+    private void configureSTP4() {
+
+        //////// L1 Configuration Data //////////
+
+        int dpc = 5,
+                dpc2 = 8,
+                opc = 6,
+                opc2 = 7,
+                localPort = 8016,
+                localPort2 = 8017,
+                remotePort = 8015,
+                remotePort2 = 8018;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "127.0.0.1",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "127.0.0.1";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = 4,
+                localSsn = 8,
+                remoteSpc = 1,
+                remoteSsn = 5;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = "44444444";
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = "";
+
+        ////////////////////////////////////////
+
+
+        //////// Test Configuration Data //////////
+        ///////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        configureTestAttackClient();
+    }
+
+    private void configureSTP5() {
+
+        //////// L1 Configuration Data //////////
+
+        int dpc = 7,
+                dpc2 = 0,
+                opc = 8,
+                opc2 = 0,
+                localPort = 8018,
+                localPort2 = 0,
+                remotePort = 8017,
+                remotePort2 = 0;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = 5,
+                localSsn = 8,
+                remoteSpc = 4,
+                remoteSsn = 8;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = "55555555";
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = "";
+
+        ////////////////////////////////////////
+
+
+        //////// Test Configuration Data //////////
+        ///////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        configureTestAttackServer();
+    }
+
 
     private void configureAttackServer() {
 
         //////// L1 Configuration Data //////////
 
         int dpc = 1,
+                dpc2 = 0,
                 opc = 2,
+                opc2 = 0,
                 localPort = 8012,
-                remotePort = 8011;
+                localPort2 = 0,
+                remotePort = 8011,
+                remotePort2 = 0;
 
         String localHost = "127.0.0.1",
-                remoteHost = "127.0.0.1";
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
 
         boolean isSctpServer = true;
         IPSPType ipspType = IPSPType.SERVER;
@@ -199,7 +497,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         ///////////////////////////////////////////
 
 
-        configureL1(dpc, isSctpServer, localHost, localPort, ipspType, opc, remoteHost, remotePort);
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
         configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
         configureTestAttackServer();
@@ -210,12 +508,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         //////// L1 Configuration Data //////////
 
         int dpc = 2,
+                dpc2 = 0,
                 opc = 1,
+                opc2 = 0,
                 localPort = 8011,
-                remotePort = 8012;
+                localPort2 = 0,
+                remotePort = 8012,
+                remotePort2 = 0;
 
         String localHost = "127.0.0.1",
-                remoteHost = "127.0.0.1";
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
 
         boolean isSctpServer = false;
         IPSPType ipspType = IPSPType.CLIENT;
@@ -251,34 +555,34 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         ///////////////////////////////////////////
 
 
-        configureL1(dpc, isSctpServer, localHost, localPort, ipspType, opc, remoteHost, remotePort);
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSsn, remoteSpc, remoteSsn, routeonGtMode);
         configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
         configureTestAttackClient();
     }
 
-    public void configureL1(int dpc, boolean isSctpServer, String localHost, int localPort, IPSPType ipspType, int opc, String remoteHost, int remotePort) {
+    public void configureL1(int dpc, int dpc2, boolean isSctpServer, String localHost, String localHost2, int localPort, int localPort2, IPSPType ipspType, int opc, int opc2, String remoteHost, String remoteHost2, int remotePort, int remotePort2) {
         this.setInstance_L1(Instance_L1.createInstance("M3UA"));
         M3uaConfigurationData m3uaConfigurationData = this.getConfigurationData().getM3uaConfigurationData();
 
         m3uaConfigurationData.setDpc(dpc);
-        m3uaConfigurationData.setDpc2(0);
+        m3uaConfigurationData.setDpc2(dpc2);
         m3uaConfigurationData.setIpChannelType(IpChannelType.SCTP);
         m3uaConfigurationData.setIsSctpServer(isSctpServer);
         m3uaConfigurationData.setLocalHost(localHost);
-        m3uaConfigurationData.setLocalHost2("");
+        m3uaConfigurationData.setLocalHost2(localHost2);
         m3uaConfigurationData.setLocalPort(localPort);
-        m3uaConfigurationData.setLocalPort2(0);
+        m3uaConfigurationData.setLocalPort2(localPort2);
         m3uaConfigurationData.setM3uaExchangeType(ExchangeType.SE);
         m3uaConfigurationData.setM3uaFunctionality(Functionality.IPSP);
         m3uaConfigurationData.setM3uaIPSPType(ipspType);
         m3uaConfigurationData.setNetworkAppearance(102L);
         m3uaConfigurationData.setOpc(opc);
-        m3uaConfigurationData.setOpc2(0);
+        m3uaConfigurationData.setOpc2(opc2);
         m3uaConfigurationData.setRemoteHost(remoteHost);
-        m3uaConfigurationData.setRemoteHost2("");
+        m3uaConfigurationData.setRemoteHost2(remoteHost2);
         m3uaConfigurationData.setRemotePort(remotePort);
-        m3uaConfigurationData.setRemotePort2(0);
+        m3uaConfigurationData.setRemotePort2(remotePort2);
         m3uaConfigurationData.setRoutingContext(101L);
         m3uaConfigurationData.setRoutingLabelFormat(RoutingLabelFormat.ITU);
         m3uaConfigurationData.setSi(3);
@@ -836,5 +1140,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         ALL,
         ATTACK_CLIENT,
         ATTACK_SERVER,
+        STP_1,
+        STP_2,
+        STP_3,
+        STP_4,
+        STP_5,
     }
 }

@@ -275,6 +275,9 @@ public class Main {
         } else if (this.command.equals("attack_simulation")) {
             MainCore mainCore = new MainCore();
             mainCore.startAttackSimulation("attackClient", "attackServer");
+        } else if (this.command.equals("attack_simulation_large")) {
+            MainCore mainCore = new MainCore();
+            mainCore.startAttackSimulationLarge();
         }
 
     }

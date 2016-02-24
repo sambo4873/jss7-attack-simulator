@@ -14,14 +14,36 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost attackTesterHostClient;
     private AttackTesterHost attackTesterHostServer;
 
+    private AttackTesterHost stp1;
+    private AttackTesterHost stp2;
+    private AttackTesterHost stp3;
+    private AttackTesterHost stp4;
+    private AttackTesterHost stp5;
+
     public AttackSimulationOrganizer(AttackTesterHost attackTesterHostClient, AttackTesterHost attackTesterHostServer) {
         this.attackTesterHostClient = attackTesterHostClient;
         this.attackTesterHostServer = attackTesterHostServer;
     }
 
+    public AttackSimulationOrganizer(AttackTesterHost stp1, AttackTesterHost stp2, AttackTesterHost stp3, AttackTesterHost stp4, AttackTesterHost stp5) {
+        this.stp1 = stp1;
+        this.stp2 = stp2;
+        this.stp3 = stp3;
+        this.stp4 = stp4;
+        this.stp5 = stp5;
+    }
+
     private void startAttackSimulationHosts() {
         this.attackTesterHostClient.start();
         this.attackTesterHostServer.start();
+    }
+
+    private void startAttackSimulationHostsLarge() {
+        this.stp1.start();
+        this.stp2.start();
+        this.stp3.start();
+        this.stp4.start();
+        this.stp5.start();
     }
 
     private boolean waitForM3UALink() {
@@ -35,6 +57,70 @@ public class AttackSimulationOrganizer implements Stoppable {
                 return false;
             }
         }
+    }
+
+    private boolean waitForM3UALinkLarge() {
+        while (true) {
+            try {
+                Thread.sleep(100);
+                if(attackTesterHostClient.getM3uaMan().getState().contains("ACTIVE") && attackTesterHostServer.getM3uaMan().getState().contains("ACTIVE"))
+                    return true;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+    }
+
+    public void startLarge() {
+        Random rng = new Random();
+        startAttackSimulationHostsLarge();
+
+        int sentSRINum = 0;
+
+        //if (!waitForM3UALinkLarge())
+        //    return;
+
+        while (true) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+                break;
+            }
+
+            if (this.stp1.isNeedQuit() || this.stp2.isNeedQuit() || this.stp3.isNeedQuit() || this.stp4.isNeedQuit() || this.stp5.isNeedQuit()) {
+                this.stp1.stop();
+                this.stp2.stop();
+                this.stp3.stop();
+                this.stp4.stop();
+                this.stp5.stop();
+                break;
+            }
+
+            this.stp1.execute();
+            this.stp2.execute();
+            this.stp3.execute();
+            this.stp4.execute();
+            this.stp5.execute();
+
+            this.stp1.checkStore();
+            this.stp2.checkStore();
+            this.stp3.checkStore();
+            this.stp4.checkStore();
+            this.stp5.checkStore();
+
+            if(sentSRINum < 1) {
+
+                this.testLargeSimulation();
+
+                sentSRINum++;
+            }
+        }
+    }
+
+    private void testLargeSimulation() {
+
     }
 
     public void start() {
