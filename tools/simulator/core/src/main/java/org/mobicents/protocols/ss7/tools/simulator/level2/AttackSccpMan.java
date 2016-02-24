@@ -331,7 +331,7 @@ public class AttackSccpMan extends SccpMan implements Stoppable {
 
                 pattern = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE,
                         this.createGlobalTitle("*"), 0, 0);
-                String mask = "L";
+                mask = "L";
                 ((RouterImpl) this.router).addRule(3, RuleType.SOLITARY, null, OriginationType.LOCAL, pattern,
                         mask, 3, -1, null, 0);
                 pattern = parameterFactory.createSccpAddress(RoutingIndicator.ROUTING_BASED_ON_GLOBAL_TITLE,
