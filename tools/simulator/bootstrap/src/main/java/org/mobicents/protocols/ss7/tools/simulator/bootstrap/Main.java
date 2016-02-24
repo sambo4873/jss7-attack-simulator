@@ -83,13 +83,14 @@ public class Main {
 
         int c;
         String arg;
-        LongOpt[] longopts = new LongOpt[6];
+        LongOpt[] longopts = new LongOpt[7];
         longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
         longopts[1] = new LongOpt("name", LongOpt.REQUIRED_ARGUMENT, null, 'n');
         longopts[2] = new LongOpt("http", LongOpt.REQUIRED_ARGUMENT, null, 't');
         longopts[3] = new LongOpt("rmi", LongOpt.REQUIRED_ARGUMENT, null, 'r');
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
         longopts[5] = new LongOpt("attack_simulation", LongOpt.NO_ARGUMENT, null, 0);
+        longopts[5] = new LongOpt("attack_simulation_large", LongOpt.NO_ARGUMENT, null, 0);
 
         Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h", longopts);
         g.setOpterr(false); // We'll do our own error handling
@@ -149,6 +150,8 @@ public class Main {
                         this.command = "gui";
                     } else if (optArg.equals("attack_simulation")) {
                         this.command = "attack_simulation";
+                    } else if (optArg.equals("attack_simulation_large")) {
+                        this.command = "attack_simulation_large";
                     } else if (optArg.equals("help")) {
                         if (this.command == null) {
                             this.genericHelp();
