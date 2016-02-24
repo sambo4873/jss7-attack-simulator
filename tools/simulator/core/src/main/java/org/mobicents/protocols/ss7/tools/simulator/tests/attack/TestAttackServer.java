@@ -25,6 +25,7 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement
 import org.mobicents.protocols.ss7.map.api.service.oam.MSCSEventList;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
+import org.mobicents.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.mobicents.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextInfoImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
@@ -1215,7 +1216,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                 LocationNumber._APRI_ALLOWED,
                 LocationNumber._SI_USER_PROVIDED_VERIFIED_PASSED));
         CellGlobalIdOrServiceAreaIdOrLAI cgiosaiol = mapParameterFactory.createCellGlobalIdOrServiceAreaIdOrLAI(
-                new LAIFixedLengthImpl(242, 01, 115));
+                new CellGlobalIdOrServiceAreaIdFixedLengthImpl(242,01, 115, 8462));
         MAPExtensionContainer mapExtensionContainer = null;
         LSAIdentity lsaIdentity = null;
         ISDNAddressString mscNumber = null;
