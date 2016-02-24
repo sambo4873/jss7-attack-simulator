@@ -258,10 +258,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         //////// L2 Configuration Data //////////
 
         int localSpc = 2,
-                localSpc2 = 0,
+                localSpc2 = 3,
                 localSsn = 8,
                 remoteSpc = 3,
-                remoteSpc2 = 0,
+                remoteSpc2 = 4,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
         String callingPartyAddressDigits = "22222222";
@@ -322,10 +322,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 3,
+        int localSpc = 4,
                 localSpc2 = 0,
                 localSsn = 8,
-                remoteSpc = 4,
+                remoteSpc = 3,
                 remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
