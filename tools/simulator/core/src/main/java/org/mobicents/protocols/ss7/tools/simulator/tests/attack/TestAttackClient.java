@@ -1533,7 +1533,8 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             IMSI imsi = mapProvider.getMAPParameterFactory().createIMSI("1234567890");
             LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[] { 11, 12, 13, 14 });
             RequestedInfo requestedInfo = new RequestedInfoImpl(true, true, null, true, null, true, true, true);
-            MAPExtensionContainer mapExtensionContainer = mapProvider.getMAPParameterFactory().createMAPExtensionContainer(null, null);
+            //MAPExtensionContainer mapExtensionContainer = mapProvider.getMAPParameterFactory().createMAPExtensionContainer(null, null);
+            MAPExtensionContainer mapExtensionContainer = null;
             EMLPPPriority emlppPriority = EMLPPPriority.priorityLevel0;
 
             if(curDialog == null)
