@@ -64,7 +64,7 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.attackTesterHostClient.checkStore();
             this.attackTesterHostServer.checkStore();
 
-            if(sentSRINum < 3) {
+            if(sentSRINum < 1) {
                 if(sentSRINum == 1) {
 
                 }
