@@ -41,7 +41,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void startAttackSimulationHostsLarge() {
         this.stp1.start();
         this.stp2.start();
-        //this.stp3.start();
+        this.stp3.start();
         //this.stp4.start();
         //this.stp5.start();
     }
@@ -92,7 +92,7 @@ public class AttackSimulationOrganizer implements Stoppable {
             if (this.stp1.isNeedQuit() || this.stp2.isNeedQuit() || this.stp3.isNeedQuit() || this.stp4.isNeedQuit() || this.stp5.isNeedQuit()) {
                 this.stp1.stop();
                 this.stp2.stop();
-                //this.stp3.stop();
+                this.stp3.stop();
                 //this.stp4.stop();
                 //this.stp5.stop();
                 break;
@@ -100,13 +100,13 @@ public class AttackSimulationOrganizer implements Stoppable {
 
             this.stp1.execute();
             this.stp2.execute();
-            //this.stp3.execute();
+            this.stp3.execute();
             //this.stp4.execute();
             //this.stp5.execute();
 
             this.stp1.checkStore();
             this.stp2.checkStore();
-            //this.stp3.checkStore();
+            this.stp3.checkStore();
             //this.stp4.checkStore();
             //this.stp5.checkStore();
 

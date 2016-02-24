@@ -255,7 +255,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         int localSpc = 2,
                 localSsn = 8,
-                remoteSpc = 1,
+                remoteSpc = 3,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
         String callingPartyAddressDigits = "22222222";
@@ -276,12 +276,12 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         ///////////////////////////////////////////
 
 
-        dpc2 = 0;
-        opc2 = 0;
-        localPort2 = 0;
-        remotePort2 = 0;
-        localHost2 = "";
-        remoteHost2 = "";
+        //dpc2 = 0;
+        //opc2 = 0;
+        //localPort2 = 0;
+        //remotePort2 = 0;
+        //localHost2 = "";
+        //remoteHost2 = "";
 
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
