@@ -120,7 +120,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void testLargeSimulation() {
-
+        this.stp1.getConfigurationData().getMapConfigurationData().setRemoteAddressDigits("33333333");
+        this.stp1.getTestAttackServer().performSRIForSM("12345678");
     }
 
     public void start() {
