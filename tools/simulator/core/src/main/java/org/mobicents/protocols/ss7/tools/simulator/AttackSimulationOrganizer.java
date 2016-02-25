@@ -101,7 +101,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
             testerHostsExecuteCheckStore();
 
-            if(sentSRINum < 2) {
+            if(sentSRINum < 3) {
                 this.sendRandomMessage(rng, sentSRINum);
 
                 sentSRINum++;
