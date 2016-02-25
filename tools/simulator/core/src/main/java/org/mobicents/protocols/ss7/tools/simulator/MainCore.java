@@ -89,40 +89,6 @@ public class MainCore {
 //        return host;
 //    }
 
-    private ObjectName nameTesterHostA;
-    private ObjectName nameM3uaManA;
-    private ObjectName nameDialogicManA;
-    private ObjectName nameSccpManA;
-    private ObjectName nameMapManA;
-    private ObjectName nameCapManA;
-    private ObjectName nameUssdClientManManA;
-    private ObjectName nameUssdServerManManA;
-    private ObjectName nameSmsClientManManA;
-    private ObjectName nameSmsServerManManA;
-    private ObjectName nameTestCapSsfManA;
-    private ObjectName nameTestCapScfManA;
-    private ObjectName nameAtiClientManManA;
-    private ObjectName nameAtiServerManManA;
-    private ObjectName nameSRIForSMClientManManA;
-    private ObjectName nameSRIForSMServerManManA;
-
-    private ObjectName nameTesterHostB;
-    private ObjectName nameM3uaManB;
-    private ObjectName nameDialogicManB;
-    private ObjectName nameSccpManB;
-    private ObjectName nameMapManB;
-    private ObjectName nameCapManB;
-    private ObjectName nameUssdClientManManB;
-    private ObjectName nameUssdServerManManB;
-    private ObjectName nameSmsClientManManB;
-    private ObjectName nameSmsServerManManB;
-    private ObjectName nameTestCapSsfManB;
-    private ObjectName nameTestCapScfManB;
-    private ObjectName nameAtiClientManManB;
-    private ObjectName nameAtiServerManManB;
-    private ObjectName nameSRIForSMClientManManB;
-    private ObjectName nameSRIForSMServerManManB;
-
     public static void main(String[] args) throws Exception {
 
         // ........................
@@ -211,33 +177,7 @@ public class MainCore {
 
     }
 
-    public void startAttackSimulation(String clientName, String serverName) throws Throwable {
-        System.out.println("Application has been loaded...");
-
-        String sim_home = System.getProperty(AttackSimulationHost.SIMULATOR_HOME_VAR);
-        if (sim_home != null)
-            sim_home += File.separator + "data";
-
-        System.out.println("Loading simulation hosts...");
-
-        AttackSimulationOrganizer attackSimulationOrganizer = new AttackSimulationOrganizer(sim_home);
-
-        System.out.println("Simulation hosts loaded, starting simulation...");
-
-        attackSimulationOrganizer.start();
-
-        System.out.println("Terminating...");
-        //System.out.println("Unloading all beans");
-
-        //unregisterMBeansA(serverHost);
-        //unregisterMBeansB(clientHost);
-
-        System.out.println("Unload complete, shutting down...");
-
-        System.exit(0);
-    }
-
-    public void startAttackSimulationLarge() throws Throwable {
+    public void startAttackSimulation() throws Throwable {
         System.out.println("Application has been loaded...");
 
         String sim_home = System.getProperty(AttackSimulationHost.SIMULATOR_HOME_VAR);

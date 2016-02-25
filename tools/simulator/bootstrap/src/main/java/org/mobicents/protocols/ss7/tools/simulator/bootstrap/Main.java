@@ -83,14 +83,13 @@ public class Main {
 
         int c;
         String arg;
-        LongOpt[] longopts = new LongOpt[7];
+        LongOpt[] longopts = new LongOpt[6];
         longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
         longopts[1] = new LongOpt("name", LongOpt.REQUIRED_ARGUMENT, null, 'n');
         longopts[2] = new LongOpt("http", LongOpt.REQUIRED_ARGUMENT, null, 't');
         longopts[3] = new LongOpt("rmi", LongOpt.REQUIRED_ARGUMENT, null, 'r');
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
         longopts[5] = new LongOpt("attack_simulation", LongOpt.NO_ARGUMENT, null, 0);
-        longopts[5] = new LongOpt("attack_simulation_large", LongOpt.NO_ARGUMENT, null, 0);
 
         Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h", longopts);
         g.setOpterr(false); // We'll do our own error handling
@@ -277,12 +276,8 @@ public class Main {
             mainCore.start(appName, httpPort, rmiPort, rmiPort2);
         } else if (this.command.equals("attack_simulation")) {
             MainCore mainCore = new MainCore();
-            mainCore.startAttackSimulation("attackClient", "attackServer");
-        } else if (this.command.equals("attack_simulation_large")) {
-            MainCore mainCore = new MainCore();
-            mainCore.startAttackSimulationLarge();
+            mainCore.startAttackSimulation();
         }
-
     }
 
     public static URL getURL(String url) throws Exception {
