@@ -24,6 +24,10 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost mscAmscB;
     private AttackTesterHost mscBmscA;
 
+    private AttackTesterHost mscAhlrA;
+    private AttackTesterHost hlrAmscA;
+
+
     public AttackSimulationOrganizer(AttackTesterHost attackTesterHostClient, AttackTesterHost attackTesterHostServer) {
         this.attackTesterHostClient = attackTesterHostClient;
         this.attackTesterHostServer = attackTesterHostServer;
@@ -42,11 +46,15 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.mscAmscB = new AttackTesterHost("MSA_A_MSC_B", simulatorHome, AttackTesterHost.AttackType.MSC_A_MSC_B);
         this.mscBmscA = new AttackTesterHost("MSA_B_MSC_A", simulatorHome, AttackTesterHost.AttackType.MSC_B_MSC_A);
 
+        this.mscAhlrA = new AttackTesterHost("MSA_A_HLR_A", simulatorHome, AttackTesterHost.AttackType.MSC_A_HLR_A);
+        this.hlrAmscA = new AttackTesterHost("HLR_A_MSC_A", simulatorHome, AttackTesterHost.AttackType.HLR_A_MSC_A);
     }
 
     private void startAttackSimulationHosts() {
         this.mscAmscB.start();
         this.mscBmscA.start();
+        this.mscAhlrA.start();
+        this.hlrAmscA.start();
     }
 
     private void startAttackSimulationHostsLarge() {
@@ -63,7 +71,7 @@ public class AttackSimulationOrganizer implements Stoppable {
             try {
                 Thread.sleep(100);
                 if(mscAmscB.getM3uaMan().getState().contains("ACTIVE") &&
-                        mscBmscA.getM3uaMan().getState().contains("ACTIVE"))
+                        mscAhlrA.getM3uaMan().getState().contains("ACTIVE"))
                     return true;
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -136,12 +144,20 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private boolean testerHostsNeedQuit() {
-        return this.mscAmscB.isNeedQuit() || this.mscBmscA.isNeedQuit();
+        return this.mscAmscB.isNeedQuit() || this.mscBmscA.isNeedQuit() ||
+                this.mscAhlrA.isNeedQuit() || this.hlrAmscA.isNeedQuit();
     }
 
     private void testerHostsExecuteCheckStore() {
         this.mscAmscB.execute();
+        this.mscBmscA.execute();
+        this.mscAhlrA.execute();
+        this.hlrAmscA.execute();
+
         this.mscAmscB.checkStore();
+        this.mscBmscA.checkStore();
+        this.mscAhlrA.checkStore();
+        this.hlrAmscA.checkStore();
     }
 
     private void testLargeSimulation() {
@@ -169,8 +185,11 @@ public class AttackSimulationOrganizer implements Stoppable {
 
             testerHostsExecuteCheckStore();
 
-            if(sentSRINum < 1) {
-                this.sendRandomMessage(rng);
+            if(sentSRINum < 2) {
+                if(sentSRINum == 1)
+                    this.sendRandomMessage(rng, sentSRINum);
+                else if (sentSRINum == 2)
+
                 sentSRINum++;
             }
         }
@@ -192,9 +211,18 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     }
 
-    private void sendRandomMessage(Random rng) {
+    private void sendRandomMessage(Random rng, int num) {
 
-        this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
+        switch(num) {
+            case 0:
+                this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 1:
+                this.mscAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            default:
+                break;
+        }
 
         //switch(rng.nextInt(4)) {
         //    case 0:
