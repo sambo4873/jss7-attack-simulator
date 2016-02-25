@@ -248,17 +248,11 @@ public class MainCore {
 
         System.out.println("Loading simulation hosts...");
 
-        AttackTesterHost stp1 = new AttackTesterHost("attack_STP1", sim_home, AttackTesterHost.AttackType.STP_1);
-        AttackTesterHost stp2 = new AttackTesterHost("attack_STP2", sim_home, AttackTesterHost.AttackType.STP_2);
-        AttackTesterHost stp3 = new AttackTesterHost("attack_STP3", sim_home, AttackTesterHost.AttackType.STP_3);
-        AttackTesterHost stp4 = new AttackTesterHost("attack_STP4", sim_home, AttackTesterHost.AttackType.STP_4);
-        AttackTesterHost stp5 = new AttackTesterHost("attack_STP5", sim_home, AttackTesterHost.AttackType.STP_5);
-
-        AttackSimulationOrganizer attackSimulationOrganizer = new AttackSimulationOrganizer(stp1, stp2, stp3, stp4, stp5);
+        AttackSimulationOrganizer attackSimulationOrganizer = new AttackSimulationOrganizer(sim_home);
 
         System.out.println("Simulation hosts loaded, starting simulation...");
 
-        attackSimulationOrganizer.startLarge();
+        attackSimulationOrganizer.start();
 
         System.out.println("Terminating...");
         //System.out.println("Unloading all beans");

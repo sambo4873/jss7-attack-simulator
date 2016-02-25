@@ -153,20 +153,11 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             case ATTACK_CLIENT:
                 this.configureAttackClient();
                 break;
-            case STP_1:
-                this.configureSTP1();
+            case MSC_A_MSC_B:
+                this.configureMscAMscB();
                 break;
-            case STP_2:
-                this.configureSTP2();
-                break;
-            case STP_3:
-                this.configureSTP3();
-                break;
-            case STP_4:
-                this.configureSTP4();
-                break;
-            case STP_5:
-                this.configureSTP5();
+            case MSC_B_MSC_A:
+                this.configureMscBMscA();
                 break;
 
             default:
@@ -174,17 +165,74 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         }
     }
 
-    private void configureSTP1() {
+    private void configureMscAMscB() {
 
         //////// L1 Configuration Data //////////
 
-        int dpc = 2,
-                dpc2 = 0,
-                opc = 1,
+        int opc = 1,
                 opc2 = 0,
+                dpc = 5,
+                dpc2 = 0,
                 localPort = 8011,
                 localPort2 = 0,
-                remotePort = 8012,
+                remotePort = 8111,
+                remotePort2 = 0;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = 1,
+                localSpc2 = 0,
+                localSsn = 8,
+                remoteSpc = 5,
+                remoteSpc2 = 0,
+                remoteSsn = 8;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = "1111";
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = "2221";
+
+        ////////////////////////////////////////
+
+
+        //////// Test Configuration Data //////////
+        ///////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        configureTestAttackServer();
+    }
+
+    private void configureMscBMscA() {
+
+        //////// L1 Configuration Data //////////
+
+        int opc = 5,
+                opc2 = 0,
+                dpc = 1,
+                dpc2 = 0,
+                localPort = 8111,
+                localPort2 = 0,
+                remotePort = 8011,
                 remotePort2 = 0;
 
         String localHost = "127.0.0.1",
@@ -200,14 +248,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 1,
+        int localSpc = 5,
                 localSpc2 = 0,
                 localSsn = 8,
-                remoteSpc = 2,
+                remoteSpc = 1,
                 remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "11111111";
+        String callingPartyAddressDigits = "2221";
 
         ////////////////////////////////////////
 
@@ -216,64 +264,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "";
-
-        ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
-
-        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
-        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
-        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
-        configureTestAttackServer();
-    }
-
-    private void configureSTP2() {
-
-        //////// L1 Configuration Data //////////
-
-        int dpc = 1,
-                dpc2 = 4,
-                opc = 2,
-                opc2 = 3,
-                localPort = 8012,
-                localPort2 = 8013,
-                remotePort = 8011,
-                remotePort2 = 8014;
-
-        String localHost = "127.0.0.1",
-                localHost2 = "127.0.0.1",
-                remoteHost = "127.0.0.1",
-                remoteHost2 = "127.0.0.1";
-
-        boolean isSctpServer = false;
-        IPSPType ipspType = IPSPType.CLIENT;
-
-        ////////////////////////////////////////
-
-
-        //////// L2 Configuration Data //////////
-
-        int localSpc = 2,
-                localSpc2 = 3,
-                localSsn = 8,
-                remoteSpc = 3,
-                remoteSpc2 = 4,
-                remoteSsn = 8;
-        boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "22222222";
-
-        ////////////////////////////////////////
-
-
-        //////// L3 Configuration Data //////////
-
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
-                remoteAddressDigits = "";
+                remoteAddressDigits = "1111";
 
         ////////////////////////////////////////
 
@@ -467,6 +458,62 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         configureTestAttackServer();
     }
 
+    private void configureSTP6() {
+
+        //////// L1 Configuration Data //////////
+
+        int dpc = 2,
+                dpc2 = 0,
+                opc = 1,
+                opc2 = 0,
+                localPort = 8011,
+                localPort2 = 0,
+                remotePort = 8012,
+                remotePort2 = 0;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = 1,
+                localSpc2 = 0,
+                localSsn = 8,
+                remoteSpc = 2,
+                remoteSpc2 = 0,
+                remoteSsn = 8;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = "11111111";
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = "";
+
+        ////////////////////////////////////////
+
+
+        //////// Test Configuration Data //////////
+        ///////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+        configureTestAttackServer();
+    }
 
     private void configureAttackServer() {
 
@@ -1162,10 +1209,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         ALL,
         ATTACK_CLIENT,
         ATTACK_SERVER,
-        STP_1,
-        STP_2,
-        STP_3,
-        STP_4,
-        STP_5,
+        MSC_A_MSC_B,
+        MSC_B_MSC_A,
+        MSC_A_HLR_A,
+        HLR_A_MSC_A,
     }
 }
