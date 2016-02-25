@@ -194,7 +194,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void sendRandomMessage(Random rng) {
 
-        //this.attackTesterHostServer.getTestAttackServer().performSRIForSM("123123123");
+        this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
 
         //switch(rng.nextInt(4)) {
         //    case 0:
