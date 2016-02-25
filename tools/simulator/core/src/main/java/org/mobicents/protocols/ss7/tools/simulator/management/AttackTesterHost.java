@@ -396,7 +396,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 1,
+        int localSpc = 2,
                 localSpc2 = 0,
                 localSsn = 6,
                 remoteSpc = 1,
