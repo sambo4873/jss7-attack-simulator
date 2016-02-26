@@ -8,6 +8,7 @@ import org.mobicents.protocols.ss7.map.api.*;
 import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
 import org.mobicents.protocols.ss7.map.api.primitives.*;
+import org.mobicents.protocols.ss7.map.api.service.callhandling.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.MAPServiceMobilityListener;
 import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.*;
@@ -22,8 +23,9 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceMod
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.*;
-import org.mobicents.protocols.ss7.map.api.service.oam.MSCSEventList;
+import org.mobicents.protocols.ss7.map.api.service.oam.*;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
+import org.mobicents.protocols.ss7.map.api.service.supplementary.*;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
 import org.mobicents.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.mobicents.protocols.ss7.map.primitives.LAIFixedLengthImpl;
@@ -51,7 +53,8 @@ import java.util.GregorianCalendar;
 /**
  * @author Kristoffer Jensen
  */
-public class TestAttackServer extends AttackTesterBase implements Stoppable, MAPDialogListener, MAPServiceSmsListener, MAPServiceMobilityListener {
+public class TestAttackServer extends AttackTesterBase implements Stoppable, MAPDialogListener, MAPServiceSmsListener,
+        MAPServiceMobilityListener, MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServiceSupplementaryListener {
 
     public static String SOURCE_NAME = "TestAttackServer";
 
@@ -1276,6 +1279,146 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onActivateTraceModeResponse_Mobility(ActivateTraceModeResponse_Mobility ind) {
+
+    }
+
+    @Override
+    public void onSendRoutingInformationRequest(SendRoutingInformationRequest request) {
+
+    }
+
+    @Override
+    public void onSendRoutingInformationResponse(SendRoutingInformationResponse response) {
+
+    }
+
+    @Override
+    public void onProvideRoamingNumberRequest(ProvideRoamingNumberRequest request) {
+
+    }
+
+    @Override
+    public void onProvideRoamingNumberResponse(ProvideRoamingNumberResponse response) {
+
+    }
+
+    @Override
+    public void onActivateTraceModeRequest_Oam(ActivateTraceModeRequest_Oam ind) {
+
+    }
+
+    @Override
+    public void onActivateTraceModeResponse_Oam(ActivateTraceModeResponse_Oam ind) {
+
+    }
+
+    @Override
+    public void onSendImsiRequest(SendImsiRequest ind) {
+
+    }
+
+    @Override
+    public void onSendImsiResponse(SendImsiResponse ind) {
+
+    }
+
+    @Override
+    public void onRegisterSSRequest(RegisterSSRequest request) {
+
+    }
+
+    @Override
+    public void onRegisterSSResponse(RegisterSSResponse response) {
+
+    }
+
+    @Override
+    public void onEraseSSRequest(EraseSSRequest request) {
+
+    }
+
+    @Override
+    public void onEraseSSResponse(EraseSSResponse response) {
+
+    }
+
+    @Override
+    public void onActivateSSRequest(ActivateSSRequest request) {
+
+    }
+
+    @Override
+    public void onActivateSSResponse(ActivateSSResponse response) {
+
+    }
+
+    @Override
+    public void onDeactivateSSRequest(DeactivateSSRequest request) {
+
+    }
+
+    @Override
+    public void onDeactivateSSResponse(DeactivateSSResponse response) {
+
+    }
+
+    @Override
+    public void onInterrogateSSRequest(InterrogateSSRequest request) {
+
+    }
+
+    @Override
+    public void onInterrogateSSResponse(InterrogateSSResponse response) {
+
+    }
+
+    @Override
+    public void onGetPasswordRequest(GetPasswordRequest request) {
+
+    }
+
+    @Override
+    public void onGetPasswordResponse(GetPasswordResponse response) {
+
+    }
+
+    @Override
+    public void onRegisterPasswordRequest(RegisterPasswordRequest request) {
+
+    }
+
+    @Override
+    public void onRegisterPasswordResponse(RegisterPasswordResponse response) {
+
+    }
+
+    @Override
+    public void onProcessUnstructuredSSRequest(ProcessUnstructuredSSRequest procUnstrReqInd) {
+
+    }
+
+    @Override
+    public void onProcessUnstructuredSSResponse(ProcessUnstructuredSSResponse procUnstrResInd) {
+
+    }
+
+    @Override
+    public void onUnstructuredSSRequest(UnstructuredSSRequest unstrReqInd) {
+
+    }
+
+    @Override
+    public void onUnstructuredSSResponse(UnstructuredSSResponse unstrResInd) {
+
+    }
+
+    @Override
+    public void onUnstructuredSSNotifyRequest(UnstructuredSSNotifyRequest unstrNotifyInd) {
+
+    }
+
+    @Override
+    public void onUnstructuredSSNotifyResponse(UnstructuredSSNotifyResponse unstrNotifyInd) {
 
     }
 
