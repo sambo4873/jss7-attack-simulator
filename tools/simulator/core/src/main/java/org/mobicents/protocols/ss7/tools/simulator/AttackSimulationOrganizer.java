@@ -1,8 +1,5 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
-import org.mobicents.protocols.ss7.indicator.RoutingIndicator;
-import org.mobicents.protocols.ss7.sccp.Router;
-import org.mobicents.protocols.ss7.sccp.parameter.ParameterFactory;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 
 import java.util.Random;
@@ -11,6 +8,8 @@ import java.util.Random;
  * @author Kristoffer Jensen
  */
 public class AttackSimulationOrganizer implements Stoppable {
+    private Random rng;
+
     private AttackTesterHost mscAmscB;
     private AttackTesterHost mscBmscA;
 
@@ -28,6 +27,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost vlrAhlrA;
 
     public AttackSimulationOrganizer(String simulatorHome) {
+        this.rng = new Random(System.currentTimeMillis());
+
         this.mscAmscB = new AttackTesterHost("MSC_A_MSC_B", simulatorHome, AttackTesterHost.AttackType.MSC_A_MSC_B);
         this.mscBmscA = new AttackTesterHost("MSC_B_MSC_A", simulatorHome, AttackTesterHost.AttackType.MSC_B_MSC_A);
 
@@ -61,10 +62,11 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.vlrAhlrA.start();
     }
 
-    private boolean waitForM3UALink() {
+    private boolean waitForM3UALinks() {
         while (true) {
             try {
                 Thread.sleep(100);
+
                 if(mscAmscB.getM3uaMan().getState().contains("ACTIVE") &&
                         mscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
                         mscAsmscA.getM3uaMan().getState().contains("ACTIVE") &&
@@ -111,32 +113,46 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     public void start() {
-        int sentSRINum = 0;
-        Random rng = new Random();
-
         startAttackSimulationHosts();
 
-        if (!waitForM3UALink()) return;
+        if (!waitForM3UALinks())
+            return;
+
+        int sleepTime = 100;
 
         while (true) {
             try {
-                Thread.sleep(500);
+                sleepTime = this.rng.nextInt((1000 - 100) + 1) + 100;
+                Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 break;
             }
 
-            if(testerHostsNeedQuit())
+            if(this.testerHostsNeedQuit())
                 break;
 
-            testerHostsExecuteCheckStore();
-
-            if(sentSRINum < 5) {
-                this.sendRandomMessage(rng, sentSRINum);
-
-                sentSRINum++;
-            }
+            this.testerHostsExecuteCheckStore();
+            this.generateTraffic();
         }
+    }
+
+    private void generateTraffic() {
+        double attackChance = 1.0;
+        boolean generateNoise = this.rng.nextInt(10) >= attackChance;
+
+        if(generateNoise)
+            this.generateNoise();
+        else
+            this.generateAttack();
+    }
+
+    private void generateNoise() {
+
+    }
+
+    private void generateAttack() {
+
     }
 
     private void modifyCallingPartyAddressDigits(AttackTesterHost attackTesterHost, String cgGT) {
