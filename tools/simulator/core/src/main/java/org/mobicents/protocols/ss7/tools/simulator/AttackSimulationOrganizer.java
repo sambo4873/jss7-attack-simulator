@@ -24,6 +24,9 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost mscAvlrA;
     private AttackTesterHost vlrAmscA;
 
+    private AttackTesterHost hlrAvlrA;
+    private AttackTesterHost vlrAhlrA;
+
     public AttackSimulationOrganizer(String simulatorHome) {
         this.mscAmscB = new AttackTesterHost("MSC_A_MSC_B", simulatorHome, AttackTesterHost.AttackType.MSC_A_MSC_B);
         this.mscBmscA = new AttackTesterHost("MSC_B_MSC_A", simulatorHome, AttackTesterHost.AttackType.MSC_B_MSC_A);
@@ -36,6 +39,9 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         this.mscAvlrA = new AttackTesterHost("MSC_A_VLR_A", simulatorHome, AttackTesterHost.AttackType.MSC_A_VLR_A);
         this.vlrAmscA = new AttackTesterHost("VLR_A_MSC_A", simulatorHome, AttackTesterHost.AttackType.VLR_A_MSC_A);
+
+        this.hlrAvlrA = new AttackTesterHost("HLR_A_VLR_A", simulatorHome, AttackTesterHost.AttackType.HLR_A_VLR_A);
+        this.vlrAhlrA = new AttackTesterHost("VLR_A_HLR_A", simulatorHome, AttackTesterHost.AttackType.VLR_A_HLR_A);
     }
 
     private void startAttackSimulationHosts() {
