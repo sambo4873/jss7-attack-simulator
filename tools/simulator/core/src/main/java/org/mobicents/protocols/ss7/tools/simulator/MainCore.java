@@ -174,32 +174,26 @@ public class MainCore {
 
         MainCore main = new MainCore();
         main.start(appName, httpPort, rmiPort, rmiPort2);
-
     }
 
-    public void startAttackSimulation() throws Throwable {
-        System.out.println("Application has been loaded...");
-
+    private String findSimulatorHome() {
         String sim_home = System.getProperty(AttackSimulationHost.SIMULATOR_HOME_VAR);
         if (sim_home != null)
             sim_home += File.separator + "data";
+        return sim_home;
+    }
 
+    public void startAttackSimulation(boolean simpleSimulation) throws Throwable {
+        System.out.println("Application has been loaded...");
         System.out.println("Loading simulation hosts...");
 
-        AttackSimulationOrganizer attackSimulationOrganizer = new AttackSimulationOrganizer(sim_home);
+        AttackSimulationOrganizer  attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation);
 
         System.out.println("Simulation hosts loaded, starting simulation...");
-
         attackSimulationOrganizer.start();
 
         System.out.println("Terminating...");
-        //System.out.println("Unloading all beans");
-
-        //unregisterMBeansA(serverHost);
-        //unregisterMBeansB(clientHost);
-
         System.out.println("Unload complete, shutting down...");
-
         System.exit(0);
     }
 

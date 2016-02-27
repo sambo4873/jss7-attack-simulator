@@ -1199,6 +1199,10 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public String performSendRoutingInfoForSM() {
+        return null;
+    }
+
     @Override
     public void onReportSMDeliveryStatusRequest(ReportSMDeliveryStatusRequest ind) {
         if (!isStarted)
@@ -1501,6 +1505,9 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onAnyTimeInterrogationResponse(AnyTimeInterrogationResponse response) {
 
+    }
+
+    public void performATI() {
     }
 
     public String performProvideSubscriberInfoRequest() {

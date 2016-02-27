@@ -60,6 +60,7 @@ public class Main {
     private int rmiPort2 = -1;
     private int httpPort = -1;
     private String attack_command = null;
+    private String simple_attack_goal = null;
 
     public static void main(String[] args) throws Throwable {
         String homeDir = getHomeDir(args);
@@ -90,9 +91,9 @@ public class Main {
         longopts[2] = new LongOpt("http", LongOpt.REQUIRED_ARGUMENT, null, 't');
         longopts[3] = new LongOpt("rmi", LongOpt.REQUIRED_ARGUMENT, null, 'r');
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
-        longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 0);
+        longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 'a');
 
-        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a", longopts);
+        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:b", longopts);
         g.setOpterr(false); // We'll do our own error handling
         //
         while ((c = g.getopt()) != -1) {
@@ -143,6 +144,7 @@ public class Main {
                     System.exit(0);
                     break;
                 case 'a':
+                    //Attack simulation type
                     arg = g.getOptarg();
                     if (arg.equals("simple")) {
                         this.attack_command = "simple";
@@ -153,7 +155,11 @@ public class Main {
                         this.genericHelp();
                     }
                     break;
-
+                case 'b':
+                    //Attack goal to perform, in cooperation with -a simple
+                    arg = g.getOptarg();
+                    this.simple_attack_goal = arg;
+                    break;
                 case 1:
                     String optArg = g.getOptarg();
                     if (optArg.equals("core")) {
@@ -287,7 +293,10 @@ public class Main {
             mainCore.start(appName, httpPort, rmiPort, rmiPort2);
         } else if (this.command.equals("attack_simulation")) {
             MainCore mainCore = new MainCore();
-            mainCore.startAttackSimulation();
+            if (this.attack_command.equals("simple"))
+                mainCore.startAttackSimulation(true);
+            else if (this.attack_command.equals("complex"))
+                mainCore.startAttackSimulation(false);
         }
     }
 

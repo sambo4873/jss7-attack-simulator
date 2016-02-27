@@ -1,5 +1,6 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
+import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 
 import java.util.Random;
@@ -26,7 +27,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost hlrAvlrA;
     private AttackTesterHost vlrAhlrA;
 
-    public AttackSimulationOrganizer(String simulatorHome) {
+    public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation) {
         this.rng = new Random(System.currentTimeMillis());
 
         this.mscAmscB = new AttackTesterHost("MSC_A_MSC_B", simulatorHome, AttackTesterHost.AttackType.MSC_A_MSC_B);
@@ -43,6 +44,12 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         this.hlrAvlrA = new AttackTesterHost("HLR_A_VLR_A", simulatorHome, AttackTesterHost.AttackType.HLR_A_VLR_A);
         this.vlrAhlrA = new AttackTesterHost("VLR_A_HLR_A", simulatorHome, AttackTesterHost.AttackType.VLR_A_HLR_A);
+
+        if (simpleSimulation) {
+
+        } else {
+
+        }
     }
 
     private void startAttackSimulationHosts() {
@@ -181,6 +188,29 @@ public class AttackSimulationOrganizer implements Stoppable {
             default:
                 break;
         }
+    }
+
+    private void attackLocationAti() {
+        this.mscAhlrA.getTestAttackClient().performATI();
+    }
+
+    private void attackLocationPsi() {
+        //Change to MscBHlrA
+        String response = this.mscAhlrA.getTestAttackClient().performSendRoutingInfoForSM();
+        //Get necessary information from request, use in next message.
+        response = this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+        //Location information aquired.
+    }
+
+    private void attackInterceptSms() {
+        String response;
+
+        //Update subscriber info.
+        this.vlrAhlrA.getTestAttackClient().performUpdateLocationRequest();
+
+        //Introduce a delay before sending an sms.
+        this.smscAmscA.getTestAttackServer().performSRIForSM("");
+        this.smscAmscA.getTestAttackServer().performMtForwardSM("", "", "", "");
     }
 
     @Override
