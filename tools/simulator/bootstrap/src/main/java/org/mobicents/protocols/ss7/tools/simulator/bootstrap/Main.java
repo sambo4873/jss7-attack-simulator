@@ -59,6 +59,7 @@ public class Main {
     private int rmiPort = -1;
     private int rmiPort2 = -1;
     private int httpPort = -1;
+    private String attack_command = null;
 
     public static void main(String[] args) throws Throwable {
         String homeDir = getHomeDir(args);
@@ -89,9 +90,9 @@ public class Main {
         longopts[2] = new LongOpt("http", LongOpt.REQUIRED_ARGUMENT, null, 't');
         longopts[3] = new LongOpt("rmi", LongOpt.REQUIRED_ARGUMENT, null, 'r');
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
-        longopts[5] = new LongOpt("attack_simulation", LongOpt.NO_ARGUMENT, null, 0);
+        longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 0);
 
-        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h", longopts);
+        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a", longopts);
         g.setOpterr(false); // We'll do our own error handling
         //
         while ((c = g.getopt()) != -1) {
@@ -141,6 +142,18 @@ public class Main {
                     System.out.println("The option '" + (char) g.getOptopt() + "' is not valid");
                     System.exit(0);
                     break;
+                case 'a':
+                    arg = g.getOptarg();
+                    if (arg.equals("simple")) {
+                        this.attack_command = "simple";
+                    } else if (arg.equals("complex")){
+                        this.attack_command = "complex";
+                    } else {
+                        System.out.println("Invalid command " + arg);
+                        this.genericHelp();
+                    }
+                    break;
+
                 case 1:
                     String optArg = g.getOptarg();
                     if (optArg.equals("core")) {
@@ -149,8 +162,6 @@ public class Main {
                         this.command = "gui";
                     } else if (optArg.equals("attack_simulation")) {
                         this.command = "attack_simulation";
-                    } else if (optArg.equals("attack_simulation_large")) {
-                        this.command = "attack_simulation_large";
                     } else if (optArg.equals("help")) {
                         if (this.command == null) {
                             this.genericHelp();
