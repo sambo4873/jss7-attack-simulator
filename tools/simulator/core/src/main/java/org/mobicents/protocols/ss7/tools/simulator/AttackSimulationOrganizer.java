@@ -179,6 +179,8 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         int sleepTime = 100;
 
+        int msgNum = 0;
+
         while (true) {
             try {
                 sleepTime = this.rng.nextInt((1000 - 100) + 1) + 100;
@@ -193,6 +195,10 @@ public class AttackSimulationOrganizer implements Stoppable {
 
             this.testerHostsExecuteCheckStore();
             this.generateTraffic();
+
+            this.sendRandomMessage(msgNum);
+
+            msgNum++;
         }
     }
 
@@ -218,7 +224,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         attackTesterHost.getSccpMan().setCallingPartyAddressDigits(cgGT);
     }
 
-    private void sendRandomMessage(Random rng, int num) {
+    private void sendRandomMessage(int num) {
 
         switch (num) {
             case 0:
@@ -235,6 +241,18 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 4:
                 this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 5:
+                this.attackerBmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 6:
+                this.attackerBhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 7:
+                this.attackerBsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 8:
+                this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
 
             default:
