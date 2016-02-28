@@ -1507,7 +1507,8 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
-    public void performATI() {
+    public String performATI() {
+        return null;
     }
 
     public String performProvideSubscriberInfoRequest() {

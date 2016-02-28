@@ -27,6 +27,18 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost hlrAvlrA;
     private AttackTesterHost vlrAhlrA;
 
+    private AttackTesterHost attackerBmscA;
+    private AttackTesterHost mscAattackerB;
+
+    private AttackTesterHost attackerBhlrA;
+    private AttackTesterHost hlrAattackerB;
+
+    private AttackTesterHost attackerBsmscA;
+    private AttackTesterHost smscAattackB;
+
+    private AttackTesterHost attackerBvlrA;
+    private AttackTesterHost vlrAattackerB;
+
     public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation) {
         this.rng = new Random(System.currentTimeMillis());
 
@@ -44,6 +56,18 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         this.hlrAvlrA = new AttackTesterHost("HLR_A_VLR_A", simulatorHome, AttackTesterHost.AttackType.HLR_A_VLR_A);
         this.vlrAhlrA = new AttackTesterHost("VLR_A_HLR_A", simulatorHome, AttackTesterHost.AttackType.VLR_A_HLR_A);
+
+        this.attackerBmscA = new AttackTesterHost("ATTACKER_B_MSC_A", simulatorHome, AttackTesterHost.AttackType.ATTACKER_B_MSC_A);
+        this.mscAattackerB = new AttackTesterHost("MSC_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackType.MSC_A_ATTACKER_B);
+
+        this.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackType.ATTACKER_B_HLR_A);
+        this.hlrAattackerB = new AttackTesterHost("HLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackType.HLR_A_ATTACKER_B);
+
+        this.attackerBsmscA = new AttackTesterHost("ATTACKER_B_SMSC_A", simulatorHome, AttackTesterHost.AttackType.ATTACKER_B_SMSC_A);
+        this.smscAattackB = new AttackTesterHost("SMSC_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackType.SMSC_A_ATTACKER_B);
+
+        this.attackerBvlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackType.ATTACKER_B_VLR_A);
+        this.vlrAattackerB = new AttackTesterHost("VLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackType.VLR_A_ATTACKER_B);
 
         if (simpleSimulation) {
 
@@ -67,6 +91,18 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         this.hlrAvlrA.start();
         this.vlrAhlrA.start();
+
+        this.attackerBmscA.start();
+        this.mscAattackerB.start();
+
+        this.attackerBhlrA.start();
+        this.hlrAattackerB.start();
+
+        this.attackerBsmscA.start();
+        this.smscAattackB.start();
+
+        this.attackerBvlrA.start();
+        this.vlrAattackerB.start();
     }
 
     private boolean waitForM3UALinks() {
@@ -78,7 +114,11 @@ public class AttackSimulationOrganizer implements Stoppable {
                         mscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
                         mscAsmscA.getM3uaMan().getState().contains("ACTIVE") &&
                         mscAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
-                        hlrAvlrA.getM3uaMan().getState().contains("ACTIVE"))
+                        hlrAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                        attackerBmscA.getM3uaMan().getState().contains("ACTIVE") &&
+                        attackerBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                        attackerBsmscA.getM3uaMan().getState().contains("ACTIVE") &&
+                        attackerBvlrA.getM3uaMan().getState().contains("ACTIVE"))
                     return true;
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -92,7 +132,11 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.mscAhlrA.isNeedQuit() || this.hlrAmscA.isNeedQuit() ||
                 this.mscAsmscA.isNeedQuit() || this.smscAmscA.isNeedQuit() ||
                 this.mscAvlrA.isNeedQuit() || this.vlrAmscA.isNeedQuit() ||
-                this.hlrAvlrA.isNeedQuit() || this.vlrAhlrA.isNeedQuit();
+                this.hlrAvlrA.isNeedQuit() || this.vlrAhlrA.isNeedQuit() ||
+                this.attackerBmscA.isNeedQuit() || this.mscAattackerB.isNeedQuit() ||
+                this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit() ||
+                this.attackerBsmscA.isNeedQuit() || this.smscAattackB.isNeedQuit() ||
+                this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit();
     }
 
     private void testerHostsExecuteCheckStore() {
@@ -106,6 +150,10 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.vlrAmscA.execute();
         this.hlrAvlrA.execute();
         this.vlrAhlrA.execute();
+        this.attackerBmscA.execute();
+        this.attackerBhlrA.execute();
+        this.attackerBsmscA.execute();
+        this.attackerBvlrA.execute();
 
         this.mscAmscB.checkStore();
         this.mscBmscA.checkStore();
@@ -117,6 +165,10 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.vlrAmscA.checkStore();
         this.hlrAvlrA.checkStore();
         this.vlrAhlrA.checkStore();
+        this.attackerBmscA.checkStore();
+        this.attackerBhlrA.checkStore();
+        this.attackerBsmscA.checkStore();
+        this.attackerBvlrA.checkStore();
     }
 
     public void start() {
@@ -190,27 +242,29 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    private void attackLocationAti() {
-        this.mscAhlrA.getTestAttackClient().performATI();
+    private String attackLocationAti() {
+        return this.mscAhlrA.getTestAttackClient().performATI();
     }
 
-    private void attackLocationPsi() {
-        //Change to MscBHlrA
-        String response = this.mscAhlrA.getTestAttackClient().performSendRoutingInfoForSM();
+    private String attackLocationPsi() {
+        String response = this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM();
         //Get necessary information from request, use in next message.
-        response = this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+        response = this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
         //Location information aquired.
+        return response;
     }
 
-    private void attackInterceptSms() {
+    private String attackInterceptSms() {
         String response;
 
         //Update subscriber info.
-        this.vlrAhlrA.getTestAttackClient().performUpdateLocationRequest();
+        response = this.vlrAhlrA.getTestAttackClient().performUpdateLocationRequest();
 
         //Introduce a delay before sending an sms.
-        this.smscAmscA.getTestAttackServer().performSRIForSM("");
-        this.smscAmscA.getTestAttackServer().performMtForwardSM("", "", "", "");
+        response = this.smscAmscA.getTestAttackServer().performSRIForSM("");
+        response = this.smscAmscA.getTestAttackServer().performMtForwardSM("", "", "", "");
+
+        return response;
     }
 
     @Override
