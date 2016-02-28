@@ -254,6 +254,11 @@ public class AttackSimulationOrganizer implements Stoppable {
             case 8:
                 this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
+            case 9:
+                this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 10:
+                break;
 
             default:
                 break;
