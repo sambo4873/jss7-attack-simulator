@@ -46,7 +46,7 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 /**
  * @author Kristoffer Jensen
  */
-public class AttackTesterHost extends TesterHost implements TesterHostMBean, Stoppable, Runnable {
+public class AttackTesterHost extends TesterHost implements TesterHostMBean, Stoppable {
     private static final Logger logger = Logger.getLogger(AttackTesterHost.class);
 
     private static final String TESTER_HOST_PERSIST_DIR_KEY = "testerhost.persist.dir";
@@ -89,7 +89,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     TestAttackServer testAttackServer;
 
     private AttackNode attackNode;
-    private AttackType attackType;
+    private boolean attackDone;
 
     // testers
 
@@ -99,6 +99,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
     public AttackTesterHost(String appName, String persistDir, AttackNode attackNode) {
         this.attackNode = attackNode;
+        this.attackDone = false;
         this.appName = appName;
         this.persistDir = persistDir;
 
@@ -1565,6 +1566,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         testAttackServerConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
         testAttackServerConfigurationData.setTypeOfNumber(TypeOfNumber.InternationalNumber);
         testAttackServerConfigurationData.setVlrSsn(8);
+
+        testAttackServerConfigurationData.setSriResponseImsi("454545454545454");
+        testAttackServerConfigurationData.setSriResponseVlr("1114");
     }
 
     @Override
@@ -2032,32 +2036,30 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         }
     }
 
-    public void setAttackType(AttackType attackType) {
-        this.attackType = attackType;
+    private void performAttackLocationPSI() {
+        this.getTestAttackClient().performProvideSubscriberInfoRequest();
     }
 
-    public AttackType getAttackType() {
-        return this.attackType;
+    public boolean isAttackDone() {
+        return this.attackDone;
     }
 
-    @Override
-    public void run() {
-        switch(this.attackType) {
-            case LOCATION_ATI:
-                break;
-            case LOCATION_PSI:
-                this.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case INTERCEPT_SMS:
-                break;
-        }
+    public void setAttackDone(boolean attackDone) {
+        this.attackDone = attackDone;
     }
 
-    public synchronized boolean gotPSIResponse() {
-        if (this.getTestAttackClient().getPsiResponse() != null) {
+    public boolean gotPSIResponse() {
+        if (this.getTestAttackClient().getLastPsiResponse() != null) {
             return true;
         }
 
+        return false;
+    }
+
+    public boolean gotSRIForSMResponse() {
+        if (this.getTestAttackClient().getLastSRIForSMResponse() != null) {
+            return true;
+        }
         return false;
     }
 
@@ -2083,11 +2085,5 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         SMSC_A_ATTACKER_B,
         ATTACKER_B_VLR_A,
         VLR_A_ATTACKER_B,
-    }
-
-    public enum AttackType {
-        LOCATION_ATI,
-        LOCATION_PSI,
-        INTERCEPT_SMS,
     }
 }

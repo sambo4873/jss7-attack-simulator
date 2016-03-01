@@ -27,6 +27,8 @@ public class TestAttackServerConfigurationData {
     protected NumberingPlan numberingPlan = NumberingPlan.ISDN;
     protected String serviceCenterAddress = "";
     protected MapProtocolVersion mapProtocolVersion = new MapProtocolVersion(MapProtocolVersion.VAL_MAP_V3);
+    protected String sriResponseImsi = "";
+    protected String sriResponseVlr = "";
     protected int hlrSsn = 6;
     protected int vlrSsn = 8;
     protected TypeOfNumber typeOfNumber = TypeOfNumber.InternationalNumber;
@@ -81,6 +83,22 @@ public class TestAttackServerConfigurationData {
 
     public void setVlrSsn(int vlrSsn) {
         this.vlrSsn = vlrSsn;
+    }
+
+    public String getSriResponseImsi() {
+        return sriResponseImsi;
+    }
+
+    public void setSriResponseImsi(String sriResponseImsi) {
+        this.sriResponseImsi = sriResponseImsi;
+    }
+
+    public String getSriResponseVlr() {
+        return sriResponseVlr;
+    }
+
+    public void setSriResponseVlr(String sriResponseVlr) {
+        this.sriResponseVlr = sriResponseVlr;
     }
 
     public TypeOfNumber getTypeOfNumber() {
