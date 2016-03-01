@@ -2055,7 +2055,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
     public synchronized boolean gotPSIResponse() {
         if (this.getTestAttackClient().getPsiResponse() != null) {
-            this.getTestAttackClient().getPsiResponse().notify();
             return true;
         }
 
