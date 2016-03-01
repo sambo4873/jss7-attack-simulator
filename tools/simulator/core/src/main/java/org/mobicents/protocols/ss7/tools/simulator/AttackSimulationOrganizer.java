@@ -272,7 +272,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void sendRandomMessage(int num) {
 
         if (num == 0)
-            this.attackLocationPsi();
+            this.attackLocationAti();
 
     //    switch (num) {
     //        case 0:
@@ -314,7 +314,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void attackLocationAti() {
-        this.attackerBhlrA.getTestAttackClient().performATI("");
+        this.attackerBhlrA.getTestAttackClient().performATI("98979695");
 
         while(!this.attackerBhlrA.gotAtiResponse()){
             try {
