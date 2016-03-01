@@ -115,7 +115,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         while (true) {
             try {
                 Thread.sleep(100);
-                if(this.simpleSimulation) {
+                if(!this.simpleSimulation) {
                     if (mscAmscB.getM3uaMan().getState().contains("ACTIVE") &&
                             mscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
                             mscAsmscA.getM3uaMan().getState().contains("ACTIVE") &&
@@ -357,15 +357,16 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void updateLocation() {
-
+        this.vlrAhlrA.getTestAttackServer().performUpdateLocation();
     }
 
     private void cancelLocation() {
-
+        this.hlrAvlrA.getTestAttackClient().performCancelLocation();
     }
 
     private void sendIdentification() {
-
+        //this.vlrAvlrB.getTestAttackClient().performSendIdentification();
+        //this.vlrBvlrA.getTestAttackServer().performSendIdentification();
     }
 
     private void purgeMS() {

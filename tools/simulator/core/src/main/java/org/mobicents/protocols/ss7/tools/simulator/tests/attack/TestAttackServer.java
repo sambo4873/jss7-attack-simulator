@@ -1422,6 +1422,9 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performUpdateLocation() {
+    }
+
     private class HostMessageData {
         public MtMessageData mtMessageData;
         public ResendMessageData resendMessageData;

@@ -1757,6 +1757,9 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performCancelLocation() {
+    }
+
     private class ResendMessageData {
         public SM_RP_DA da;
         public SM_RP_OA oa;
