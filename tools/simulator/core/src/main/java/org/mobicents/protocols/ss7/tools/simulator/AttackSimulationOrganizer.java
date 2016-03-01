@@ -328,9 +328,9 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         do{
             try{
-                this.wait(100);
+                Thread.sleep(100);
             } catch (InterruptedException e) {
-
+                System.exit(50);
             }
         } while (!this.attackerBvlrA.gotPSIResponse());
 
