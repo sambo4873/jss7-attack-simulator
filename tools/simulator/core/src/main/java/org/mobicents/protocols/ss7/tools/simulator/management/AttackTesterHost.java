@@ -89,6 +89,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     TestAttackServer testAttackServer;
 
     private AttackNode attackNode;
+    private AttackType attackType;
 
     // testers
 
@@ -2031,6 +2032,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         }
     }
 
+    public void setAttackType(AttackType attackType) {
+        this.attackType = attackType;
+    }
+
+    public AttackType getAttackType() {
+        return this.attackType;
+    }
+
     @Override
     public void run() {
 
@@ -2058,5 +2067,11 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         SMSC_A_ATTACKER_B,
         ATTACKER_B_VLR_A,
         VLR_A_ATTACKER_B,
+    }
+
+    public enum AttackType {
+        LOCATION_ATI,
+        LOCATION_PSI,
+        INTERCEPT_SMS,
     }
 }
