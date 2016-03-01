@@ -316,7 +316,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void attackLocationAti() {
         this.attackerBhlrA.getTestAttackClient().performATI("98979695");
 
-        while(!this.attackerBhlrA.gotAtiResponse()){
+        while(!this.attackerBhlrA.gotAtiResponse()) {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -408,31 +408,31 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void insertSubscriberData() {
-
+        //this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
     }
 
     private void deleteSubscriberData() {
-
+        //this.hlrAvlrA.getTestAttackClient().performDeleteSubscriberData();
     }
 
     private void forwardCheckSSIndication() {
-
+        //this.hlrAmscA.getTestAttackServer().performForwardCheckSSIndication();
     }
 
     private void restoreData() {
-
+        //this.vlrAhlrA.getTestAttackServer().performRestoreData();
     }
 
     private void anyTimeInterrogation() {
-
+        //this.gsmscfAhlrA.getTestAttackClient().performAnyTimeInterrogation();
     }
 
     private void provideSubscriberInfo() {
-
+        this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
     }
 
     private void activateTraceMode() {
-
+        //this.hlrAvlrA.getTestAttackServer().performActivateTraceMode();
     }
 
     private void sendIMSI() {
@@ -440,83 +440,101 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRoutingInformation() {
-
+        //this.mscAhlrA.getTestAttackClient().performSendRoutingInformation();
     }
 
     private void provideRoamingNumber() {
-
+        //this.hlrAvlrA.getTestAttackClient().performProvideRoamingNumber();
     }
 
     private void registerSS() {
-
+        //this.mscAvlrA.getTestAttackClient().performRegisterSS();
+        //this.vlrAhlrA.getTestAttackServer().performRegisterSS();
     }
 
     private void eraseSS() {
-
+        //this.mscAvlrA.getTestAttackClient().performEraseSS();
+        //this.vlrAhlrA.getTestAttackServer().performEraseSS();
     }
 
     private void activateSS() {
-
+        //this.mscAvlrA.getTestAttackClient().performActivateSS();
+        //this.vlrAhlrA.getTestAttackServer().performActivateSS();
     }
 
     private void deactivateSS() {
-
+        //this.mscAvlrA.getTestAttackClient().performDeactivateSS();
+        //this.vlrAhlrA.getTestAttackServer().performDeactivateSS();
     }
 
     private void interrogateSS() {
-
+        //this.mscAvlrA.getTestAttackClient().performInterrogateSS();
+        //this.vlrAhlrA.getTestAttackServer().performInterrogateSS();
     }
 
     private void registerPassword() {
-
+        //this.mscAvlrA.getTestAttackClient().performRegisterSS();
+        //this.vlrAhlrA.getTestAttackServer().performRegisterSS();
     }
 
     private void getPassword() {
-
+        //this.hlrAvlrA.getTestAttackClient().performGetPassword();
+        //this.vlrAmscA.getTestAttackServer().performGetPassword();
     }
 
     private void processUnstructuredSSRequest() {
-
+        //this.mscAvlrA.getTestAttackClient().performProcessUnstructuredSSRequest();
+        //this.vlrAhlrA.getTestAttackClient().performProcessUnstructuredSSRequest();
+        //this.vlrAgsmscfA.getTestAttackClient().performProcessUnstructuredSSRequest();
     }
 
     private void unstructuredSSRequest() {
-
+        //this.hlrAvlrA.getTestAttackClient().performUnstructuredSSRequest();
+        //this.gsmscfAvlrA.getTestAttackClient().performUnstructuredSSRequest();
+        //this.vlrAmscA.getTestAttackClient().performUnstructuredSSRequest();
     }
 
     private void unstructuredSSNotify () {
-
+        //this.hlrAvlrA.getTestAttackClient().performUnstructuredSSRequest();
+        //this.gsmscfAvlrA.getTestAttackClient().performUnstructuredSSRequest();
+        //this.vlrAmscA.getTestAttackClient().performUnstructuredSSRequest();
     }
 
     private void sendRoutingInfoForSM() {
-
+        //this.mscAhlrA.getTestAttackClient().performSendRoutingInfoForSM("", "");
+        //this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM("", "");
     }
 
     private void moForwardSM() {
-
+        //this.mscAsmscA.getTestAttackClient().performMoForwardSM("", "", "");
     }
 
     private void reportSMDeliveryStatus() {
-
+        //this.mscAhlrA.getTestAttackClient().performReportSMDeliveryStatus();
     }
 
     private void readyForSM() {
-
+        //this.mscAvlrA.getTestAttackClient().performReadyForSM();
+        //this.vlrAhlrA.getTestAttackServer().performReadyForSM();
+        //this.sgsnAhlrA.getTestAttackClient().performReadyForSM();
+        //this.smscAhlrA.getTestAttackClient().performReadyForSM();
     }
 
     private void alertServiceCentre() {
-
+        //this.hlrAmscA.getTestAttackServer().performAlertServiceCentre();
     }
 
     private void informServiceCentre() {
-
+        //this.hlrAmscA.getTestAttackServer().performInformServiceCentre();
     }
 
     private void mtForwardSM() {
-
+        //this.mscAmscB.getTestAttackClient().performMtForwardSM();
+        //this.mscAsgsnA.getTestAttackClient().performMtForwardSM();
     }
 
     private void sendRoutingInfoForGPRS() {
-
+        //this.sgsnAhlrA.getTestAttackClient().performSendRoutingInfoForGPRS();
     }
 
     @Override
