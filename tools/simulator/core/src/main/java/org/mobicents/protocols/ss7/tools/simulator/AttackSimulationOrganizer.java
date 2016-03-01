@@ -337,7 +337,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         System.out.println("-----------GOT PSI RESPONSE-----------");
 
         ProvideSubscriberInfoResponse psiResponse = this.attackerBvlrA.getTestAttackClient().getPsiResponse();
-        psiResponse.toString();
+        System.out.println(psiResponse.toString());
 
         //Location information aquired.
         return null;
