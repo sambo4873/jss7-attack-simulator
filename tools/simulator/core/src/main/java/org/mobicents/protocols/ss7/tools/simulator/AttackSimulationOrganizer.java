@@ -10,6 +10,7 @@ import java.util.Random;
  */
 public class AttackSimulationOrganizer implements Stoppable {
     private Random rng;
+    private boolean simpleSimulation;
 
     private AttackTesterHost mscAmscB;
     private AttackTesterHost mscBmscA;
@@ -41,85 +42,94 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation) {
         this.rng = new Random(System.currentTimeMillis());
+        this.simpleSimulation = simpleSimulation;
 
-        this.mscAmscB = new AttackTesterHost("MSC_A_MSC_B", simulatorHome, AttackTesterHost.AttackNode.MSC_A_MSC_B);
-        this.mscBmscA = new AttackTesterHost("MSC_B_MSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_B_MSC_A);
-
-        this.mscAhlrA = new AttackTesterHost("MSC_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_HLR_A);
-        this.hlrAmscA = new AttackTesterHost("HLR_A_MSC_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_MSC_A);
-
-        this.mscAsmscA = new AttackTesterHost("MSC_A_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_SMSC_A);
-        this.smscAmscA = new AttackTesterHost("SMSC_A_MSC_A", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_MSC_A);
-
-        this.mscAvlrA = new AttackTesterHost("MSC_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_VLR_A);
-        this.vlrAmscA = new AttackTesterHost("VLR_A_MSC_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_MSC_A);
-
-        this.hlrAvlrA = new AttackTesterHost("HLR_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_VLR_A);
-        this.vlrAhlrA = new AttackTesterHost("VLR_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_HLR_A);
-
-        this.attackerBmscA = new AttackTesterHost("ATTACKER_B_MSC_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_MSC_A);
-        this.mscAattackerB = new AttackTesterHost("MSC_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.MSC_A_ATTACKER_B);
-
-        this.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_HLR_A);
-        this.hlrAattackerB = new AttackTesterHost("HLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_ATTACKER_B);
-
-        this.attackerBsmscA = new AttackTesterHost("ATTACKER_B_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_SMSC_A);
-        this.smscAattackB = new AttackTesterHost("SMSC_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_ATTACKER_B);
-
-        this.attackerBvlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_VLR_A);
-        this.vlrAattackerB = new AttackTesterHost("VLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_ATTACKER_B);
-
-        if (simpleSimulation) {
-
+        if (this.simpleSimulation) {
+            this.attackerBvlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_VLR_A);
+            this.vlrAattackerB = new AttackTesterHost("VLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_ATTACKER_B);
         } else {
+            this.mscAmscB = new AttackTesterHost("MSC_A_MSC_B", simulatorHome, AttackTesterHost.AttackNode.MSC_A_MSC_B);
+            this.mscBmscA = new AttackTesterHost("MSC_B_MSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_B_MSC_A);
 
+            this.mscAhlrA = new AttackTesterHost("MSC_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_HLR_A);
+            this.hlrAmscA = new AttackTesterHost("HLR_A_MSC_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_MSC_A);
+
+            this.mscAsmscA = new AttackTesterHost("MSC_A_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_SMSC_A);
+            this.smscAmscA = new AttackTesterHost("SMSC_A_MSC_A", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_MSC_A);
+
+            this.mscAvlrA = new AttackTesterHost("MSC_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_VLR_A);
+            this.vlrAmscA = new AttackTesterHost("VLR_A_MSC_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_MSC_A);
+
+            this.hlrAvlrA = new AttackTesterHost("HLR_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_VLR_A);
+            this.vlrAhlrA = new AttackTesterHost("VLR_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_HLR_A);
+
+            this.attackerBmscA = new AttackTesterHost("ATTACKER_B_MSC_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_MSC_A);
+            this.mscAattackerB = new AttackTesterHost("MSC_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.MSC_A_ATTACKER_B);
+
+            this.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_HLR_A);
+            this.hlrAattackerB = new AttackTesterHost("HLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_ATTACKER_B);
+
+            this.attackerBsmscA = new AttackTesterHost("ATTACKER_B_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_SMSC_A);
+            this.smscAattackB = new AttackTesterHost("SMSC_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_ATTACKER_B);
+
+            this.attackerBvlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_VLR_A);
+            this.vlrAattackerB = new AttackTesterHost("VLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_ATTACKER_B);
         }
     }
 
     private void startAttackSimulationHosts() {
-        this.mscAmscB.start();
-        this.mscBmscA.start();
+        if (this.simpleSimulation) {
+            this.attackerBvlrA.start();
+            this.vlrAattackerB.start();
+        } else {
+            this.mscAmscB.start();
+            this.mscBmscA.start();
 
-        this.mscAhlrA.start();
-        this.hlrAmscA.start();
+            this.mscAhlrA.start();
+            this.hlrAmscA.start();
 
-        this.mscAsmscA.start();
-        this.smscAmscA.start();
+            this.mscAsmscA.start();
+            this.smscAmscA.start();
 
-        this.mscAvlrA.start();
-        this.vlrAmscA.start();
+            this.mscAvlrA.start();
+            this.vlrAmscA.start();
 
-        this.hlrAvlrA.start();
-        this.vlrAhlrA.start();
+            this.hlrAvlrA.start();
+            this.vlrAhlrA.start();
 
-        this.attackerBmscA.start();
-        this.mscAattackerB.start();
+            this.attackerBmscA.start();
+            this.mscAattackerB.start();
 
-        this.attackerBhlrA.start();
-        this.hlrAattackerB.start();
+            this.attackerBhlrA.start();
+            this.hlrAattackerB.start();
 
-        this.attackerBsmscA.start();
-        this.smscAattackB.start();
+            this.attackerBsmscA.start();
+            this.smscAattackB.start();
 
-        this.attackerBvlrA.start();
-        this.vlrAattackerB.start();
+            this.attackerBvlrA.start();
+            this.vlrAattackerB.start();
+        }
     }
 
     private boolean waitForM3UALinks() {
         while (true) {
             try {
                 Thread.sleep(100);
-
-                if(mscAmscB.getM3uaMan().getState().contains("ACTIVE") &&
-                        mscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
-                        mscAsmscA.getM3uaMan().getState().contains("ACTIVE") &&
-                        mscAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
-                        hlrAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
-                        attackerBmscA.getM3uaMan().getState().contains("ACTIVE") &&
-                        attackerBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
-                        attackerBsmscA.getM3uaMan().getState().contains("ACTIVE") &&
-                        attackerBvlrA.getM3uaMan().getState().contains("ACTIVE"))
-                    return true;
+                if(this.simpleSimulation) {
+                    if (mscAmscB.getM3uaMan().getState().contains("ACTIVE") &&
+                            mscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            mscAsmscA.getM3uaMan().getState().contains("ACTIVE") &&
+                            mscAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            hlrAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            attackerBmscA.getM3uaMan().getState().contains("ACTIVE") &&
+                            attackerBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            attackerBsmscA.getM3uaMan().getState().contains("ACTIVE") &&
+                            attackerBvlrA.getM3uaMan().getState().contains("ACTIVE"))
+                        return true;
+                } else {
+                    if (attackerBvlrA.getM3uaMan().getState().contains("ACTIVE"))
+                        return true;
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 return false;
@@ -128,7 +138,10 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private boolean testerHostsNeedQuit() {
-        return this.mscAmscB.isNeedQuit() || this.mscBmscA.isNeedQuit() ||
+        if(simpleSimulation)
+            return this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit();
+        else
+            return this.mscAmscB.isNeedQuit() || this.mscBmscA.isNeedQuit() ||
                 this.mscAhlrA.isNeedQuit() || this.hlrAmscA.isNeedQuit() ||
                 this.mscAsmscA.isNeedQuit() || this.smscAmscA.isNeedQuit() ||
                 this.mscAvlrA.isNeedQuit() || this.vlrAmscA.isNeedQuit() ||
@@ -140,35 +153,51 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void testerHostsExecuteCheckStore() {
-        this.mscAmscB.execute();
-        this.mscBmscA.execute();
-        this.mscAhlrA.execute();
-        this.hlrAmscA.execute();
-        this.mscAsmscA.execute();
-        this.smscAmscA.execute();
-        this.mscAvlrA.execute();
-        this.vlrAmscA.execute();
-        this.hlrAvlrA.execute();
-        this.vlrAhlrA.execute();
-        this.attackerBmscA.execute();
-        this.attackerBhlrA.execute();
-        this.attackerBsmscA.execute();
-        this.attackerBvlrA.execute();
+        if (simpleSimulation) {
+            this.attackerBvlrA.execute();
+            this.vlrAattackerB.execute();
 
-        this.mscAmscB.checkStore();
-        this.mscBmscA.checkStore();
-        this.mscAhlrA.checkStore();
-        this.hlrAmscA.checkStore();
-        this.mscAsmscA.checkStore();
-        this.smscAmscA.checkStore();
-        this.mscAvlrA.checkStore();
-        this.vlrAmscA.checkStore();
-        this.hlrAvlrA.checkStore();
-        this.vlrAhlrA.checkStore();
-        this.attackerBmscA.checkStore();
-        this.attackerBhlrA.checkStore();
-        this.attackerBsmscA.checkStore();
-        this.attackerBvlrA.checkStore();
+            this.attackerBvlrA.checkStore();
+            this.vlrAattackerB.checkStore();
+        } else {
+            this.mscAmscB.execute();
+            this.mscBmscA.execute();
+            this.mscAhlrA.execute();
+            this.hlrAmscA.execute();
+            this.mscAsmscA.execute();
+            this.smscAmscA.execute();
+            this.mscAvlrA.execute();
+            this.vlrAmscA.execute();
+            this.hlrAvlrA.execute();
+            this.vlrAhlrA.execute();
+            this.attackerBmscA.execute();
+            this.mscAattackerB.execute();
+            this.attackerBhlrA.execute();
+            this.vlrAattackerB.execute();
+            this.attackerBsmscA.execute();
+            this.smscAattackB.execute();
+            this.attackerBvlrA.execute();
+            this.vlrAattackerB.execute();
+
+            this.mscAmscB.checkStore();
+            this.mscBmscA.checkStore();
+            this.mscAhlrA.checkStore();
+            this.hlrAmscA.checkStore();
+            this.mscAsmscA.checkStore();
+            this.smscAmscA.checkStore();
+            this.mscAvlrA.checkStore();
+            this.vlrAmscA.checkStore();
+            this.hlrAvlrA.checkStore();
+            this.vlrAhlrA.checkStore();
+            this.attackerBmscA.checkStore();
+            this.mscAattackerB.checkStore();
+            this.attackerBhlrA.checkStore();
+            this.hlrAattackerB.checkStore();
+            this.attackerBsmscA.checkStore();
+            this.smscAattackB.checkStore();
+            this.attackerBvlrA.checkStore();
+            this.vlrAattackerB.checkStore();
+        }
     }
 
     public void start() {
@@ -284,7 +313,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private String attackLocationPsi() {
-        String response = this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM();
+        //String response = this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM();
         //Get necessary information from request, use in next message.
         //long invokeId = this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
 
@@ -311,7 +340,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         psiResponse.toString();
 
         //Location information aquired.
-        return response;
+        return null;
     }
 
     private String attackInterceptSms() {
