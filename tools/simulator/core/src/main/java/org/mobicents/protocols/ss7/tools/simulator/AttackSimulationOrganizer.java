@@ -327,6 +327,142 @@ public class AttackSimulationOrganizer implements Stoppable {
         return response;
     }
 
+    private void updateLocation() {
+
+    }
+
+    private void cancelLocation() {
+
+    }
+
+    private void sendIdentification() {
+
+    }
+
+    private void purgeMS() {
+
+    }
+
+    private void updateGPRSLocation() {
+
+    }
+
+    private void checkIMEI() {
+
+    }
+
+    private void insertSubscriberData() {
+
+    }
+
+    private void deleteSubscriberData() {
+
+    }
+
+    private void forwardCheckSSIndication() {
+
+    }
+
+    private void restoreData() {
+
+    }
+
+    private void anyTimeInterrogation() {
+
+    }
+
+    private void provideSubscriberInfo() {
+
+    }
+
+    private void activateTraceMode() {
+
+    }
+
+    private void sendIMSI() {
+
+    }
+
+    private void sendRoutingInformation() {
+
+    }
+
+    private void provideRoamingNumber() {
+
+    }
+
+    private void registerSS() {
+
+    }
+
+    private void eraseSS() {
+
+    }
+
+    private void activateSS() {
+
+    }
+
+    private void deactivateSS() {
+
+    }
+
+    private void interrogateSS() {
+
+    }
+
+    private void registerPassword() {
+
+    }
+
+    private void getPassword() {
+
+    }
+
+    private void processUnstructuredSSRequest() {
+
+    }
+
+    private void unstructuredSSRequest() {
+
+    }
+
+    private void unstructuredSSNotify () {
+
+    }
+
+    private void sendRoutingInfoForSM() {
+
+    }
+
+    private void moForwardSM() {
+
+    }
+
+    private void reportSMDeliveryStatus() {
+
+    }
+
+    private void readyForSM() {
+
+    }
+
+    private void alertServiceCentre() {
+
+    }
+
+    private void informServiceCentre() {
+
+    }
+
+    private void mtForwardSM() {
+
+    }
+
+    private void sendRoutingInfoForGPRS() {
+
+    }
+
     @Override
     public void stop() {
 
