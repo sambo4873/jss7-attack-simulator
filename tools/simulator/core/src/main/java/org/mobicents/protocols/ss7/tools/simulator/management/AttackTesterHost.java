@@ -2049,18 +2049,15 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     }
 
     public boolean gotPSIResponse() {
-        if (this.getTestAttackClient().getLastPsiResponse() != null) {
-            return true;
-        }
-
-        return false;
+        return this.getTestAttackClient().getLastPsiResponse() != null;
     }
 
     public boolean gotSRIForSMResponse() {
-        if (this.getTestAttackClient().getLastSRIForSMResponse() != null) {
-            return true;
-        }
-        return false;
+        return this.getTestAttackClient().getLastSRIForSMResponse() != null;
+    }
+
+    public boolean gotAtiResponse() {
+        return this.getTestAttackClient().getLastAtiResponse() != null;
     }
 
     public enum AttackNode {

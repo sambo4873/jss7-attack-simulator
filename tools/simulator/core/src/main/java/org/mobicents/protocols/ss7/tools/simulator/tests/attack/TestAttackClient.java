@@ -1,6 +1,7 @@
 package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
 
 import org.apache.log4j.Level;
+import org.mobicents.protocols.ss7.isup.message.parameter.Number;
 import org.mobicents.protocols.ss7.map.api.*;
 import org.mobicents.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
 import org.mobicents.protocols.ss7.map.api.errors.AbsentSubscriberDiagnosticSM;
@@ -88,6 +89,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     private static Charset isoCharset = Charset.forName("ISO-8859-1");
     private ProvideSubscriberInfoResponse psiResponse;
     private SendRoutingInfoForSMResponse sriResponse;
+    private AnyTimeInterrogationResponse atiResponse;
 
     public TestAttackClient() {
         super(SOURCE_NAME);
@@ -1540,8 +1542,45 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
-    public String performATI() {
-        return null;
+    public void performATI(String msisdn) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPApplicationContextVersion version = MAPApplicationContextVersion.version3;
+        MAPApplicationContextName name = MAPApplicationContextName.anyTimeEnquiryContext;
+
+        MAPApplicationContext context = MAPApplicationContext.getInstance(name, version);
+
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(
+                    context,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            AddressNature addressNature = this.testerHost.getConfigurationData().getTestAttackClientConfigurationData().getAddressNature();
+            NumberingPlan numberingPlan = this.testerHost.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan();
+
+            SubscriberIdentity subscriberIdentity = mapProvider.getMAPParameterFactory().createSubscriberIdentity(
+                    mapProvider.getMAPParameterFactory().createISDNAddressString(addressNature, numberingPlan, msisdn));
+            RequestedInfo requestedInfo = mapProvider.getMAPParameterFactory().createRequestedInfo(
+                    true, true, null, true, null, true, true, true);
+            ISDNAddressString gsmSCFAddress = mapProvider.getMAPParameterFactory().createISDNAddressString(addressNature,
+                    numberingPlan, this.testerHost.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+            MAPExtensionContainer mapExtensionContainer = null;
+
+            curDialog.addAnyTimeInterrogationRequest(subscriberIdentity, requestedInfo, gsmSCFAddress, mapExtensionContainer);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Exception when sending AnyTimeInterrogationRequest: " + ex.toString());
+        }
+    }
+
+    public AnyTimeInterrogationResponse getLastAtiResponse() {
+        return this.atiResponse;
+    }
+
+    public void clearLastAtiResponse() {
+        this.atiResponse = null;
     }
 
     public void performProvideSubscriberInfoRequest() {

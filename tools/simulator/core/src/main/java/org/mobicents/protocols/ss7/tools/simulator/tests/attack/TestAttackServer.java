@@ -1177,7 +1177,37 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onAnyTimeInterrogationRequest(AnyTimeInterrogationRequest request) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory mapParameterFactory = mapProvider.getMAPParameterFactory();
+        long invokeId = request.getInvokeId();
 
+        MAPDialogMobility curDialog = request.getMAPDialog();
+
+        try {
+            LocationInformation locationInformation = this.createLocationInformation(mapParameterFactory);
+            SubscriberState subscriberState = mapParameterFactory.createSubscriberState(SubscriberStateChoice.assumedIdle, null);
+            MAPExtensionContainer mapExtensionContainer = null;
+            LocationInformationGPRS locationInformationGPRS = null;
+            PSSubscriberState psSubscriberState = null;
+            IMEI imei = mapParameterFactory.createIMEI("128939812312382");
+            MSClassmark2 msClassmark2 = null;
+            GPRSMSClass gprsmsClass = null;
+            MNPInfoRes mnpInfoRes = null;
+
+            SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation,
+                    subscriberState,
+                    mapExtensionContainer,
+                    locationInformationGPRS,
+                    psSubscriberState,
+                    imei,
+                    msClassmark2,
+                    gprsmsClass,
+                    mnpInfoRes);
+
+            curDialog.addAnyTimeInterrogationResponse(invokeId, subscriberInfo, null);
+        } catch (MAPException ex) {
+
+        }
     }
 
     @Override
@@ -1206,10 +1236,6 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             GPRSMSClass gprsmsClass = null;
             MNPInfoRes mnpInfoRes = null;
 
-
-            //SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation, subscriberState,
-            //    mapExtensionContainer, locationInformationGPRS, psSubscriberState, imei, msClassmark2, gprsmsClass,
-            //    mnpInfoRes);
             SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation,
                     subscriberState,
                     mapExtensionContainer,
