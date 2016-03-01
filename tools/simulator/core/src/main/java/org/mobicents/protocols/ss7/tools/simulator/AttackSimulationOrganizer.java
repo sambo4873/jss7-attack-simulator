@@ -266,7 +266,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private String attackLocationAti() {
-        return this.mscAhlrA.getTestAttackClient().performATI();
+        return this.attackerBhlrA.getTestAttackClient().performATI();
     }
 
     private String attackLocationPsi() {
