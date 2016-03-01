@@ -1566,6 +1566,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onProvideSubscriberInfoResponse(ProvideSubscriberInfoResponse response) {
+        System.out.println("BANANA");
         this.setPsiResponse(response);
     }
 

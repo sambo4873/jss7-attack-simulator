@@ -370,15 +370,17 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void purgeMS() {
-
+        this.vlrAhlrA.getTestAttackServer().performPurgeMS();
     }
 
     private void updateGPRSLocation() {
-
+        //this.sgsnAhlrA.getTestAttackClient().performUpdateGPRSLocation();
     }
 
     private void checkIMEI() {
-
+        //this.vlrAmscA.getTestAttackServer().performCheckIMEI();
+        //this.mscAeirA.getTestAttackClient().performCheckIMEI();
+        //this.sgsnAeirA.getTestAttackClient().performCheckIMEI();
     }
 
     private void insertSubscriberData() {
