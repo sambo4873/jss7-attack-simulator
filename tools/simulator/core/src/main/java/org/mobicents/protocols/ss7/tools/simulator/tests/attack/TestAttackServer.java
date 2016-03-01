@@ -1205,8 +1205,9 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     mnpInfoRes);
 
             curDialog.addAnyTimeInterrogationResponse(invokeId, subscriberInfo, null);
+            this.needSendClose = true;
         } catch (MAPException ex) {
-
+            System.out.println("Exception when sending AnyTimeInterrogationResponse: " + ex.toString());
         }
     }
 
