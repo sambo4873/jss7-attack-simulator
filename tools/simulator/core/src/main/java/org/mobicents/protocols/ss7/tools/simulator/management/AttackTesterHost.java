@@ -2042,7 +2042,24 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
     @Override
     public void run() {
+        switch(this.attackType) {
+            case LOCATION_ATI:
+                break;
+            case LOCATION_PSI:
+                this.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case INTERCEPT_SMS:
+                break;
+        }
+    }
 
+    public synchronized boolean gotPSIResponse() {
+        if (this.getTestAttackClient().getPsiResponse() != null) {
+            this.notify();
+            return true;
+        }
+
+        return false;
     }
 
     public enum AttackNode {

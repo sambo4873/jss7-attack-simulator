@@ -86,6 +86,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     private int mesRef = 0;
 
     private static Charset isoCharset = Charset.forName("ISO-8859-1");
+    private ProvideSubscriberInfoResponse psiResponse;
 
     public TestAttackClient() {
         super(SOURCE_NAME);
@@ -1511,25 +1512,22 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         return null;
     }
 
-    public String performProvideSubscriberInfoRequest() {
+    public long performProvideSubscriberInfoRequest() {
         System.out.println("--------------------SENDING PSI");
 
-        String response = doPerformProvideSubscriberInfoRequest();
+        long response = doPerformProvideSubscriberInfoRequest();
         System.out.println("RESPONSE: " + response);
 
         return response;
     }
 
-    public String doPerformProvideSubscriberInfoRequest() {
+    public long doPerformProvideSubscriberInfoRequest() {
 
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPApplicationContextVersion acv = MAPApplicationContextVersion.version3;
         MAPApplicationContextName acn = MAPApplicationContextName.subscriberInfoEnquiryContext;
 
         MAPApplicationContext mapAppContext = MAPApplicationContext.getInstance(acn, acv);
-
-        System.out.println("MAPApplicationContextVersion: " + mapAppContext.getApplicationContextVersion());
-        System.out.println("MAPApplicationContextName: " + mapAppContext.getApplicationContextName());
 
         try {
             MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(mapAppContext,
@@ -1545,17 +1543,20 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             MAPExtensionContainer mapExtensionContainer = null;
             EMLPPPriority emlppPriority = EMLPPPriority.priorityLevel0;
 
+            long invokeId = -1;
+
             if(curDialog == null)
                 System.out.println("ERROR: curDialog is null");
             else {
-                curDialog.addProvideSubscriberInfoRequest(imsi, lmsi, requestedInfo, mapExtensionContainer, emlppPriority);
+                invokeId = curDialog.addProvideSubscriberInfoRequest(imsi, lmsi, requestedInfo, mapExtensionContainer, emlppPriority);
                 curDialog.send();
             }
 
-            return "PerformSubscriberInfoRequest has been sent";
+            return invokeId;
 
         } catch (MAPException ex) {
-            return "Exception when sending ProvideSubscriberInfoRequest: " + ex.toString();
+            System.out.println("Exception when sending ProvideSubscriberInfoRequest: " + ex.toString());
+            return -1;
         }
     }
 
@@ -1565,7 +1566,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onProvideSubscriberInfoResponse(ProvideSubscriberInfoResponse response) {
+        this.setPsiResponse(response);
+    }
 
+    public void setPsiResponse(ProvideSubscriberInfoResponse psiResponse) {
+        this.psiResponse = psiResponse;
+    }
+
+    public ProvideSubscriberInfoResponse getPsiResponse() {
+        return this.psiResponse;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
+import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 
 import java.util.Random;
@@ -225,53 +226,90 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void sendRandomMessage(int num) {
 
-        switch (num) {
-            case 0:
-                this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 1:
-                this.mscAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 2:
-                this.mscAsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 3:
-                this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 4:
-                this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 5:
-                this.attackerBmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 6:
-                this.attackerBhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 7:
-                this.attackerBsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 8:
-                this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 9:
-                this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 10:
-                break;
+        if (num == 0)
+            this.attackLocationPsi();
 
-            default:
-                break;
-        }
+    //    switch (num) {
+    //        case 0:
+    //            this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 1:
+    //            this.mscAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 2:
+    //            this.mscAsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 3:
+    //            this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 4:
+    //            this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 5:
+    //            this.attackerBmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 6:
+    //            this.attackerBhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 7:
+    //            this.attackerBsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 8:
+    //            this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 9:
+    //            this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+    //            break;
+    //        case 10:
+    //            break;
+    //        default:
+    //            break;
+    //    }
+
     }
 
     private String attackLocationAti() {
+        this.attackerBhlrA.setAttackType(AttackTesterHost.AttackType.LOCATION_ATI);
+        Thread attackerThread = new Thread(this.attackerBhlrA);
+        attackerThread.run();
+
+        do{
+            try {
+                this.wait(100);
+            } catch (InterruptedException e) {
+            }
+        } while (this.attackerBhlrA.gotPSIResponse());
+
         return this.attackerBhlrA.getTestAttackClient().performATI();
     }
 
     private String attackLocationPsi() {
         String response = this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM();
         //Get necessary information from request, use in next message.
-        response = this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+        //long invokeId = this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+
+        System.out.println("-----------SENT PSI REQUEST-----------");
+
+        this.attackerBvlrA.setAttackType(AttackTesterHost.AttackType.LOCATION_PSI);
+        Thread attackerThread = new Thread(this.attackerBvlrA);
+
+        System.out.println("-----------STARTING ATTACKER THREAD-----------");
+
+        attackerThread.run();
+
+        do{
+            try{
+                this.wait(100);
+            } catch (InterruptedException e) {
+
+            }
+        } while (!this.attackerBvlrA.gotPSIResponse());
+
+        System.out.println("-----------GOT PSI RESPONSE-----------");
+
+        ProvideSubscriberInfoResponse psiResponse = this.attackerBvlrA.getTestAttackClient().getPsiResponse();
+        psiResponse.toString();
+
         //Location information aquired.
         return response;
     }
