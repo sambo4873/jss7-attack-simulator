@@ -32,7 +32,6 @@ import org.mobicents.protocols.ss7.mtp.RoutingLabelFormat;
 import org.mobicents.protocols.ss7.sccp.SccpProtocolVersion;
 import org.mobicents.protocols.ss7.sccp.SccpStack;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
-import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
 import org.mobicents.protocols.ss7.tools.simulator.common.AttackConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.common.ConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.level1.*;
@@ -43,13 +42,11 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClient
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServer;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServerConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
-import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientConfigurationData_OldFormat;
-import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerConfigurationData_OldFormat;
 
 /**
  * @author Kristoffer Jensen
  */
-public class AttackTesterHost extends TesterHost implements TesterHostMBean, Stoppable {
+public class AttackTesterHost extends TesterHost implements TesterHostMBean, Stoppable, Runnable {
     private static final Logger logger = Logger.getLogger(AttackTesterHost.class);
 
     private static final String TESTER_HOST_PERSIST_DIR_KEY = "testerhost.persist.dir";
@@ -91,7 +88,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     TestAttackClient testAttackClient;
     TestAttackServer testAttackServer;
 
-    private AttackType attackType;
+    private AttackNode attackNode;
 
     // testers
 
@@ -99,8 +96,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         this.appName = null;
     }
 
-    public AttackTesterHost(String appName, String persistDir, AttackType attackType) {
-        this.attackType = attackType;
+    public AttackTesterHost(String appName, String persistDir, AttackNode attackNode) {
+        this.attackNode = attackNode;
         this.appName = appName;
         this.persistDir = persistDir;
 
@@ -146,7 +143,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         this.configurationData.setSccpConfigurationData(new AttackSccpConfigurationData());
 
-        switch(attackType) {
+        switch(attackNode) {
             case ATTACK_SERVER:
                 this.configureAttackServer();
                 break;
@@ -2034,7 +2031,12 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         }
     }
 
-    public enum AttackType {
+    @Override
+    public void run() {
+
+    }
+
+    public enum AttackNode {
         ALL,
         ATTACK_CLIENT,
         ATTACK_SERVER,
