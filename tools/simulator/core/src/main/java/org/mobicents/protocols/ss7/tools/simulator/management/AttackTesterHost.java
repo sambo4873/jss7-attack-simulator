@@ -43,6 +43,7 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClient
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServer;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServerConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
+import sun.security.jca.GetInstance;
 
 /**
  * @author Kristoffer Jensen
@@ -2276,7 +2277,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             }
         }
 
-        started = true;
         if(!started) {
             this.sendNotif(AttackTesterHost.SOURCE_NAME, "Layer 2 has not started.", "", Level.WARN);
             this.stop();
@@ -2327,9 +2327,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         // Start Testers
         started = false;
+        boolean isL2ISUP = this.configurationData.getInstance_L2().intValue() == Instance_L2.VAL_ISUP;
         switch (this.configurationData.getInstance_TestTask().intValue()) {
             case Instance_TestTask.VAL_ATTACK_CLIENT:
-                if (curMap == null) {
+                if (curMap == null && !isL2ISUP) {
                     this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing ATTACK_CLIENT: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
@@ -2340,7 +2341,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 break;
 
             case Instance_TestTask.VAL_ATTACK_SERVER:
-                if (curMap == null) {
+                if (curMap == null && !isL2ISUP) {
                     this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing ATTACK_SERVER: No MAP stack is defined at L3",
                             "", Level.WARN);
                 } else {
