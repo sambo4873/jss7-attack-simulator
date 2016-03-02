@@ -234,6 +234,12 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             case VLR_A_GSMSCF_A:
                 this.configureVlrAGsmscfA();
                 break;
+            case ISUP_CLIENT:
+                this.configureISUPClient();
+                break;
+            case ISUP_SERVER:
+                this.configureISUPServer();
+                break;
 
             default:
                 break;
