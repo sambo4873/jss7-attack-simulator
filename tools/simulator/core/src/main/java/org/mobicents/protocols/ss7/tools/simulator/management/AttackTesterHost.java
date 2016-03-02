@@ -2263,10 +2263,12 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 case Instance_L2.VAL_ISUP:
                     this.instance_L2_B = this.isup;
                     this.isup.initIsup(mtp3UserPart, this.isupNi, this.isupLocalSpc, this.isupDpc);
+                    started = true;
                     break;
             }
         }
 
+        started = true;
         if(!started) {
             this.sendNotif(AttackTesterHost.SOURCE_NAME, "Layer 2 has not started.", "", Level.WARN);
             this.stop();
@@ -2308,6 +2310,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                         + " has not been implemented yet", "", Level.WARN);
                 break;
         }
+        started = true;
         if (!started) {
             this.sendNotif(AttackTesterHost.SOURCE_NAME, "Layer 3 has not started", "", Level.WARN);
             this.stop();
@@ -2346,6 +2349,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                         Level.WARN);
                 break;
         }
+        started = true;
         if (!started) {
             this.sendNotif(AttackTesterHost.SOURCE_NAME, "Testing task has not started", "", Level.WARN);
             this.stop();
