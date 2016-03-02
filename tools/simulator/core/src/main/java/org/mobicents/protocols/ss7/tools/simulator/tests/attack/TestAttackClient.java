@@ -7,8 +7,7 @@ import org.mobicents.protocols.ss7.isup.impl.message.InitialAddressMessageImpl;
 import org.mobicents.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
 import org.mobicents.protocols.ss7.isup.message.ISUPMessage;
 import org.mobicents.protocols.ss7.isup.message.InitialAddressMessage;
-import org.mobicents.protocols.ss7.isup.message.parameter.CalledPartyNumber;
-import org.mobicents.protocols.ss7.isup.message.parameter.CircuitIdentificationCode;
+import org.mobicents.protocols.ss7.isup.message.parameter.*;
 import org.mobicents.protocols.ss7.isup.message.parameter.Number;
 import org.mobicents.protocols.ss7.map.api.*;
 import org.mobicents.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
@@ -1853,10 +1852,34 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             cpn.setAddress("82828282");
             cpn.setNatureOfAddresIndicator(CalledPartyNumber._NAI_INTERNATIONAL_NUMBER);
 
+            NatureOfConnectionIndicators noci = isupProvider.getParameterFactory().createNatureOfConnectionIndicators();
+            noci.setContinuityCheckIndicator(NatureOfConnectionIndicators._CCI_NOT_REQUIRED);
+            noci.setEchoControlDeviceIndicator(true);
+            noci.setSatelliteIndicator(NatureOfConnectionIndicators._SI_NO_SATELLITE);
+
+            ForwardCallIndicators fci = isupProvider.getParameterFactory().createForwardCallIndicators();
+            fci.setEndToEndInformationIndicator(false);
+            fci.setEndToEndMethodIndicator(ForwardCallIndicators._ETEMI_NOMETHODAVAILABLE);
+            fci.setInterworkingIndicator(false);
+            fci.setIsdnAccessIndicator(true);
+            fci.setIsdnUserPartIndicator(true);
+            fci.setNationalCallIdentificator(false);
+            fci.setSccpMethodIndicator(ForwardCallIndicators._SCCP_MI_NOINDICATION);
+
+            CallingPartyCategory cpc = isupProvider.getParameterFactory().createCallingPartyCategory();
+            cpc.setCallingPartyCategory(CallingPartyCategory._ORDINARY_SUBSCRIBER);
+
+            TransmissionMediumRequirement tmr = isupProvider.getParameterFactory().createTransmissionMediumRequirement();
+            tmr.setTransimissionMediumRequirement(TransmissionMediumRequirement._MEDIUM_64_KBIT_UNRESTRICTED);
+
             InitialAddressMessage msg = isupProvider.getMessageFactory().createIAM();
             msg.setCircuitIdentificationCode(isupProvider.getParameterFactory().createCircuitIdentificationCode());
             msg.setSls(1);
             msg.setCalledPartyNumber(cpn);
+            msg.setNatureOfConnectionIndicators(noci);
+            msg.setForwardCallIndicators(fci);
+            msg.setCallingPartCategory(cpc);
+            msg.setTransmissionMediumRequirement(tmr);
 
             isupProvider.sendMessage(msg, this.testerHost.getIsupMan().getDpc());
 
