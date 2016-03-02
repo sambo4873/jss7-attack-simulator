@@ -58,6 +58,7 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
 import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
+import org.mobicents.protocols.ss7.tools.simulator.management.Instance_L2;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 
 import java.io.IOException;
@@ -450,18 +451,17 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         this.countErrRcvd = 0;
         this.countErrSent = 0;
 
-        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
-
-        mapProvider.getMAPServiceSms().acivate();
-        mapProvider.getMAPServiceSms().addMAPServiceListener(this);
-
-        mapProvider.getMAPServiceMobility().acivate();
-        mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
-
-        mapProvider.addMAPDialogListener(this);
-
-        ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();
-        isupProvider.addListener(this);
+        if(this.testerHost.getInstance_L2().intValue() == Instance_L2.VAL_SCCP) {
+            MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+            mapProvider.getMAPServiceSms().acivate();
+            mapProvider.getMAPServiceSms().addMAPServiceListener(this);
+            mapProvider.getMAPServiceMobility().acivate();
+            mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
+            mapProvider.addMAPDialogListener(this);
+        } else {
+            ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();
+            isupProvider.addListener(this);
+        }
 
         this.testerHost.sendNotif(SOURCE_NAME, "AttackClient has been started", "", Level.INFO);
         isStarted = true;
