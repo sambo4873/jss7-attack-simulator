@@ -289,6 +289,8 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.sendRandomMessage(msgNum);
 
             msgNum++;
+
+            if (msgNum == 13) msgNum = 0;
         }
     }
 
