@@ -32,6 +32,15 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost hlrAvlrA;
     private AttackTesterHost vlrAhlrA;
 
+    private AttackTesterHost sgsnAhlrA;
+    private AttackTesterHost hlrAsgsnA;
+
+    private AttackTesterHost gsmscfAhlrA;
+    private AttackTesterHost hlrAgsmscfA;
+
+    private AttackTesterHost gsmscfAvlrA;
+    private AttackTesterHost vlrAgsmscfA;
+
     private AttackTesterHost attackerBmscA;
     private AttackTesterHost mscAattackerB;
 
@@ -70,6 +79,15 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.hlrAvlrA = new AttackTesterHost("HLR_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_VLR_A);
             this.vlrAhlrA = new AttackTesterHost("VLR_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_HLR_A);
 
+            this.sgsnAhlrA = new AttackTesterHost("SGSN_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.SGSN_A_HLR_A);
+            this.hlrAsgsnA = new AttackTesterHost("HLR_A_SGSN_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_SGSN_A);
+
+            this.gsmscfAhlrA = new AttackTesterHost("GSMSCF_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.GSMSCF_A_HLR_A);
+            this.hlrAgsmscfA = new AttackTesterHost("HLR_A_GSMSCF_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_GSMSCF_A);
+
+            this.gsmscfAvlrA = new AttackTesterHost("GSMSCF_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.GSMSCF_A_VLR_A);
+            this.vlrAgsmscfA = new AttackTesterHost("VLR_A_GSMSCF_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_GSMSCF_A);
+
             this.attackerBmscA = new AttackTesterHost("ATTACKER_B_MSC_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_MSC_A);
             this.mscAattackerB = new AttackTesterHost("MSC_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.MSC_A_ATTACKER_B);
 
@@ -107,6 +125,15 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.hlrAvlrA.start();
             this.vlrAhlrA.start();
 
+            this.sgsnAhlrA.start();
+            this.hlrAsgsnA.start();
+
+            this.gsmscfAhlrA.start();
+            this.hlrAgsmscfA.start();
+
+            this.gsmscfAvlrA.start();
+            this.vlrAgsmscfA.start();
+
             this.attackerBmscA.start();
             this.mscAattackerB.start();
 
@@ -131,6 +158,9 @@ public class AttackSimulationOrganizer implements Stoppable {
                             mscAsmscA.getM3uaMan().getState().contains("ACTIVE") &&
                             mscAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
                             hlrAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            sgsnAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            gsmscfAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            gsmscfAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
                             attackerBmscA.getM3uaMan().getState().contains("ACTIVE") &&
                             attackerBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
                             attackerBsmscA.getM3uaMan().getState().contains("ACTIVE") &&
@@ -158,6 +188,9 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.mscAsmscA.isNeedQuit() || this.smscAmscA.isNeedQuit() ||
                 this.mscAvlrA.isNeedQuit() || this.vlrAmscA.isNeedQuit() ||
                 this.hlrAvlrA.isNeedQuit() || this.vlrAhlrA.isNeedQuit() ||
+                this.sgsnAhlrA.isNeedQuit() || this.hlrAsgsnA.isNeedQuit() ||
+                this.gsmscfAhlrA.isNeedQuit() || this.hlrAgsmscfA.isNeedQuit() ||
+                this.gsmscfAvlrA.isNeedQuit() || this.vlrAgsmscfA.isNeedQuit() ||
                 this.attackerBmscA.isNeedQuit() || this.mscAattackerB.isNeedQuit() ||
                 this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit() ||
                 this.attackerBsmscA.isNeedQuit() || this.smscAattackB.isNeedQuit() ||
@@ -186,6 +219,12 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.vlrAmscA.execute();
             this.hlrAvlrA.execute();
             this.vlrAhlrA.execute();
+            this.sgsnAhlrA.execute();
+            this.hlrAsgsnA.execute();
+            this.gsmscfAhlrA.execute();
+            this.hlrAgsmscfA.execute();
+            this.gsmscfAvlrA.execute();
+            this.vlrAgsmscfA.execute();
             this.attackerBmscA.execute();
             this.mscAattackerB.execute();
             this.attackerBhlrA.execute();
@@ -205,6 +244,12 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.vlrAmscA.checkStore();
             this.hlrAvlrA.checkStore();
             this.vlrAhlrA.checkStore();
+            this.sgsnAhlrA.checkStore();
+            this.hlrAsgsnA.checkStore();
+            this.gsmscfAhlrA.checkStore();
+            this.hlrAgsmscfA.checkStore();
+            this.gsmscfAvlrA.checkStore();
+            this.vlrAgsmscfA.checkStore();
             this.attackerBmscA.checkStore();
             this.mscAattackerB.checkStore();
             this.attackerBhlrA.checkStore();
@@ -271,45 +316,53 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void sendRandomMessage(int num) {
 
-        if (num == 0)
-            this.attackLocationAti();
+    //    if (num == 0)
+    //        this.attackLocationAti();
 
-    //    switch (num) {
-    //        case 0:
-    //            this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 1:
-    //            this.mscAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 2:
-    //            this.mscAsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 3:
-    //            this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 4:
-    //            this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 5:
-    //            this.attackerBmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 6:
-    //            this.attackerBhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 7:
-    //            this.attackerBsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 8:
-    //            this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 9:
-    //            this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-    //            break;
-    //        case 10:
-    //            break;
-    //        default:
-    //            break;
-    //    }
+        switch (num) {
+            case 0:
+                this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 1:
+                this.mscAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 2:
+                this.mscAsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 3:
+                this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 4:
+                this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 5:
+                this.attackerBmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 6:
+                this.attackerBhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 7:
+                this.attackerBsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 8:
+                this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 9:
+                this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 10:
+                this.sgsnAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 11:
+                this.gsmscfAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 12:
+                this.gsmscfAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+
+            default:
+                break;
+        }
 
     }
 
