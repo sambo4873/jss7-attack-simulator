@@ -20,6 +20,7 @@ import org.apache.log4j.PropertyConfigurator;
 import org.mobicents.protocols.api.IpChannelType;
 import org.mobicents.protocols.ss7.indicator.NatureOfAddress;
 import org.mobicents.protocols.ss7.indicator.NumberingPlan;
+import org.mobicents.protocols.ss7.isup.ISUPStack;
 import org.mobicents.protocols.ss7.m3ua.ExchangeType;
 import org.mobicents.protocols.ss7.m3ua.Functionality;
 import org.mobicents.protocols.ss7.m3ua.IPSPType;
@@ -82,6 +83,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
     // levels
     M3uaMan m3ua;
+    IsupMan isup;
     SccpMan sccp;
     MapMan map;
     CapMan cap;
@@ -105,6 +107,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         this.m3ua = new M3uaMan(appName);
         this.m3ua.setTesterHost(this);
+
+        this.isup = new IsupMan();
 
         this.sccp = new SccpMan(appName);
         this.sccp.setTesterHost(this);
@@ -2175,13 +2179,23 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         // Start L2
         started = false;
         SccpStack sccpStack = null;
+        ISUPStack isupStack = null;
+
         if (mtp3UserPart == null) {
             this.sendNotif(AttackTesterHost.SOURCE_NAME, "Error initializing SCCP: No Mtp3UserPart is defined at L1", "", Level.WARN);
         } else {
-            this.instance_L2_B = this.sccp;
-            this.sccp.setMtp3UserPart(mtp3UserPart);
-            started = this.sccp.start();
-            sccpStack = this.sccp.getSccpStack();
+            switch(this.configurationData.getInstance_L2().intValue()) {
+                case Instance_L2.VAL_SCCP:
+                    this.instance_L2_B = this.sccp;
+                    this.sccp.setMtp3UserPart(mtp3UserPart);
+                    started = this.sccp.start();
+                    sccpStack = this.sccp.getSccpStack();
+                    break;
+                case Instance_L2.VAL_ISUP:
+                    this.instance_L2_B = this.isup;
+                    //this.isup.initIsup(mtp3UserPart, );
+                    break;
+            }
         }
 
         if(!started) {
