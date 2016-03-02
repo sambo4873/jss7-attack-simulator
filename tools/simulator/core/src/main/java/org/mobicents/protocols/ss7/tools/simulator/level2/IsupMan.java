@@ -32,14 +32,12 @@ public class IsupMan implements Stoppable {
         this.dpc = dpc;
 
         this.scheduler = new Scheduler();
-        Clock clock = new DefaultClock();
-        this.scheduler.setClock(clock);
+        this.scheduler.setClock(new DefaultClock());
+        this.scheduler.start();
 
         this.isupStack = new ISUPStackImpl(this.scheduler, localSpc, ni);
-
         this.isupStack.setCircuitManager(new CircuitManagerImpl());
         this.isupStack.setMtp3UserPart(mtp3UserPart);
-
         this.isupStack.start();
 
         this.isupStack.getCircuitManager().addCircuit(1, dpc);
