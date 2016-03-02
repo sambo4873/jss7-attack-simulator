@@ -2,6 +2,7 @@ package org.mobicents.protocols.ss7.tools.simulator.level2;
 
 import org.mobicents.protocols.ss7.isup.ISUPStack;
 import org.mobicents.protocols.ss7.isup.impl.CircuitManagerImpl;
+import org.mobicents.protocols.ss7.isup.impl.ISUPProviderImpl;
 import org.mobicents.protocols.ss7.isup.impl.ISUPStackImpl;
 import org.mobicents.protocols.ss7.mtp.Mtp3UserPart;
 import org.mobicents.protocols.ss7.scheduler.Clock;
@@ -42,6 +43,9 @@ public class IsupMan implements Stoppable {
         this.isupStack.start();
 
         this.isupStack.getCircuitManager().addCircuit(1, dpc);
+
+        ISUPProviderImpl provider = (ISUPProviderImpl) this.isupStack.getIsupProvider();
+        provider.start();
     }
 
     public int getNi() {

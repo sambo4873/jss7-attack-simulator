@@ -1882,7 +1882,6 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             msg.setTransmissionMediumRequirement(tmr);
 
             isupProvider.sendMessage(msg, this.testerHost.getIsupMan().getDpc());
-
         } catch(IOException ex) {
             System.out.println("Error when sending ISUP IAM: " + ex.toString());
         } catch(ParameterException ex) {
