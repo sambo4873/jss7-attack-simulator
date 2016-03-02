@@ -1768,6 +1768,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2ISUP(2, opc, dpc);
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
     }
 
     private void configureISUPServer() {
@@ -1795,6 +1799,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2ISUP(2, opc, dpc);
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
     }
 
     private void configureAttackServer() {
