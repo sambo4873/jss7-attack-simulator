@@ -2358,6 +2358,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 break;
         }
 
+        started = true;
         if (!started) {
             this.sendNotif(AttackTesterHost.SOURCE_NAME, "Testing task has not started", "", Level.WARN);
             this.stop();
