@@ -1372,9 +1372,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 opc2 = 0,
                 dpc = 2,
                 dpc2 = 0,
-                localPort = 8029,
+                localPort = 8035,
                 localPort2 = 0,
-                remotePort = 8030,
+                remotePort = 8036,
                 remotePort2 = 0;
 
         String localHost = "127.0.0.1",
@@ -1433,9 +1433,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 opc2 = 0,
                 dpc = 10,
                 dpc2 = 0,
-                localPort = 8030,
+                localPort = 8036,
                 localPort2 = 0,
-                remotePort = 8029,
+                remotePort = 8035,
                 remotePort2 = 0;
 
         String localHost = "127.0.0.1",
