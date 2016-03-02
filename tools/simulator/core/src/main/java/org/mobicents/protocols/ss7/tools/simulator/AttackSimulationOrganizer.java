@@ -53,16 +53,16 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost attackerBvlrA;
     private AttackTesterHost vlrAattackerB;
 
+    private AttackTesterHost isupClient;
+    private AttackTesterHost isupServer;
+
     public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation) {
         this.rng = new Random(System.currentTimeMillis());
         this.simpleSimulation = simpleSimulation;
 
         if (this.simpleSimulation) {
-            this.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_HLR_A);
-            this.hlrAattackerB = new AttackTesterHost("HLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_ATTACKER_B);
-
-            this.attackerBvlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_VLR_A);
-            this.vlrAattackerB = new AttackTesterHost("VLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_ATTACKER_B);
+            this.isupClient = new AttackTesterHost("ISUP_CLIENT", simulatorHome, AttackTesterHost.AttackNode.ISUP_CLIENT);
+            this.isupServer = new AttackTesterHost("ISUP_SERVER", simulatorHome, AttackTesterHost.AttackNode.ISUP_SERVER);
         } else {
             this.mscAmscB = new AttackTesterHost("MSC_A_MSC_B", simulatorHome, AttackTesterHost.AttackNode.MSC_A_MSC_B);
             this.mscBmscA = new AttackTesterHost("MSC_B_MSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_B_MSC_A);
@@ -104,11 +104,8 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void startAttackSimulationHosts() {
         if (this.simpleSimulation) {
-            this.attackerBhlrA.start();
-            this.hlrAattackerB.start();
-
-            this.attackerBvlrA.start();
-            this.vlrAattackerB.start();
+            this.isupClient.start();
+            this.isupServer.start();
         } else {
             this.mscAmscB.start();
             this.mscBmscA.start();
@@ -167,8 +164,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                             attackerBvlrA.getM3uaMan().getState().contains("ACTIVE"))
                         return true;
                 } else {
-                    if (attackerBvlrA.getM3uaMan().getState().contains("ACTIVE") &&
-                            attackerBhlrA.getM3uaMan().getState().contains("ACTIVE"))
+                    if(this.isupClient.getM3uaMan().getState().contains("ACTIVE") &&
+                            this.isupServer.getM3uaMan().getState().contains("ACTIVE"))
                         return true;
                 }
             } catch (InterruptedException e) {
@@ -180,8 +177,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private boolean testerHostsNeedQuit() {
         if(simpleSimulation)
-            return this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit() ||
-                    this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit();
+            return this.isupClient.isNeedQuit() || this.isupServer.isNeedQuit();
         else
             return this.mscAmscB.isNeedQuit() || this.mscBmscA.isNeedQuit() ||
                 this.mscAhlrA.isNeedQuit() || this.hlrAmscA.isNeedQuit() ||
@@ -199,15 +195,11 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void testerHostsExecuteCheckStore() {
         if (simpleSimulation) {
-            this.attackerBhlrA.execute();
-            this.vlrAattackerB.execute();
-            this.attackerBvlrA.execute();
-            this.vlrAattackerB.execute();
+            this.isupClient.execute();
+            this.isupServer.execute();
 
-            this.attackerBhlrA.checkStore();
-            this.hlrAattackerB.checkStore();
-            this.attackerBvlrA.checkStore();
-            this.vlrAattackerB.checkStore();
+            this.isupClient.checkStore();
+            this.isupServer.checkStore();
         } else {
             this.mscAmscB.execute();
             this.mscBmscA.execute();
@@ -286,7 +278,10 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.testerHostsExecuteCheckStore();
             this.generateTraffic();
 
-            this.sendRandomMessage(msgNum);
+            if (simpleSimulation)
+                this.sendRandomIsupMessage(msgNum);
+            else
+                this.sendRandomMessage(msgNum);
 
             msgNum++;
 
@@ -314,6 +309,13 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void modifyCallingPartyAddressDigits(AttackTesterHost attackTesterHost, String cgGT) {
         attackTesterHost.getSccpMan().setCallingPartyAddressDigits(cgGT);
+    }
+
+    private void sendRandomIsupMessage(int num) {
+        switch(num) {
+            case 0:
+                this.isupClient.getTestAttackClient().performIsupIAM();
+        }
     }
 
     private void sendRandomMessage(int num) {

@@ -2,6 +2,10 @@ package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.spi.LocationInfo;
+import org.mobicents.protocols.ss7.isup.ISUPEvent;
+import org.mobicents.protocols.ss7.isup.ISUPListener;
+import org.mobicents.protocols.ss7.isup.ISUPProvider;
+import org.mobicents.protocols.ss7.isup.ISUPTimeoutEvent;
 import org.mobicents.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.mobicents.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.mobicents.protocols.ss7.map.api.*;
@@ -54,7 +58,7 @@ import java.util.GregorianCalendar;
  * @author Kristoffer Jensen
  */
 public class TestAttackServer extends AttackTesterBase implements Stoppable, MAPDialogListener, MAPServiceSmsListener,
-        MAPServiceMobilityListener, MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServiceSupplementaryListener {
+        MAPServiceMobilityListener, MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServiceSupplementaryListener, ISUPListener {
 
     public static String SOURCE_NAME = "TestAttackServer";
 
@@ -325,6 +329,10 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
 
         mapProvider.addMAPDialogListener(this);
+
+        ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();
+        isupProvider.addListener(this);
+
         this.testerHost.sendNotif(SOURCE_NAME, "AttackServer has been started", "", Level.INFO);
         isStarted = true;
 
@@ -1473,6 +1481,17 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     }
 
     public void performPurgeMS() {
+    }
+
+    @Override
+    public void onEvent(ISUPEvent event) {
+        System.out.println("--------------GOT ISUP MESSAGE");
+        System.out.println(event.getMessage().getMessageType().getMessageName().toString());
+    }
+
+    @Override
+    public void onTimeout(ISUPTimeoutEvent event) {
+
     }
 
     private class HostMessageData {

@@ -15,7 +15,20 @@ public class IsupMan implements Stoppable {
     private ISUPStack isupStack;
     private Scheduler scheduler;
 
+    private int ni;
+    private int localSpc;
+    private int dpc;
+
+
+    public ISUPStack getIsupStack() {
+        return this.isupStack;
+    }
+
     public void initIsup(Mtp3UserPart mtp3UserPart, int ni, int localSpc, int dpc) {
+        this.ni = ni;
+        this.localSpc = localSpc;
+        this.dpc = dpc;
+
         this.scheduler = new Scheduler();
         this.scheduler.setClock(new DefaultClock());
 
@@ -27,6 +40,18 @@ public class IsupMan implements Stoppable {
         this.isupStack.start();
 
         this.isupStack.getCircuitManager().addCircuit(1, dpc);
+    }
+
+    public int getNi() {
+        return this.ni;
+    }
+
+    public int getLocalSpc() {
+        return this.localSpc;
+    }
+
+    public int getDpc() {
+        return this.dpc;
     }
 
     @Override

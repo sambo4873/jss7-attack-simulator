@@ -92,6 +92,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
     private AttackNode attackNode;
     private boolean attackDone;
+    private int isupNi;
+    private int isupLocalSpc;
+    private int isupDpc;
 
     // testers
 
@@ -1734,6 +1737,60 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             configureTestAttackClient();
     }
 
+    private void configureISUPClient() {
+        //////// L1 Configuration Data //////////
+
+        int opc = 20,
+                opc2 = 0,
+                dpc = 21,
+                dpc2 = 0,
+                localPort = 8040,
+                localPort2 = 0,
+                remotePort = 8041,
+                remotePort2 = 0;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2ISUP(2, opc, dpc);
+    }
+
+    private void configureISUPServer() {
+        //////// L1 Configuration Data //////////
+
+        int opc = 21,
+                opc2 = 0,
+                dpc = 20,
+                dpc2 = 0,
+                localPort = 8041,
+                localPort2 = 0,
+                remotePort = 8040,
+                remotePort2 = 0;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2ISUP(2, opc, dpc);
+    }
+
     private void configureAttackServer() {
 
         //////// L1 Configuration Data //////////
@@ -1874,8 +1931,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         m3uaConfigurationData.setSi(3);
         m3uaConfigurationData.setStorePcapTrace(false);
         m3uaConfigurationData.setTrafficModeType(TrafficModeType.Loadshare);
+    }
 
-        this.setInstance_L1(Instance_L1.createInstance("M3UA"));
+    public void configureL2ISUP(int ni, int isupLocalSpc, int dpc) {
+        this.setInstance_L2(Instance_L2.createInstance("ISUP"));
+
+        this.isupNi = ni;
+        this.isupLocalSpc = isupLocalSpc;
+        this.isupDpc = dpc;
     }
 
     public void configureL2(String callingPartyAddressDigits, int localSpc, int localSpc2, int localSsn, int remoteSpc, int remoteSpc2, int remoteSsn, boolean routeonGtMode) {
@@ -2193,7 +2256,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                     break;
                 case Instance_L2.VAL_ISUP:
                     this.instance_L2_B = this.isup;
-                    //this.isup.initIsup(mtp3UserPart, );
+                    this.isup.initIsup(mtp3UserPart, this.isupNi, this.isupLocalSpc, this.isupDpc);
                     break;
             }
         }
@@ -2461,6 +2524,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         return this.getTestAttackClient().getLastAtiResponse() != null;
     }
 
+    public IsupMan getIsupMan() {
+        return this.isup;
+    }
+
     public enum AttackNode {
         ALL,
         ATTACK_CLIENT,
@@ -2489,5 +2556,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         SMSC_A_ATTACKER_B,
         ATTACKER_B_VLR_A,
         VLR_A_ATTACKER_B,
+        ISUP_CLIENT,
+        ISUP_SERVER,
     }
 }

@@ -1,6 +1,14 @@
 package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
 
 import org.apache.log4j.Level;
+import org.mobicents.protocols.ss7.isup.*;
+import org.mobicents.protocols.ss7.isup.impl.message.ISUPMessageImpl;
+import org.mobicents.protocols.ss7.isup.impl.message.InitialAddressMessageImpl;
+import org.mobicents.protocols.ss7.isup.impl.message.parameter.CalledPartyNumberImpl;
+import org.mobicents.protocols.ss7.isup.message.ISUPMessage;
+import org.mobicents.protocols.ss7.isup.message.InitialAddressMessage;
+import org.mobicents.protocols.ss7.isup.message.parameter.CalledPartyNumber;
+import org.mobicents.protocols.ss7.isup.message.parameter.CircuitIdentificationCode;
 import org.mobicents.protocols.ss7.isup.message.parameter.Number;
 import org.mobicents.protocols.ss7.map.api.*;
 import org.mobicents.protocols.ss7.map.api.datacoding.NationalLanguageIdentifier;
@@ -46,12 +54,14 @@ import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
 import org.mobicents.protocols.ss7.tools.simulator.common.AttackTesterBase;
+import org.mobicents.protocols.ss7.tools.simulator.level2.IsupMan;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
 import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Random;
 
@@ -59,12 +69,13 @@ import java.util.Random;
  * @author Kristoffer Jensen
  */
 public class TestAttackClient extends AttackTesterBase implements Stoppable, MAPDialogListener, MAPServiceSmsListener,
-        MAPServiceMobilityListener, MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServiceSupplementaryListener {
+        MAPServiceMobilityListener, MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServiceSupplementaryListener, ISUPListener {
 
     public static String SOURCE_NAME = "TestAttackClient";
 
     private final String name;
     private MapMan mapMan;
+    private IsupMan isupMan;
 
     private boolean isStarted = false;
     private int countSriReq = 0;
@@ -449,6 +460,10 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
 
         mapProvider.addMAPDialogListener(this);
+
+        ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();
+        isupProvider.addListener(this);
+
         this.testerHost.sendNotif(SOURCE_NAME, "AttackClient has been started", "", Level.INFO);
         isStarted = true;
 
@@ -1824,6 +1839,45 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     public void performCancelLocation() {
     }
 
+    public void performIsupIAM() {
+        ISUPStack isupStack = this.testerHost.getIsupMan().getIsupStack();
+        ISUPProvider isupProvider = isupStack.getIsupProvider();
+
+        try {
+            CircuitIdentificationCode cic = isupProvider.getParameterFactory().createCircuitIdentificationCode();
+            cic.setCIC(1);
+
+            CalledPartyNumber cpn = isupProvider.getParameterFactory().createCalledPartyNumber();
+            cpn.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_ALLOWED);
+            cpn.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
+            cpn.setAddress("82828282");
+            cpn.setNatureOfAddresIndicator(CalledPartyNumber._NAI_INTERNATIONAL_NUMBER);
+
+            InitialAddressMessage msg = isupProvider.getMessageFactory().createIAM();
+            msg.setCircuitIdentificationCode(isupProvider.getParameterFactory().createCircuitIdentificationCode());
+            msg.setSls(1);
+            msg.setCalledPartyNumber(cpn);
+
+            isupProvider.sendMessage(msg, this.testerHost.getIsupMan().getDpc());
+
+        } catch(IOException ex) {
+            System.out.println("Error when sending ISUP IAM: " + ex.toString());
+        } catch(ParameterException ex) {
+            System.out.println("Error when sending ISUP IAM: " + ex.toString());
+        }
+    }
+
+    @Override
+    public void onEvent(ISUPEvent event) {
+        System.out.println("--------------GOT ISUP MESSAGE");
+        System.out.println(event.getMessage().getMessageType().getMessageName().toString());
+    }
+
+    @Override
+    public void onTimeout(ISUPTimeoutEvent event) {
+
+    }
+
     private class ResendMessageData {
         public SM_RP_DA da;
         public SM_RP_OA oa;
@@ -1836,19 +1890,16 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onReadyForSMRequest(ReadyForSMRequest request) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void onReadyForSMResponse(ReadyForSMResponse response) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void onNoteSubscriberPresentRequest(NoteSubscriberPresentRequest request) {
-        // TODO Auto-generated method stub
 
     }
 
