@@ -69,6 +69,9 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.subscriberManager = new SubscriberManager();
         this.subscriberManager.createRandomSubscribers(numberOfSubscribers);
 
+        System.out.println("Number of subscribers: " + this.subscriberManager.getNumberOfSubscribers());
+        System.exit(50);
+
         if (this.simpleSimulation) {
             this.isupClient = new AttackTesterHost("ISUP_CLIENT", simulatorHome, AttackTesterHost.AttackNode.ISUP_CLIENT);
             this.isupServer = new AttackTesterHost("ISUP_SERVER", simulatorHome, AttackTesterHost.AttackNode.ISUP_SERVER);
