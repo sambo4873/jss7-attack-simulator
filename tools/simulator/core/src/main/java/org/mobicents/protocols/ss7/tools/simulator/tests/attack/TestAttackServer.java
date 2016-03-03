@@ -45,6 +45,8 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
 import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.Instance_L2;
+import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
+import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.NumberingPlanIdentificationType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.SmsCodingType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TypeOfNumberType;
@@ -1190,32 +1192,19 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         long invokeId = request.getInvokeId();
 
         MAPDialogMobility curDialog = request.getMAPDialog();
+        IMSI imsi = request.getSubscriberIdentity().getIMSI();
 
-        try {
-            LocationInformation locationInformation = this.createLocationInformation(mapParameterFactory);
-            SubscriberState subscriberState = mapParameterFactory.createSubscriberState(SubscriberStateChoice.assumedIdle, null);
-            MAPExtensionContainer mapExtensionContainer = null;
-            LocationInformationGPRS locationInformationGPRS = null;
-            PSSubscriberState psSubscriberState = null;
-            IMEI imei = mapParameterFactory.createIMEI("128939812312382");
-            MSClassmark2 msClassmark2 = null;
-            GPRSMSClass gprsmsClass = null;
-            MNPInfoRes mnpInfoRes = null;
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(imsi);
 
-            SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation,
-                    subscriberState,
-                    mapExtensionContainer,
-                    locationInformationGPRS,
-                    psSubscriberState,
-                    imei,
-                    msClassmark2,
-                    gprsmsClass,
-                    mnpInfoRes);
-
-            curDialog.addAnyTimeInterrogationResponse(invokeId, subscriberInfo, null);
-            this.needSendClose = true;
-        } catch (MAPException ex) {
-            System.out.println("Exception when sending AnyTimeInterrogationResponse: " + ex.toString());
+        if(subscriber != null) {
+            try {
+                curDialog.addAnyTimeInterrogationResponse(invokeId, subscriber.getSubscriberInfo(), null);
+                this.needSendClose = true;
+            } catch (MAPException ex) {
+                System.out.println("Exception when sending AnyTimeInterrogationResponse: " + ex.toString());
+            }
+        } else {
+            System.out.println("Did not find subscriber with IMSI: " + imsi.getData());
         }
     }
 
@@ -1233,64 +1222,21 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         MAPParameterFactory mapParameterFactory = mapProvider.getMAPParameterFactory();
         MAPDialogMobility curDialog = request.getMAPDialog();
         long invokeId = request.getInvokeId();
+        IMSI imsi = request.getImsi();
 
-        try {
-            LocationInformation locationInformation = this.createLocationInformation(mapParameterFactory);
-            SubscriberState subscriberState = mapParameterFactory.createSubscriberState(SubscriberStateChoice.assumedIdle, null);
-            MAPExtensionContainer mapExtensionContainer = null;
-            LocationInformationGPRS locationInformationGPRS = null;
-            PSSubscriberState psSubscriberState = null;
-            IMEI imei = mapParameterFactory.createIMEI("128939812312382");
-            MSClassmark2 msClassmark2 = null;
-            GPRSMSClass gprsmsClass = null;
-            MNPInfoRes mnpInfoRes = null;
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(imsi);
 
-            SubscriberInfo subscriberInfo = mapParameterFactory.createSubscriberInfo(locationInformation,
-                    subscriberState,
-                    mapExtensionContainer,
-                    locationInformationGPRS,
-                    psSubscriberState,
-                    imei,
-                    msClassmark2,
-                    gprsmsClass,
-                    mnpInfoRes);
-
-
-            curDialog.addProvideSubscriberInfoResponse(invokeId, subscriberInfo, null);
-            this.needSendClose = true;
-        } catch (MAPException ex) {
-            System.out.println("Exception when sending ProvideSubscriberInfoRequestRes: " + ex.toString());
+        if(subscriber != null) {
+            try {
+                curDialog.addProvideSubscriberInfoResponse(invokeId, subscriber.getSubscriberInfo(), null);
+                this.needSendClose = true;
+            } catch (MAPException ex) {
+                System.out.println("Exception when sending ProvideSubscriberInfoRequestRes: " + ex.toString());
+            }
+        } else {
+            System.out.println("Could not find subscriber with IMSI: " + imsi.getData());
         }
     }
-
-    private LocationInformation createLocationInformation(MAPParameterFactory mapParameterFactory) throws MAPException {
-        int ageOfLocationInformation = 0;
-        GeographicalInformation geographicalInformation = null;
-        ISDNAddressString vlrNumber = mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "22222222");
-        LocationNumberMap locationNumber = mapParameterFactory.createLocationNumberMap(new LocationNumberImpl(4,
-                "88888888",
-                LocationNumber._NPI_ISDN,
-                LocationNumber._INN_ROUTING_ALLOWED,
-                LocationNumber._APRI_ALLOWED,
-                LocationNumber._SI_USER_PROVIDED_VERIFIED_PASSED));
-        CellGlobalIdOrServiceAreaIdOrLAI cgiosaiol = mapParameterFactory.createCellGlobalIdOrServiceAreaIdOrLAI(
-                new CellGlobalIdOrServiceAreaIdFixedLengthImpl(242,01, 115, 8462));
-        MAPExtensionContainer mapExtensionContainer = null;
-        LSAIdentity lsaIdentity = null;
-        ISDNAddressString mscNumber = null;
-        GeodeticInformation geodeticInformation = null;
-        boolean currentLocationRetrieved = true;
-        boolean saiPresent = false;
-        LocationInformationEPS locationInformationEPS = null;
-        UserCSGInformation userCSGInformation = null;
-
-
-        return mapParameterFactory.createLocationInformation(ageOfLocationInformation, geographicalInformation,
-                vlrNumber, locationNumber, cgiosaiol, mapExtensionContainer,lsaIdentity,
-                mscNumber, geodeticInformation, currentLocationRetrieved, saiPresent, locationInformationEPS,
-                userCSGInformation);
-    }
-
 
     @Override
     public void onProvideSubscriberInfoResponse(ProvideSubscriberInfoResponse response) {

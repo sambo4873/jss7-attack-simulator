@@ -6,6 +6,7 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformatio
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMRequest;
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
+import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
 
 import java.util.Random;
 
@@ -15,6 +16,8 @@ import java.util.Random;
 public class AttackSimulationOrganizer implements Stoppable {
     private Random rng;
     private boolean simpleSimulation;
+
+    private SubscriberManager subscriberManager;
 
     private AttackTesterHost mscAmscB;
     private AttackTesterHost mscBmscA;
@@ -56,9 +59,11 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost isupClient;
     private AttackTesterHost isupServer;
 
-    public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation) {
+    public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, int numberOfSubscribers) {
         this.rng = new Random(System.currentTimeMillis());
         this.simpleSimulation = simpleSimulation;
+        this.subscriberManager = new SubscriberManager();
+        this.subscriberManager.createRandomSubscribers(numberOfSubscribers);
 
         if (this.simpleSimulation) {
             this.isupClient = new AttackTesterHost("ISUP_CLIENT", simulatorHome, AttackTesterHost.AttackNode.ISUP_CLIENT);
@@ -100,6 +105,10 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.attackerBvlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_VLR_A);
             this.vlrAattackerB = new AttackTesterHost("VLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_ATTACKER_B);
         }
+    }
+
+    public SubscriberManager getSubscriberManager() {
+        return subscriberManager;
     }
 
     private void startAttackSimulationHosts() {

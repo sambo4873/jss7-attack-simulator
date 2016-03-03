@@ -32,6 +32,7 @@ import org.mobicents.protocols.ss7.mtp.Mtp3UserPart;
 import org.mobicents.protocols.ss7.mtp.RoutingLabelFormat;
 import org.mobicents.protocols.ss7.sccp.SccpProtocolVersion;
 import org.mobicents.protocols.ss7.sccp.SccpStack;
+import org.mobicents.protocols.ss7.tools.simulator.AttackSimulationOrganizer;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 import org.mobicents.protocols.ss7.tools.simulator.common.AttackConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.common.ConfigurationData;
@@ -97,7 +98,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private int isupLocalSpc;
     private int isupDpc;
 
-    // testers
+    private AttackSimulationOrganizer attackSimulationOrganizer;
 
     public AttackTesterHost() {
         this.appName = null;
@@ -153,6 +154,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         this.configurationData.setSccpConfigurationData(new AttackSccpConfigurationData());
         this.configureNode(attackNode);
+    }
+
+    public void setAttackSimulationOrganizer(AttackSimulationOrganizer attackSimulationOrganizer) {
+        this.attackSimulationOrganizer = attackSimulationOrganizer;
+    }
+
+    public AttackSimulationOrganizer getAttackSimulationOrganizer() {
+        return this.attackSimulationOrganizer;
     }
 
     private void configureNode(AttackNode attackNode) {
