@@ -6,6 +6,7 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformatio
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMRequest;
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
+import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
 import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
 
 import java.util.Random;
@@ -31,6 +32,9 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private AttackTesterHost mscAvlrA;
     private AttackTesterHost vlrAmscA;
+
+    private AttackTesterHost smscAhlrA;
+    private AttackTesterHost hlrAsmscA;
 
     private AttackTesterHost hlrAvlrA;
     private AttackTesterHost vlrAhlrA;
@@ -81,6 +85,9 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.mscAvlrA = new AttackTesterHost("MSC_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_VLR_A);
             this.vlrAmscA = new AttackTesterHost("VLR_A_MSC_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_MSC_A);
 
+            this.smscAhlrA = new AttackTesterHost("SMSC_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_HLR_A);
+            this.hlrAsmscA = new AttackTesterHost("HLR_A_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_SMSC_A);
+
             this.hlrAvlrA = new AttackTesterHost("HLR_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_VLR_A);
             this.vlrAhlrA = new AttackTesterHost("VLR_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_HLR_A);
 
@@ -128,6 +135,9 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.mscAvlrA.start();
             this.vlrAmscA.start();
 
+            this.smscAhlrA.start();
+            this.hlrAsmscA.start();
+
             this.hlrAvlrA.start();
             this.vlrAhlrA.start();
 
@@ -163,6 +173,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                             mscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
                             mscAsmscA.getM3uaMan().getState().contains("ACTIVE") &&
                             mscAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            smscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
                             hlrAvlrA.getM3uaMan().getState().contains("ACTIVE") &&
                             sgsnAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
                             gsmscfAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
@@ -192,6 +203,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.mscAhlrA.isNeedQuit() || this.hlrAmscA.isNeedQuit() ||
                 this.mscAsmscA.isNeedQuit() || this.smscAmscA.isNeedQuit() ||
                 this.mscAvlrA.isNeedQuit() || this.vlrAmscA.isNeedQuit() ||
+                this.smscAhlrA.isNeedQuit() || this.hlrAsmscA.isNeedQuit() ||
                 this.hlrAvlrA.isNeedQuit() || this.vlrAhlrA.isNeedQuit() ||
                 this.sgsnAhlrA.isNeedQuit() || this.hlrAsgsnA.isNeedQuit() ||
                 this.gsmscfAhlrA.isNeedQuit() || this.hlrAgsmscfA.isNeedQuit() ||
@@ -218,6 +230,8 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.smscAmscA.execute();
             this.mscAvlrA.execute();
             this.vlrAmscA.execute();
+            this.smscAhlrA.execute();
+            this.hlrAsmscA.execute();
             this.hlrAvlrA.execute();
             this.vlrAhlrA.execute();
             this.sgsnAhlrA.execute();
@@ -243,6 +257,8 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.smscAmscA.checkStore();
             this.mscAvlrA.checkStore();
             this.vlrAmscA.checkStore();
+            this.smscAhlrA.checkStore();
+            this.hlrAsmscA.checkStore();
             this.hlrAvlrA.checkStore();
             this.vlrAhlrA.checkStore();
             this.sgsnAhlrA.checkStore();
@@ -444,6 +460,25 @@ public class AttackSimulationOrganizer implements Stoppable {
         response = this.smscAmscA.getTestAttackServer().performMtForwardSM("", "", "", "");
 
         return response;
+    }
+
+    private void performMoSMS() {
+        Subscriber originator = this.subscriberManager.getRandomSubscriber();
+        Subscriber destination = this.subscriberManager.getRandomSubscriber();
+
+        String origIsdnNumber = originator.getMsisdn().getAddress();
+        String destIsdnNumber = destination.getMsisdn().getAddress();
+
+        this.mscAsmscA.getTestAttackClient().performMoForwardSM("SMS Message", destIsdnNumber, origIsdnNumber);
+    }
+
+    private void performMtSMS() {
+        Subscriber destination = this.subscriberManager.getRandomSubscriber();
+
+        String destIsdnNumber = destination.getMsisdn().getAddress();
+
+        this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(destIsdnNumber,
+                hlrAsmscA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
     }
 
     private void updateLocation() {

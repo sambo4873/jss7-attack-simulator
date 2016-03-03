@@ -2568,6 +2568,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         MSC_A_SMSC_A,
         SMSC_A_MSC_A,
         MSC_A_VLR_A,
+        SMSC_A_HLR_A,
+        HLR_A_SMSC_A,
         VLR_A_MSC_A,
         HLR_A_VLR_A,
         VLR_A_HLR_A,

@@ -37,17 +37,15 @@ public class SubscriberManager {
     }
 
     private Subscriber createRandomSubscriber() {
-        int subscriberId = this.getSubscriber(this.getNumberOfSubscribers() - 1).getSubscriberId();
+        int subscriberId = this.getSubscriber(this.getNumberOfSubscribers() - 1).getSubscriberId() + 1;
         IMSI imsi = this.mapParameterFactory.createIMSI(randomNumericalString(15));
         ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, randomNumericalString(10));
         try {
-            SubscriberInfo subscriberInfo = this.createRandomSubscriberInfo();
-
-            return new Subscriber(subscriberId, imsi, msisdn, subscriberInfo);
+            return new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo());
         } catch(MAPException ex) {
             System.out.println("Exception when creating Subscriber data: " + ex.toString());
+            return null;
         }
-        return null;
     }
 
     private SubscriberInfo createRandomSubscriberInfo() throws MAPException {
@@ -138,5 +136,9 @@ public class SubscriberManager {
             buffer[i] = symbols[random.nextInt(symbols.length)];
 
         return new String(buffer);
+    }
+
+    public Subscriber getRandomSubscriber() {
+        return this.subscribers.get(random.nextInt(subscribers.size()));
     }
 }
