@@ -37,7 +37,12 @@ public class SubscriberManager {
     }
 
     private Subscriber createRandomSubscriber() {
-        int subscriberId = this.getSubscriber(this.getNumberOfSubscribers() - 1).getSubscriberId() + 1;
+        int subscriberId;
+        if(this.subscribers.size() > 0)
+            subscriberId = this.getSubscriber(this.getNumberOfSubscribers() - 1).getSubscriberId() + 1;
+        else
+            subscriberId = 0;
+
         IMSI imsi = this.mapParameterFactory.createIMSI(randomNumericalString(15));
         ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, randomNumericalString(10));
         try {
