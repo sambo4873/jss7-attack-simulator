@@ -187,7 +187,7 @@ public class MainCore {
         System.out.println("Application has been loaded...");
         System.out.println("Loading simulation hosts...");
 
-        AttackSimulationOrganizer  attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, 10);
+        AttackSimulationOrganizer attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, 10);
 
         System.out.println("Simulation hosts loaded, starting simulation...");
         attackSimulationOrganizer.start();

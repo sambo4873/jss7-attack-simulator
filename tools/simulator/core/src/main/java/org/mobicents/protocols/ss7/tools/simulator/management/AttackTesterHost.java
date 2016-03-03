@@ -130,7 +130,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         this.testAttackServer = new TestAttackServer(appName);
         this.testAttackServer.setTesterHost(this);
 
-        this.setupLog4j(appName);
+        //this.setupLog4j(appName);
 
         binding.setClassAttribute(CLASS_ATTRIBUTE);
 
