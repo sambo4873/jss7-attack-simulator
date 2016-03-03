@@ -309,8 +309,6 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.sendRandomMessage(msgNum);
 
             msgNum++;
-
-            if (msgNum == 13) msgNum = 0;
         }
     }
 
@@ -387,6 +385,12 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 12:
                 this.gsmscfAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                break;
+            case 13:
+                this.performMoSMS();
+                break;
+            case 14:
+                this.performMtSMS();
                 break;
 
             default:

@@ -250,10 +250,136 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             case ISUP_SERVER:
                 this.configureISUPServer();
                 break;
+            case SMSC_A_HLR_A:
+                this.configureSmscAHlrA();
+                break;
+            case HLR_A_SMSC_A:
+                this.configureHlrASmscA();
+                break;
 
             default:
                 break;
         }
+    }
+
+    private void configureSmscAHlrA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = 3,
+                opc2 = 0,
+                dpc = 2,
+                dpc2 = 0,
+                localPort = 8018,
+                localPort2 = 0,
+                remotePort = 8019,
+                remotePort2 = 0;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = 3,
+                localSpc2 = 0,
+                localSsn = 8,
+                remoteSpc = 2,
+                remoteSpc2 = 0,
+                remoteSsn = 6;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = "1113";
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = "1112";
+
+        ////////////////////////////////////////
+
+
+        //////// Test Configuration Data //////////
+        ///////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureHlrASmscA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = 2,
+                opc2 = 0,
+                dpc = 3,
+                dpc2 = 0,
+                localPort = 8019,
+                localPort2 = 0,
+                remotePort = 8018,
+                remotePort2 = 0;
+
+        String localHost = "127.0.0.1",
+                localHost2 = "",
+                remoteHost = "127.0.0.1",
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = 2,
+                localSpc2 = 0,
+                localSsn = 6,
+                remoteSpc = 3,
+                remoteSpc2 = 0,
+                remoteSsn = 8;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = "1112";
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = "1113";
+
+        ////////////////////////////////////////
+
+
+        //////// Test Configuration Data //////////
+        ///////////////////////////////////////////
+
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
     }
 
     private void configureVlrAAttackerB() {
