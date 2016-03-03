@@ -104,11 +104,12 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         this.appName = null;
     }
 
-    public AttackTesterHost(String appName, String persistDir, AttackNode attackNode) {
+    public AttackTesterHost(String appName, String persistDir, AttackNode attackNode, AttackSimulationOrganizer attackSimulationOrganizer) {
         this.attackNode = attackNode;
         this.attackDone = false;
         this.appName = appName;
         this.persistDir = persistDir;
+        this.attackSimulationOrganizer = attackSimulationOrganizer;
 
         this.m3ua = new M3uaMan(appName);
         this.m3ua.setTesterHost(this);
@@ -154,10 +155,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         this.configurationData.setSccpConfigurationData(new AttackSccpConfigurationData());
         this.configureNode(attackNode);
-    }
-
-    public void setAttackSimulationOrganizer(AttackSimulationOrganizer attackSimulationOrganizer) {
-        this.attackSimulationOrganizer = attackSimulationOrganizer;
     }
 
     public AttackSimulationOrganizer getAttackSimulationOrganizer() {
