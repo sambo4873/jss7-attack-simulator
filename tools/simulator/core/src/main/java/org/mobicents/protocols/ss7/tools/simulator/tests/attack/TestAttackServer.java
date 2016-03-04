@@ -1193,8 +1193,14 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
         MAPDialogMobility curDialog = request.getMAPDialog();
         IMSI imsi = request.getSubscriberIdentity().getIMSI();
+        ISDNAddressString msisdn = request.getSubscriberIdentity().getMSISDN();
 
-        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(imsi);
+        Subscriber subscriber = null;
+
+        if(imsi != null)
+            subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(imsi);
+        else if(msisdn != null)
+            subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(msisdn);
 
         if(subscriber != null) {
             try {

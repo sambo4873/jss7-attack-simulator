@@ -34,6 +34,7 @@ public class SubscriberManager {
         for(int i = 0; i < number; i++) {
             this.addSubscriber(this.createRandomSubscriber());
         }
+        System.out.println("SubscriberManager: added " + number + " number of random subscribers");
     }
 
     private Subscriber createRandomSubscriber() {
@@ -119,6 +120,16 @@ public class SubscriberManager {
 
         for(Subscriber sub : subscribers)
             if(sub.getImsi().getData().equals(imsi.getData()))
+                returnSubscriber = sub;
+
+        return returnSubscriber;
+    }
+
+    public Subscriber getSubscriber(ISDNAddressString msisdn) {
+        Subscriber returnSubscriber = null;
+
+        for(Subscriber sub : this.subscribers)
+            if(sub.getMsisdn().getAddress().equals(msisdn.getAddress()))
                 returnSubscriber = sub;
 
         return returnSubscriber;
