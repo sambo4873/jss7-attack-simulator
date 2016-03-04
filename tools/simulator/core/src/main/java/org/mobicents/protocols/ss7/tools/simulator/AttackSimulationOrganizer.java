@@ -76,9 +76,15 @@ public class AttackSimulationOrganizer implements Stoppable {
             switch(simpleAttackGoal) {
                 case "location:ati":
                     this.simpleAttackGoal = SimpleAttackGoal.LOCATION_ATI;
+                    this.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_HLR_A, this);
+                    this.hlrAattackerB = new AttackTesterHost("HLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_ATTACKER_B, this);
                     break;
                 case "location:psi":
                     this.simpleAttackGoal = SimpleAttackGoal.LOCATION_PSI;
+                    this.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_HLR_A, this);
+                    this.hlrAattackerB = new AttackTesterHost("HLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_ATTACKER_B, this);
+                    this.attackerBvlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_VLR_A, this);
+                    this.vlrAattackerB = new AttackTesterHost("VLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_ATTACKER_B, this);
                     break;
                 case "intercept:sms":
                     this.simpleAttackGoal = SimpleAttackGoal.INTERCEPT_SMS;
@@ -386,6 +392,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                     case INTERCEPT_SMS:
                         break;
                 }
+                break;
             } else {
                 this.generateTraffic();
             }
