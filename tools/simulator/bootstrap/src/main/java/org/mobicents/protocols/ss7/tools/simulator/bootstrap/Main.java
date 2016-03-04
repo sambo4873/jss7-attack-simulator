@@ -94,7 +94,7 @@ public class Main {
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
         longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 0);
 
-        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:m:s", longopts);
+        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:o:m", longopts);
         g.setOpterr(false); // We'll do our own error handling
         //
         while ((c = g.getopt()) != -1) {
@@ -162,6 +162,11 @@ public class Main {
                     arg = g.getOptarg();
                     System.out.println("Passed " + String.valueOf(c) + " value: " + arg);
                     this.simple_attack_goal = arg;
+                    break;
+                case 'o':
+                    arg = g.getOptarg();
+                    System.out.println("Passed " + c + " value: " + arg);
+                    this.complexNumSubs = Integer.valueOf(arg);
                     break;
                 case 's':
                     //Number of subscribers to generate in complex attack simulation.
