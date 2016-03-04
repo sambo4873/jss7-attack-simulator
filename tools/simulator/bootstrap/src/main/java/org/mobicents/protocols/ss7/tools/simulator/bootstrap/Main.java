@@ -92,7 +92,7 @@ public class Main {
         longopts[2] = new LongOpt("http", LongOpt.REQUIRED_ARGUMENT, null, 't');
         longopts[3] = new LongOpt("rmi", LongOpt.REQUIRED_ARGUMENT, null, 'r');
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
-        longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 'a');
+        longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 0);
 
         Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:m:s", longopts);
         g.setOpterr(false); // We'll do our own error handling
@@ -147,6 +147,7 @@ public class Main {
                 case 'a':
                     //Attack simulation type
                     arg = g.getOptarg();
+                    System.out.println("Passed " + String.valueOf(c) + " value: " + arg);
                     if (arg.equals("simple")) {
                         this.attack_command = "simple";
                     } else if (arg.equals("complex")){
@@ -159,12 +160,13 @@ public class Main {
                 case 'm':
                     //Attack goal to perform, in cooperation with -a simple
                     arg = g.getOptarg();
+                    System.out.println("Passed " + String.valueOf(c) + " value: " + arg);
                     this.simple_attack_goal = arg;
                     break;
                 case 's':
                     //Number of subscribers to generate in complex attack simulation.
                     arg = g.getOptarg();
-                    System.out.println("Passed " + c + " value: " + arg);
+                    System.out.println("Passed " + String.valueOf(c) + " value: " + arg);
                     this.complexNumSubs = Integer.valueOf(arg);
                     break;
                 case 1:
