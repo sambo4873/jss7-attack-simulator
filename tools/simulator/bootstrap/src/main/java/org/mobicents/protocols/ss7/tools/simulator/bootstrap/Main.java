@@ -93,7 +93,7 @@ public class Main {
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
         longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 'a');
 
-        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:b", longopts);
+        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:m", longopts);
         g.setOpterr(false); // We'll do our own error handling
         //
         while ((c = g.getopt()) != -1) {
@@ -155,7 +155,7 @@ public class Main {
                         this.genericHelp();
                     }
                     break;
-                case 'b':
+                case 'm':
                     //Attack goal to perform, in cooperation with -a simple
                     arg = g.getOptarg();
                     this.simple_attack_goal = arg;
@@ -175,6 +175,8 @@ public class Main {
                             this.coreHelp();
                         } else if (this.command.equals("gui")) {
                             this.guiHelp();
+                        } else if (this.command.equals("attack_simulation")){
+                            this.attackHelp();
                         } else {
                             System.out.println("Invalid command " + optArg);
                             this.genericHelp();
@@ -199,6 +201,7 @@ public class Main {
         System.out.println("command:");
         System.out.println("    core      Start the SS7 simulator core");
         System.out.println("    gui       Start the SS7 simulator gui");
+        System.out.println("    attack_simulation Start the SS7 attack simulator");
         System.out.println();
         System.out.println("see 'run <command> help' for more information on a specific command:");
         System.out.println();
@@ -225,6 +228,18 @@ public class Main {
         System.out.println();
         System.out.println("options:");
         System.out.println("    -n, --name=<simulator name>   Simulator name. If not passed default is main");
+        System.out.println();
+        System.exit(0);
+    }
+
+    private void attackHelp() {
+        System.out.println("attack_simulation: Starts the attack simulator");
+        System.out.println();
+        System.out.println("usage: " + APP_NAME + " attack_simulation -a [simple/complex] [options]");
+        System.out.println();
+        System.out.println("options:");
+        System.out.println("    -a, Attack simulation type used. Can either be simple or complex.");
+        System.out.println("    -m, Simple attack simulation goal. Specifies which attack should be launched. Can only be used with -a simple.");
         System.out.println();
         System.exit(0);
     }
@@ -293,10 +308,17 @@ public class Main {
             mainCore.start(appName, httpPort, rmiPort, rmiPort2);
         } else if (this.command.equals("attack_simulation")) {
             MainCore mainCore = new MainCore();
-            if (this.attack_command.equals("simple"))
-                mainCore.startAttackSimulation(true);
-            else if (this.attack_command.equals("complex"))
+            if (this.attack_command.equals("simple")) {
+                if(!this.simple_attack_goal.isEmpty() && this.simple_attack_goal != null) {
+                    mainCore.startAttackSimulation(true);
+                } else {
+                    System.out.println("Error: Option b not specified.");
+                    this.genericHelp();
+                }
+
+            } else if (this.attack_command.equals("complex")) {
                 mainCore.startAttackSimulation(false);
+            }
         }
     }
 
