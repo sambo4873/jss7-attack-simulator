@@ -310,14 +310,14 @@ public class Main {
             MainCore mainCore = new MainCore();
             if (this.attack_command.equals("simple")) {
                 if(!this.simple_attack_goal.isEmpty() && this.simple_attack_goal != null) {
-                    mainCore.startAttackSimulation(true);
+                    mainCore.startAttackSimulation(true, simple_attack_goal);
                 } else {
                     System.out.println("Error: Option b not specified.");
                     this.genericHelp();
                 }
 
             } else if (this.attack_command.equals("complex")) {
-                mainCore.startAttackSimulation(false);
+                mainCore.startAttackSimulation(false, simple_attack_goal);
             }
         }
     }
