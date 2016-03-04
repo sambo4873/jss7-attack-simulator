@@ -189,7 +189,7 @@ public class MainCore {
 
         AttackSimulationOrganizer attackSimulationOrganizer;
         if(simpleSimulation) {
-            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, numberOfSubscribers);
+            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, 10);
         } else {
             attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, numberOfSubscribers);
         }
