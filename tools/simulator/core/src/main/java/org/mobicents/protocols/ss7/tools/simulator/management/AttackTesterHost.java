@@ -2653,7 +2653,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     }
 
     private void performAttackLocationPSI() {
-        this.getTestAttackClient().performProvideSubscriberInfoRequest();
+        //this.getTestAttackClient().performProvideSubscriberInfoRequest();
     }
 
     public boolean isAttackDone() {

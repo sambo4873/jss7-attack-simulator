@@ -784,17 +784,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         MAPDialogSms curDialog = sendRoutingInfoForSMInd.getMAPDialog();
         long invokeId = sendRoutingInfoForSMInd.getInvokeId();
 
-
-        IMSI imsi = mapProvider.getMAPParameterFactory().createIMSI(
-                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getSriResponseImsi());
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(sendRoutingInfoForSMInd.getMsisdn());
+        IMSI imsi = subscriber.getImsi();
         ISDNAddressString networkNodeNumber = mapProvider.getMAPParameterFactory().createISDNAddressString(
-                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getAddressNature(),
-                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getNumberingPlan(),
-                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getSriResponseVlr());
-        LocationInfoWithLMSI li = null;
+                this.testerHost.getAttackSimulationOrganizer().getVlrAmscA().getConfigurationData().getTestAttackServerConfigurationData().getAddressNature(),
+                this.testerHost.getAttackSimulationOrganizer().getVlrAmscA().getConfigurationData().getTestAttackServerConfigurationData().getNumberingPlan(),
+                this.testerHost.getAttackSimulationOrganizer().getVlrAmscA().getSccpMan().getCallingPartyAddressDigits());
 
         try {
-            li = mapProvider.getMAPParameterFactory().createLocationInfoWithLMSI(networkNodeNumber, null, null, false, null);
+            LocationInfoWithLMSI li = mapProvider.getMAPParameterFactory().createLocationInfoWithLMSI(networkNodeNumber, null, null, false, null);
             curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null);
 
             this.needSendClose = true;
