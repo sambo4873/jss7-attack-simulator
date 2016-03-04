@@ -164,7 +164,7 @@ public class Main {
                 case 's':
                     //Number of subscribers to generate in complex attack simulation.
                     arg = g.getOptarg();
-                    System.out.println("Passed s value: " + arg);
+                    System.out.println("Passed " + c + " value: " + arg);
                     this.complexNumSubs = Integer.valueOf(arg);
                     break;
                 case 1:
