@@ -1,8 +1,10 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
+import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
+import org.mobicents.protocols.ss7.map.primitives.IMSIImpl;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
 import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
@@ -437,43 +439,43 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         switch (num) {
             case 0:
-                this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 1:
-                this.mscAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.mscAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 2:
-                this.mscAsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.mscAsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 3:
-                this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 4:
-                this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 5:
-                this.attackerBmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.attackerBmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 6:
-                this.attackerBhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.attackerBhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 7:
-                this.attackerBsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.attackerBsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 8:
-                this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 9:
-                this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 10:
-                this.sgsnAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.sgsnAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 11:
-                this.gsmscfAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.gsmscfAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 12:
-                this.gsmscfAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+                //this.gsmscfAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
                 break;
             case 13:
                 this.performMoSMS();
@@ -505,8 +507,12 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void attackLocationPsi() {
         System.out.println("-----------STARTING LOCATION PSI ATTACK-----------");
+
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+
         //Get necessary information from request, use in next message.
-        this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM("98979695", "0000000");
+        this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(),
+                this.hlrAattackerB.getTestAttackServer().getServiceCenterAddress());
 
         while(!this.attackerBhlrA.gotSRIForSMResponse()){
             try{
@@ -519,11 +525,11 @@ public class AttackSimulationOrganizer implements Stoppable {
         SendRoutingInfoForSMResponse sriResponse = this.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
         this.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
 
-        String victimImsi = sriResponse.getIMSI().getData();
+        IMSI victimImsi = sriResponse.getIMSI();
         String victimVlrAddress = sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress();
 
         this.attackerBvlrA.getConfigurationData().getMapConfigurationData().setRemoteAddressDigits(victimVlrAddress);
-        this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+        this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(victimImsi);
 
         while(!this.attackerBvlrA.gotPSIResponse()){
             try{
@@ -623,7 +629,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void provideSubscriberInfo() {
-        this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
+        this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(new IMSIImpl("123"));
     }
 
     private void activateTraceMode() {

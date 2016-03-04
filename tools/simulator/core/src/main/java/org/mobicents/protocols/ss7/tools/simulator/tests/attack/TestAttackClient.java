@@ -1597,11 +1597,11 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         this.atiResponse = null;
     }
 
-    public void performProvideSubscriberInfoRequest() {
-        this.doPerformProvideSubscriberInfoRequest();
+    public void performProvideSubscriberInfoRequest(IMSI imsi) {
+        this.doPerformProvideSubscriberInfoRequest(imsi);
     }
 
-    public void doPerformProvideSubscriberInfoRequest() {
+    public void doPerformProvideSubscriberInfoRequest(IMSI imsi) {
 
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPApplicationContextVersion acv = MAPApplicationContextVersion.version3;
@@ -1616,7 +1616,6 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            IMSI imsi = mapProvider.getMAPParameterFactory().createIMSI("1234567890");
             LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[] { 11, 12, 13, 14 });
             RequestedInfo requestedInfo = new RequestedInfoImpl(true, true, null, true, null, true, true, true);
             //MAPExtensionContainer mapExtensionContainer = mapProvider.getMAPParameterFactory().createMAPExtensionContainer(null, null);
