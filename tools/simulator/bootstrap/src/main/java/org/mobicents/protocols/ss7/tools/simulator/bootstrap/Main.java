@@ -165,6 +165,7 @@ public class Main {
                     //Number of subscribers to generate in complex attack simulation.
                     arg = g.getOptarg();
                     this.complexNumSubs = Integer.valueOf(arg);
+                    break;
                 case 1:
                     String optArg = g.getOptarg();
                     if (optArg.equals("core")) {
