@@ -189,9 +189,9 @@ public class MainCore {
 
         AttackSimulationOrganizer attackSimulationOrganizer;
         if(simpleSimulation) {
-            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(),simpleAttackGoal)
+            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, numberOfSubscribers);
         } else {
-            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), numberOfSubscribers);
+            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, numberOfSubscribers);
         }
 
         System.out.println("Simulation hosts loaded, starting simulation...");

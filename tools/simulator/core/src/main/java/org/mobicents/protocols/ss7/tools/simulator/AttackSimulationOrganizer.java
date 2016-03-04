@@ -61,15 +61,29 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost isupClient;
     private AttackTesterHost isupServer;
 
-    public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, int numberOfSubscribers) {
+    public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers) {
         this.rng = new Random(System.currentTimeMillis());
         this.simpleSimulation = simpleSimulation;
         this.subscriberManager = new SubscriberManager();
         this.subscriberManager.createRandomSubscribers(numberOfSubscribers);
 
         if (this.simpleSimulation) {
-            this.isupClient = new AttackTesterHost("ISUP_CLIENT", simulatorHome, AttackTesterHost.AttackNode.ISUP_CLIENT, this);
-            this.isupServer = new AttackTesterHost("ISUP_SERVER", simulatorHome, AttackTesterHost.AttackNode.ISUP_SERVER, this);
+            //this.isupClient = new AttackTesterHost("ISUP_CLIENT", simulatorHome, AttackTesterHost.AttackNode.ISUP_CLIENT, this);
+            //this.isupServer = new AttackTesterHost("ISUP_SERVER", simulatorHome, AttackTesterHost.AttackNode.ISUP_SERVER, this);
+
+            switch(simpleAttackGoal) {
+                case "location:ati":
+                    break;
+                case "location:psi":
+                    break;
+                case "intercept:sms":
+                    break;
+
+                default:
+                    System.out.println("ERROR: Unknown simple attack goal: " + simpleAttackGoal);
+                    System.exit(-1);
+            }
+
         } else {
             this.mscAmscB = new AttackTesterHost("MSC_A_MSC_B", simulatorHome, AttackTesterHost.AttackNode.MSC_A_MSC_B, this);
             this.mscBmscA = new AttackTesterHost("MSC_B_MSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_B_MSC_A, this);
