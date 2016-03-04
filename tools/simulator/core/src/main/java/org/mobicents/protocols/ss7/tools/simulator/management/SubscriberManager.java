@@ -3,7 +3,6 @@ package org.mobicents.protocols.ss7.tools.simulator.management;
 import org.mobicents.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.mobicents.protocols.ss7.isup.message.parameter.LocationNumber;
 import org.mobicents.protocols.ss7.map.MAPParameterFactoryImpl;
-import org.mobicents.protocols.ss7.map.MAPProviderImpl;
 import org.mobicents.protocols.ss7.map.api.MAPException;
 import org.mobicents.protocols.ss7.map.api.MAPParameterFactory;
 import org.mobicents.protocols.ss7.map.api.primitives.*;
@@ -44,8 +43,8 @@ public class SubscriberManager {
         else
             subscriberId = 0;
 
-        IMSI imsi = this.mapParameterFactory.createIMSI(randomNumericalString(15));
-        ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, randomNumericalString(10));
+        IMSI imsi = this.mapParameterFactory.createIMSI(generateRandomNumericalString(15));
+        ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, generateRandomNumericalString(10));
         try {
             return new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo());
         } catch(MAPException ex) {
@@ -60,7 +59,7 @@ public class SubscriberManager {
         MAPExtensionContainer mapExtensionContainer = null;
         LocationInformationGPRS locationInformationGPRS = null;
         PSSubscriberState psSubscriberState = null;
-        IMEI imei = mapParameterFactory.createIMEI("24201" + randomNumericalString(10));
+        IMEI imei = mapParameterFactory.createIMEI("24201" + generateRandomNumericalString(10));
         MSClassmark2 msClassmark2 = null;
         GPRSMSClass gprsmsClass = null;
         MNPInfoRes mnpInfoRes = null;
@@ -138,7 +137,7 @@ public class SubscriberManager {
         return this.subscribers.size();
     }
 
-    private String randomNumericalString(int length) {
+    private String generateRandomNumericalString(int length) {
         char[] buffer = new char[length];
         char[] symbols;
 

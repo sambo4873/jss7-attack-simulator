@@ -19,6 +19,7 @@ public class Subscriber {
         this.subscriberId = subscriberId;
         this.imsi = imsi;
         this.msisdn = msisdn;
+        this.subscriberInfo = subscriberInfo;
     }
 
     public SubscriberInfo getSubscriberInfo() {
