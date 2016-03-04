@@ -299,7 +299,7 @@ public class AttackSimulationOrganizer implements Stoppable {
             //this.isupServer.execute();
 
             //this.isupClient.checkStore();
-            this.isupServer.checkStore();
+            //this.isupServer.checkStore();
         } else {
             this.mscAmscB.execute();
             this.mscBmscA.execute();
