@@ -16,6 +16,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     private Random rng;
     private boolean simpleSimulation;
 
+    private SimpleAttackGoal simpleAttackGoal;
+
     private SubscriberManager subscriberManager;
 
     private AttackTesterHost mscAmscB;
@@ -73,10 +75,13 @@ public class AttackSimulationOrganizer implements Stoppable {
 
             switch(simpleAttackGoal) {
                 case "location:ati":
+                    this.simpleAttackGoal = SimpleAttackGoal.LOCATION_ATI;
                     break;
                 case "location:psi":
+                    this.simpleAttackGoal = SimpleAttackGoal.LOCATION_PSI;
                     break;
                 case "intercept:sms":
+                    this.simpleAttackGoal = SimpleAttackGoal.INTERCEPT_SMS;
                     break;
 
                 default:
@@ -132,8 +137,20 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void startAttackSimulationHosts() {
         if (this.simpleSimulation) {
-            this.isupClient.start();
-            this.isupServer.start();
+            switch(this.simpleAttackGoal) {
+                case LOCATION_ATI:
+                    this.attackerBhlrA.start();
+                    this.hlrAattackerB.start();
+                    break;
+                case LOCATION_PSI:
+                    this.attackerBhlrA.start();
+                    this.hlrAattackerB.start();
+                    this.attackerBvlrA.start();
+                    this.vlrAattackerB.start();
+                    break;
+                case INTERCEPT_SMS:
+                    break;
+            }
         } else {
             this.mscAmscB.start();
             this.mscBmscA.start();
@@ -179,7 +196,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private boolean waitForM3UALinks() {
         while (true) {
             try {
-                Thread.sleep(100);
+                Thread.sleep(50);
                 if(!this.simpleSimulation) {
                     if (mscAmscB.getM3uaMan().getState().contains("ACTIVE") &&
                             mscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
@@ -196,9 +213,22 @@ public class AttackSimulationOrganizer implements Stoppable {
                             attackerBvlrA.getM3uaMan().getState().contains("ACTIVE"))
                         return true;
                 } else {
-                    if(this.isupClient.getM3uaMan().getState().contains("ACTIVE") &&
-                            this.isupServer.getM3uaMan().getState().contains("ACTIVE"))
-                        return true;
+                    switch(this.simpleAttackGoal) {
+                        case LOCATION_ATI:
+                            if(this.attackerBhlrA.getM3uaMan().getState().contains("ACTIVE"))
+                                return true;
+                            break;
+                        case LOCATION_PSI:
+                            if(this.attackerBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                                    this.attackerBvlrA.getM3uaMan().getState().contains("ACTIVE"))
+                                return true;
+                            break;
+                        case INTERCEPT_SMS:
+                            break;
+                    }
+                    //if (this.isupClient.getM3uaMan().getState().contains("ACTIVE") &&
+                    //        this.isupServer.getM3uaMan().getState().contains("ACTIVE"))
+                    //    return true;
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -208,30 +238,61 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private boolean testerHostsNeedQuit() {
-        if(simpleSimulation)
-            return this.isupClient.isNeedQuit() || this.isupServer.isNeedQuit();
-        else
+        if(simpleSimulation) {
+            switch(this.simpleAttackGoal) {
+                case LOCATION_ATI:
+                    return this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit();
+                case LOCATION_PSI:
+                    return this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit() ||
+                            this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit();
+                case INTERCEPT_SMS:
+                    break;
+            }
+            return false;
+            //return this.isupClient.isNeedQuit() || this.isupServer.isNeedQuit();
+        } else {
             return this.mscAmscB.isNeedQuit() || this.mscBmscA.isNeedQuit() ||
-                this.mscAhlrA.isNeedQuit() || this.hlrAmscA.isNeedQuit() ||
-                this.mscAsmscA.isNeedQuit() || this.smscAmscA.isNeedQuit() ||
-                this.mscAvlrA.isNeedQuit() || this.vlrAmscA.isNeedQuit() ||
-                this.smscAhlrA.isNeedQuit() || this.hlrAsmscA.isNeedQuit() ||
-                this.hlrAvlrA.isNeedQuit() || this.vlrAhlrA.isNeedQuit() ||
-                this.sgsnAhlrA.isNeedQuit() || this.hlrAsgsnA.isNeedQuit() ||
-                this.gsmscfAhlrA.isNeedQuit() || this.hlrAgsmscfA.isNeedQuit() ||
-                this.gsmscfAvlrA.isNeedQuit() || this.vlrAgsmscfA.isNeedQuit() ||
-                this.attackerBmscA.isNeedQuit() || this.mscAattackerB.isNeedQuit() ||
-                this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit() ||
-                this.attackerBsmscA.isNeedQuit() || this.smscAattackerB.isNeedQuit() ||
-                this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit();
+                    this.mscAhlrA.isNeedQuit() || this.hlrAmscA.isNeedQuit() ||
+                    this.mscAsmscA.isNeedQuit() || this.smscAmscA.isNeedQuit() ||
+                    this.mscAvlrA.isNeedQuit() || this.vlrAmscA.isNeedQuit() ||
+                    this.smscAhlrA.isNeedQuit() || this.hlrAsmscA.isNeedQuit() ||
+                    this.hlrAvlrA.isNeedQuit() || this.vlrAhlrA.isNeedQuit() ||
+                    this.sgsnAhlrA.isNeedQuit() || this.hlrAsgsnA.isNeedQuit() ||
+                    this.gsmscfAhlrA.isNeedQuit() || this.hlrAgsmscfA.isNeedQuit() ||
+                    this.gsmscfAvlrA.isNeedQuit() || this.vlrAgsmscfA.isNeedQuit() ||
+                    this.attackerBmscA.isNeedQuit() || this.mscAattackerB.isNeedQuit() ||
+                    this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit() ||
+                    this.attackerBsmscA.isNeedQuit() || this.smscAattackerB.isNeedQuit() ||
+                    this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit();
+        }
     }
 
     private void testerHostsExecuteCheckStore() {
         if (simpleSimulation) {
-            this.isupClient.execute();
-            this.isupServer.execute();
+            switch(this.simpleAttackGoal) {
+                case LOCATION_ATI:
+                    this.attackerBhlrA.execute();
+                    this.hlrAattackerB.execute();
+                    this.attackerBhlrA.checkStore();
+                    this.hlrAattackerB.checkStore();
+                    break;
+                case LOCATION_PSI:
+                    this.attackerBhlrA.execute();
+                    this.hlrAattackerB.execute();
+                    this.attackerBvlrA.execute();
+                    this.vlrAattackerB.execute();
+                    this.attackerBhlrA.checkStore();
+                    this.hlrAattackerB.checkStore();
+                    this.attackerBvlrA.checkStore();
+                    this.vlrAattackerB.checkStore();
+                    break;
+                case INTERCEPT_SMS:
+                    break;
+            }
+            //this.isupClient.execute();
+            //this.isupServer.execute();
 
-            this.isupClient.checkStore();
+            //this.isupClient.checkStore();
             this.isupServer.checkStore();
         } else {
             this.mscAmscB.execute();
@@ -255,7 +316,7 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.attackerBmscA.execute();
             this.mscAattackerB.execute();
             this.attackerBhlrA.execute();
-            this.vlrAattackerB.execute();
+            this.hlrAattackerB.execute();
             this.attackerBsmscA.execute();
             this.smscAattackerB.execute();
             this.attackerBvlrA.execute();
@@ -296,7 +357,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         if (!waitForM3UALinks())
             return;
 
-        int sleepTime = 100;
+        int sleepTime = 50;
 
         int msgNum = 0;
 
@@ -313,12 +374,21 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
 
             this.testerHostsExecuteCheckStore();
-            this.generateTraffic();
 
-            if (simpleSimulation)
-                this.sendRandomIsupMessage(msgNum);
-            else
-                this.sendRandomMessage(msgNum);
+            if(simpleSimulation) {
+                switch (this.simpleAttackGoal) {
+                    case LOCATION_ATI:
+                        this.attackLocationAti();
+                        break;
+                    case LOCATION_PSI:
+                        this.attackLocationPsi();
+                        break;
+                    case INTERCEPT_SMS:
+                        break;
+                }
+            } else {
+                this.generateTraffic();
+            }
 
             msgNum++;
         }
@@ -412,7 +482,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void attackLocationAti() {
-        this.attackerBhlrA.getTestAttackClient().performATI("98979695");
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.attackerBhlrA.getTestAttackClient().performATI(subscriber.getMsisdn().getAddress());
 
         while(!this.attackerBhlrA.gotAtiResponse()) {
             try {
@@ -667,5 +738,11 @@ public class AttackSimulationOrganizer implements Stoppable {
     @Override
     public String getState() {
         return null;
+    }
+
+    public enum SimpleAttackGoal {
+        LOCATION_ATI,
+        LOCATION_PSI,
+        INTERCEPT_SMS,
     }
 }
