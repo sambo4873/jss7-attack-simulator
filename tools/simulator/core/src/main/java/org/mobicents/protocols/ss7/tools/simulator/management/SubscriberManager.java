@@ -106,7 +106,6 @@ public class SubscriberManager {
                 userCSGInformation);
     }
 
-
     public void addSubscriber(Subscriber subscriber) {
         this.subscribers.add(subscriber);
     }
