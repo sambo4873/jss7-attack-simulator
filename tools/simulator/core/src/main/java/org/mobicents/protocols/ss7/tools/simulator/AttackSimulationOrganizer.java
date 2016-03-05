@@ -551,7 +551,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 37;
+        int numberOfAvailableMessages = 36;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
@@ -603,64 +603,64 @@ public class AttackSimulationOrganizer implements Stoppable {
             case 15:
                 this.performSendIMSI();
                 break;
-            case 17:
+            case 16:
                 this.performSendRoutingInformation();
                 break;
-            case 18:
+            case 17:
                 this.performProvideRoamingNumber();
                 break;
-            case 19:
+            case 18:
                 this.performRegisterSS();
                 break;
-            case 20:
+            case 19:
                 this.performEraseSS();
                 break;
-            case 21:
+            case 20:
                 this.performActivateSS();
                 break;
-            case 22:
+            case 21:
                 this.performDeactivateSS();
                 break;
-            case 23:
+            case 22:
                 this.performInterrogateSS();
                 break;
-            case 24:
+            case 23:
                 this.performRegisterPassword();
                 break;
-            case 25:
+            case 24:
                 this.performGetPassword();
                 break;
-            case 26:
+            case 25:
                 this.performProcessUnstructuredSSRequest();
                 break;
-            case 27:
+            case 26:
                 this.performUnstructuredSSRequest();
                 break;
-            case 28:
+            case 27:
                 this.performUnstructuredSSNotify();
                 break;
-            case 29:
+            case 28:
                 this.performSendRoutingInfoForSM();
                 break;
-            case 30:
+            case 29:
                 this.performMoForwardSM();
                 break;
-            case 31:
+            case 30:
                 this.performReportSMDeliveryStatus();
                 break;
-            case 32:
+            case 31:
                 this.performReadyForSM();
                 break;
-            case 33:
+            case 32:
                 this.performAlertServiceCentre();
                 break;
-            case 34:
+            case 33:
                 this.performInformServiceCentre();
                 break;
-            case 35:
+            case 34:
                 this.performMtForwardSM();
                 break;
-            case 36:
+            case 35:
                 this.performSendRoutingInfoForGPRS();
                 break;
 
