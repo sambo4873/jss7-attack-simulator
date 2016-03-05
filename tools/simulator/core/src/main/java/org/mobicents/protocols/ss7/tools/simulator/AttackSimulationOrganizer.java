@@ -15,10 +15,12 @@ import java.util.Random;
  * @author Kristoffer Jensen
  */
 public class AttackSimulationOrganizer implements Stoppable {
-    private Random rng;
+    private Random random;
     private boolean simpleSimulation;
 
     private SimpleAttackGoal simpleAttackGoal;
+
+    private int chanceOfAttack;
 
     private SubscriberManager subscriberManager;
 
@@ -27,7 +29,6 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private AttackTesterHost mscAhlrA;
     private AttackTesterHost hlrAmscA;
-
 
     private AttackTesterHost mscAsmscA;
     private AttackTesterHost smscAmscA;
@@ -65,9 +66,10 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost isupClient;
     private AttackTesterHost isupServer;
 
-    public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers) {
-        this.rng = new Random(System.currentTimeMillis());
+    public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers, int chanceOfAttack) {
+        this.random = new Random(System.currentTimeMillis());
         this.simpleSimulation = simpleSimulation;
+        this.chanceOfAttack = chanceOfAttack;
         this.subscriberManager = new SubscriberManager();
         this.subscriberManager.createRandomSubscribers(numberOfSubscribers);
 
@@ -475,7 +477,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while (true) {
             try {
-                sleepTime = this.rng.nextInt((1000 - 100) + 1) + 100;
+                sleepTime = this.random.nextInt((1000 - 100) + 1) + 100;
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -508,8 +510,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void generateTraffic() {
-        double attackChance = 1.0;
-        boolean generateNoise = this.rng.nextInt(10) >= attackChance;
+        boolean generateNoise = this.random.nextInt(100) >= this.chanceOfAttack;
 
         if(generateNoise)
             this.generateNoise();
@@ -518,11 +519,24 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void generateNoise() {
-
+       this.sendRandomMessage();
     }
 
     private void generateAttack() {
+        int numberOfAttacks = 3;
+        int randomAttack = this.random.nextInt(numberOfAttacks);
 
+        switch(randomAttack) {
+            case 0:
+                this.attackLocationAti();
+                break;
+            case 1:
+                this.attackLocationPsi();
+                break;
+            case 2:
+                this.attackInterceptSms();
+                break;
+        }
     }
 
     private void modifyCallingPartyAddressDigits(AttackTesterHost attackTesterHost, String cgGT) {
@@ -536,62 +550,123 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    private void sendRandomMessage(int num) {
+    private void sendRandomMessage() {
+        int numberOfAvailableMessages = 37;
+        int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
-    //    if (num == 0)
-    //        this.attackLocationAti();
-
-        switch (num) {
+        switch (randomMessage) {
             case 0:
-                //this.mscAmscB.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 1:
-                //this.mscAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 2:
-                //this.mscAsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 3:
-                //this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 4:
-                //this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 5:
-                //this.attackerBmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 6:
-                //this.attackerBhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 7:
-                //this.attackerBsmscA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 8:
-                //this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 9:
-                //this.hlrAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 10:
-                //this.sgsnAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 11:
-                //this.gsmscfAhlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 12:
-                //this.gsmscfAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest();
-                break;
-            case 13:
                 this.performMoSMS();
                 break;
-            case 14:
+            case 1:
                 this.performMtSMS();
+                break;
+            case 2:
+                this.performUpdateLocation();
+                break;
+            case 3:
+                this.performCancelLocation();
+                break;
+            case 4:
+                this.performSendIdentification();
+                break;
+            case 5:
+                this.performPurgeMS();
+                break;
+            case 6:
+                this.performUpdateGPRSLocation();
+                break;
+            case 7:
+                this.performCheckIMEI();
+                break;
+            case 8:
+                this.performInsertSubscriberData();
+                break;
+            case 9:
+                this.performDeleteSubscriberData();
+                break;
+            case 10:
+                this.performForwardCheckSSIndication();
+                break;
+            case 11:
+                this.performRestoreData();
+                break;
+            case 12:
+                this.performAnyTimeInterrogation();
+                break;
+            case 13:
+                this.performProvideSubscriberInfo();
+                break;
+            case 14:
+                this.performActivateTraceMode();
+                break;
+            case 15:
+                this.performSendIMSI();
+                break;
+            case 17:
+                this.performSendRoutingInformation();
+                break;
+            case 18:
+                this.performProvideRoamingNumber();
+                break;
+            case 19:
+                this.performRegisterSS();
+                break;
+            case 20:
+                this.performEraseSS();
+                break;
+            case 21:
+                this.performActivateSS();
+                break;
+            case 22:
+                this.performDeactivateSS();
+                break;
+            case 23:
+                this.performInterrogateSS();
+                break;
+            case 24:
+                this.performRegisterPassword();
+                break;
+            case 25:
+                this.performGetPassword();
+                break;
+            case 26:
+                this.performProcessUnstructuredSSRequest();
+                break;
+            case 27:
+                this.performUnstructuredSSRequest();
+                break;
+            case 28:
+                this.performUnstructuredSSNotify();
+                break;
+            case 29:
+                this.performSendRoutingInfoForSM();
+                break;
+            case 30:
+                this.performMoForwardSM();
+                break;
+            case 31:
+                this.performReportSMDeliveryStatus();
+                break;
+            case 32:
+                this.performReadyForSM();
+                break;
+            case 33:
+                this.performAlertServiceCentre();
+                break;
+            case 34:
+                this.performInformServiceCentre();
+                break;
+            case 35:
+                this.performMtForwardSM();
+                break;
+            case 36:
+                this.performSendRoutingInfoForGPRS();
                 break;
 
             default:
                 break;
         }
-
     }
 
     private void attackLocationAti() {
@@ -618,7 +693,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(),
                 this.hlrAattackerB.getTestAttackServer().getServiceCenterAddress());
 
-        while(!this.attackerBhlrA.gotSRIForSMResponse()){
+        while(!this.attackerBhlrA.gotSRIForSMResponse()) {
             try{
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -635,7 +710,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.attackerBvlrA.getConfigurationData().getMapConfigurationData().setRemoteAddressDigits(victimVlrAddress);
         this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(victimImsi);
 
-        while(!this.attackerBvlrA.gotPSIResponse()){
+        while(!this.attackerBvlrA.gotPSIResponse()) {
             try{
                 Thread.sleep(50);
             } catch (InterruptedException e) {
@@ -685,160 +760,160 @@ public class AttackSimulationOrganizer implements Stoppable {
                 hlrAsmscA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
     }
 
-    private void updateLocation() {
+    private void performUpdateLocation() {
         this.vlrAhlrA.getTestAttackServer().performUpdateLocation();
     }
 
-    private void cancelLocation() {
+    private void performCancelLocation() {
         this.hlrAvlrA.getTestAttackClient().performCancelLocation();
     }
 
-    private void sendIdentification() {
+    private void performSendIdentification() {
         //this.vlrAvlrB.getTestAttackClient().performSendIdentification();
         //this.vlrBvlrA.getTestAttackServer().performSendIdentification();
     }
 
-    private void purgeMS() {
+    private void performPurgeMS() {
         this.vlrAhlrA.getTestAttackServer().performPurgeMS();
     }
 
-    private void updateGPRSLocation() {
+    private void performUpdateGPRSLocation() {
         //this.sgsnAhlrA.getTestAttackClient().performUpdateGPRSLocation();
     }
 
-    private void checkIMEI() {
+    private void performCheckIMEI() {
         //this.vlrAmscA.getTestAttackServer().performCheckIMEI();
         //this.mscAeirA.getTestAttackClient().performCheckIMEI();
         //this.sgsnAeirA.getTestAttackClient().performCheckIMEI();
     }
 
-    private void insertSubscriberData() {
+    private void performInsertSubscriberData() {
         //this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
     }
 
-    private void deleteSubscriberData() {
+    private void performDeleteSubscriberData() {
         //this.hlrAvlrA.getTestAttackClient().performDeleteSubscriberData();
     }
 
-    private void forwardCheckSSIndication() {
+    private void performForwardCheckSSIndication() {
         //this.hlrAmscA.getTestAttackServer().performForwardCheckSSIndication();
     }
 
-    private void restoreData() {
+    private void performRestoreData() {
         //this.vlrAhlrA.getTestAttackServer().performRestoreData();
     }
 
-    private void anyTimeInterrogation() {
+    private void performAnyTimeInterrogation() {
         //this.gsmscfAhlrA.getTestAttackClient().performAnyTimeInterrogation();
     }
 
-    private void provideSubscriberInfo() {
+    private void performProvideSubscriberInfo() {
         this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(new IMSIImpl("123"));
     }
 
-    private void activateTraceMode() {
+    private void performActivateTraceMode() {
         //this.hlrAvlrA.getTestAttackServer().performActivateTraceMode();
     }
 
-    private void sendIMSI() {
+    private void performSendIMSI() {
 
     }
 
-    private void sendRoutingInformation() {
+    private void performSendRoutingInformation() {
         //this.mscAhlrA.getTestAttackClient().performSendRoutingInformation();
     }
 
-    private void provideRoamingNumber() {
+    private void performProvideRoamingNumber() {
         //this.hlrAvlrA.getTestAttackClient().performProvideRoamingNumber();
     }
 
-    private void registerSS() {
+    private void performRegisterSS() {
         //this.mscAvlrA.getTestAttackClient().performRegisterSS();
         //this.vlrAhlrA.getTestAttackServer().performRegisterSS();
     }
 
-    private void eraseSS() {
+    private void performEraseSS() {
         //this.mscAvlrA.getTestAttackClient().performEraseSS();
         //this.vlrAhlrA.getTestAttackServer().performEraseSS();
     }
 
-    private void activateSS() {
+    private void performActivateSS() {
         //this.mscAvlrA.getTestAttackClient().performActivateSS();
         //this.vlrAhlrA.getTestAttackServer().performActivateSS();
     }
 
-    private void deactivateSS() {
+    private void performDeactivateSS() {
         //this.mscAvlrA.getTestAttackClient().performDeactivateSS();
         //this.vlrAhlrA.getTestAttackServer().performDeactivateSS();
     }
 
-    private void interrogateSS() {
+    private void performInterrogateSS() {
         //this.mscAvlrA.getTestAttackClient().performInterrogateSS();
         //this.vlrAhlrA.getTestAttackServer().performInterrogateSS();
     }
 
-    private void registerPassword() {
+    private void performRegisterPassword() {
         //this.mscAvlrA.getTestAttackClient().performRegisterSS();
         //this.vlrAhlrA.getTestAttackServer().performRegisterSS();
     }
 
-    private void getPassword() {
+    private void performGetPassword() {
         //this.hlrAvlrA.getTestAttackClient().performGetPassword();
         //this.vlrAmscA.getTestAttackServer().performGetPassword();
     }
 
-    private void processUnstructuredSSRequest() {
+    private void performProcessUnstructuredSSRequest() {
         //this.mscAvlrA.getTestAttackClient().performProcessUnstructuredSSRequest();
         //this.vlrAhlrA.getTestAttackClient().performProcessUnstructuredSSRequest();
         //this.vlrAgsmscfA.getTestAttackClient().performProcessUnstructuredSSRequest();
     }
 
-    private void unstructuredSSRequest() {
+    private void performUnstructuredSSRequest() {
         //this.hlrAvlrA.getTestAttackClient().performUnstructuredSSRequest();
         //this.gsmscfAvlrA.getTestAttackClient().performUnstructuredSSRequest();
         //this.vlrAmscA.getTestAttackClient().performUnstructuredSSRequest();
     }
 
-    private void unstructuredSSNotify () {
+    private void performUnstructuredSSNotify () {
         //this.hlrAvlrA.getTestAttackClient().performUnstructuredSSRequest();
         //this.gsmscfAvlrA.getTestAttackClient().performUnstructuredSSRequest();
         //this.vlrAmscA.getTestAttackClient().performUnstructuredSSRequest();
     }
 
-    private void sendRoutingInfoForSM() {
+    private void performSendRoutingInfoForSM() {
         //this.mscAhlrA.getTestAttackClient().performSendRoutingInfoForSM("", "");
         //this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM("", "");
     }
 
-    private void moForwardSM() {
+    private void performMoForwardSM() {
         //this.mscAsmscA.getTestAttackClient().performMoForwardSM("", "", "");
     }
 
-    private void reportSMDeliveryStatus() {
+    private void performReportSMDeliveryStatus() {
         //this.mscAhlrA.getTestAttackClient().performReportSMDeliveryStatus();
     }
 
-    private void readyForSM() {
+    private void performReadyForSM() {
         //this.mscAvlrA.getTestAttackClient().performReadyForSM();
         //this.vlrAhlrA.getTestAttackServer().performReadyForSM();
         //this.sgsnAhlrA.getTestAttackClient().performReadyForSM();
         //this.smscAhlrA.getTestAttackClient().performReadyForSM();
     }
 
-    private void alertServiceCentre() {
+    private void performAlertServiceCentre() {
         //this.hlrAmscA.getTestAttackServer().performAlertServiceCentre();
     }
 
-    private void informServiceCentre() {
+    private void performInformServiceCentre() {
         //this.hlrAmscA.getTestAttackServer().performInformServiceCentre();
     }
 
-    private void mtForwardSM() {
+    private void performMtForwardSM() {
         //this.mscAmscB.getTestAttackClient().performMtForwardSM();
         //this.mscAsgsnA.getTestAttackClient().performMtForwardSM();
     }
 
-    private void sendRoutingInfoForGPRS() {
+    private void performSendRoutingInfoForGPRS() {
         //this.sgsnAhlrA.getTestAttackClient().performSendRoutingInfoForGPRS();
     }
 

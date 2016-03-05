@@ -183,15 +183,15 @@ public class MainCore {
         return sim_home;
     }
 
-    public void startAttackSimulation(boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers) throws Throwable {
+    public void startAttackSimulation(boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers, int chanceOfAttack) throws Throwable {
         System.out.println("Application has been loaded...");
         System.out.println("Loading simulation hosts...");
 
         AttackSimulationOrganizer attackSimulationOrganizer;
         if(simpleSimulation) {
-            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, 10);
+            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, 10, chanceOfAttack);
         } else {
-            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, numberOfSubscribers);
+            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, numberOfSubscribers, chanceOfAttack);
         }
 
         System.out.println("Simulation hosts loaded, starting simulation...");

@@ -62,6 +62,7 @@ public class Main {
     private String attack_command = null;
     private String simple_attack_goal = null;
     private int complexNumSubs = 0;
+    private int chanceOfAttack = 0;
 
     public static void main(String[] args) throws Throwable {
         String homeDir = getHomeDir(args);
@@ -94,7 +95,7 @@ public class Main {
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
         longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 0);
 
-        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:s:m:", longopts);
+        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:c:s:m:", longopts);
         g.setOpterr(false); // We'll do our own error handling
         //
         while ((c = g.getopt()) != -1) {
@@ -156,6 +157,12 @@ public class Main {
                         System.out.println("Invalid command " + arg);
                         this.genericHelp();
                     }
+                    break;
+                case 'c':
+                    //Change of generating an attack.
+                    arg = g.getOptarg();
+                    System.out.println("Passed " + Character.getNumericValue(c) + " value: " + arg);
+                    this.chanceOfAttack = Integer.valueOf(arg);
                     break;
                 case 'm':
                     //Attack goal to perform, in cooperation with -a simple
@@ -248,6 +255,7 @@ public class Main {
         System.out.println();
         System.out.println("options:");
         System.out.println("    -a, Attack simulation type used. Can either be simple or complex.");
+        System.out.println("    -c, Distribution of attacks in simulated traffic. Integer from 0-50");
         System.out.println("    -m, Simple attack simulation goal. Specifies which attack should be launched. Can only be used with -a simple.");
         System.out.println("    -s, Specifies the number of subscribers that should be simulated as connected to the network. Can only be used with -a complex.");
         System.out.println();
@@ -320,15 +328,17 @@ public class Main {
             MainCore mainCore = new MainCore();
             if (this.attack_command.equals("simple")) {
                 if(this.simple_attack_goal != null && !this.simple_attack_goal.isEmpty()) {
-                    mainCore.startAttackSimulation(true, simple_attack_goal, this.complexNumSubs);
+                    mainCore.startAttackSimulation(true, simple_attack_goal, 0, 0);
                 } else {
                     System.out.println("Error: Option m not specified.");
                     this.attackHelp();
                 }
             } else if (this.attack_command.equals("complex")) {
-                if(this.complexNumSubs > 0) {
-                    mainCore.startAttackSimulation(false, simple_attack_goal, this.complexNumSubs);
-                } else {
+                if (this.complexNumSubs > 0) {
+                    mainCore.startAttackSimulation(false, null, this.complexNumSubs, this.chanceOfAttack);
+                } else if (this.chanceOfAttack < 0 || this.chanceOfAttack > 100){
+                    mainCore.startAttackSimulation(false, null, this.complexNumSubs, this.chanceOfAttack);
+                }else {
                     System.out.println("Error: Option s not specified.");
                     this.attackHelp();
                 }
