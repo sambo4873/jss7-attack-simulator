@@ -34,10 +34,7 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.locationManagement.*
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeRequest_Mobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.*;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.DeleteSubscriberDataResponse;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataRequest;
-import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.InsertSubscriberDataResponse;
+import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.*;
 import org.mobicents.protocols.ss7.map.api.service.oam.*;
 import org.mobicents.protocols.ss7.map.api.service.pdpContextActivation.MAPServicePdpContextActivationListener;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
@@ -1427,12 +1424,11 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             needSendClose = true;
     }
 
-    public String performUpdateLocationRequest() {
-
-        return doUpdateLocationRequest();
+    public String performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber) {
+        return doUpdateLocationRequest(imsi, mscNumber, vlrNumber);
     }
 
-    public String doUpdateLocationRequest() {
+    public String doUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
 
         MAPApplicationContextVersion vers = MAPApplicationContextVersion.version3;
@@ -1449,11 +1445,43 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                             this.mapMan.createDestAddress(),
                             null);
 
+            ISDNAddressString roamingNumber = null;
+            LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[]{11, 12, 13, 14});
+            MAPExtensionContainer mapExtensionContainer = null;
+            VLRCapability vlrCapability = getVLRCapability(mapProvider.getMAPParameterFactory());
+            boolean informPreviousNetworkEntity = false;
+            boolean csLCSNotSupportedByUE = false;
+            GSNAddress gsnAddress = null;
+            ADDInfo addInfo = null;
+            PagingArea pagingArea = null;
+            boolean skipSubscriberAreaUpdate = false;
+            boolean restorationIndicator = false;
+
+            curDialog.addUpdateLocationRequest(imsi, mscNumber, roamingNumber, vlrNumber, lmsi, mapExtensionContainer, vlrCapability, informPreviousNetworkEntity, csLCSNotSupportedByUE, gsnAddress, addInfo, pagingArea, skipSubscriberAreaUpdate, restorationIndicator);
+            curDialog.send();
         } catch (MAPException ex) {
             return "Exception when sending UpdateLocationRequest :" + ex.toString();
         }
-
         return "UpdateLocationRequest has been sent";
+    }
+
+    private VLRCapability getVLRCapability(MAPParameterFactory mapParameterFactory) {
+        SupportedCamelPhases supportedCamelPhases = mapParameterFactory.createSupportedCamelPhases(true, true, true, true);
+        MAPExtensionContainer mapExtensionContainer = null;
+        boolean solsaSupportIndicator = false;
+        ISTSupportIndicator istSupportIndicator = ISTSupportIndicator.basicISTSupported;
+        SuperChargerInfo superChargerInfo = mapParameterFactory.createSuperChargerInfo(true);
+        boolean longFtnSupported = false;
+        SupportedLCSCapabilitySets supportedLCSCapabilitySets = mapParameterFactory.createSupportedLCSCapabilitySets(true, true, true, true, true);
+        OfferedCamel4CSIs offeredCamel4CSIs = mapParameterFactory.createOfferedCamel4CSIs(true, true, true, true, true, true, true);
+        SupportedRATTypes supportedRATTypes = mapParameterFactory.createSupportedRATTypes(true, true, true, true, true);
+        boolean longGroupIDSupported = false;
+        boolean mtRoamingForwardingSupported = true;
+
+        return mapParameterFactory.createVlrCapability(supportedCamelPhases, mapExtensionContainer,
+                solsaSupportIndicator, istSupportIndicator, superChargerInfo, longFtnSupported,
+                supportedLCSCapabilitySets, offeredCamel4CSIs, supportedRATTypes, longGroupIDSupported,
+                mtRoamingForwardingSupported);
     }
 
     @Override

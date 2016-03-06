@@ -728,17 +728,31 @@ public class AttackSimulationOrganizer implements Stoppable {
         //Location information aquired.
     }
 
-    private String attackInterceptSms() {
-        String response;
+    private void attackInterceptSms() {
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+
+        this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
+
+        while(!this.smscAhlrA.gotSRIForSMResponse()) {
+            try {
+                Thread.sleep(50);
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
+
+        SendRoutingInfoForSMResponse sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+        this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI().getData(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress());
+
+
 
         //Update subscriber info.
-        response = this.vlrAhlrA.getTestAttackClient().performUpdateLocationRequest();
+        this.vlrAhlrA.getTestAttackClient().performUpdateLocationRequest(subscriber.getImsi(), null, null);
 
         //Introduce a delay before sending an sms.
-        response = this.smscAmscA.getTestAttackServer().performSRIForSM("");
-        response = this.smscAmscA.getTestAttackServer().performMtForwardSM("", "", "", "");
-
-        return response;
+        this.smscAmscA.getTestAttackServer().performSRIForSM("");
+        this.smscAmscA.getTestAttackServer().performMtForwardSM("", "", "", "");
     }
 
     private void performMoSMS() {
