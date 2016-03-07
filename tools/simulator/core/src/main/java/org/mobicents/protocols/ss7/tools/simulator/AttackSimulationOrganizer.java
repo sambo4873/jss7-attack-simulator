@@ -116,6 +116,12 @@ public class AttackSimulationOrganizer implements Stoppable {
                     break;
                 case "intercept:sms":
                     this.simpleAttackGoal = SimpleAttackGoal.INTERCEPT_SMS;
+                    this.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_HLR_A, this);
+                    this.hlrAattackerB = new AttackTesterHost("HLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_ATTACKER_B, this);
+                    this.smscAhlrA = new AttackTesterHost("SMSC_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_HLR_A, this);
+                    this.hlrAsmscA = new AttackTesterHost("HLR_A_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_SMSC_A, this);
+                    this.mscAsmscA = new AttackTesterHost("MSC_A_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_SMSC_A, this);
+                    this.smscAmscA = new AttackTesterHost("SMSC_A_MSC_A", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_MSC_A, this);
                     break;
 
                 default:
@@ -287,6 +293,12 @@ public class AttackSimulationOrganizer implements Stoppable {
                     this.vlrAattackerB.start();
                     break;
                 case INTERCEPT_SMS:
+                    this.attackerBhlrA.start();
+                    this.hlrAattackerB.start();
+                    this.smscAhlrA.start();
+                    this.hlrAsmscA.start();
+                    this.mscAsmscA.start();
+                    this.smscAmscA.start();
                     break;
             }
         } else {
@@ -362,6 +374,10 @@ public class AttackSimulationOrganizer implements Stoppable {
                                 return true;
                             break;
                         case INTERCEPT_SMS:
+                            if(this.attackerBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                                    this.smscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                                    this.mscAsmscA.getM3uaMan().getState().contains("ACTIVE"))
+                                return true;
                             break;
                     }
                     //if (this.isupClient.getM3uaMan().getState().contains("ACTIVE") &&
@@ -384,7 +400,9 @@ public class AttackSimulationOrganizer implements Stoppable {
                     return this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit() ||
                             this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit();
                 case INTERCEPT_SMS:
-                    break;
+                    return this.attackerBhlrA.isNeedQuit() || this.hlrAattackerB.isNeedQuit() ||
+                            this.smscAhlrA.isNeedQuit() || this.hlrAsmscA.isNeedQuit() ||
+                            this.mscAsmscA.isNeedQuit() || this.smscAmscA.isNeedQuit();
             }
             return false;
             //return this.isupClient.isNeedQuit() || this.isupServer.isNeedQuit();
@@ -425,6 +443,19 @@ public class AttackSimulationOrganizer implements Stoppable {
                     this.vlrAattackerB.checkStore();
                     break;
                 case INTERCEPT_SMS:
+                    this.attackerBhlrA.execute();
+                    this.hlrAattackerB.execute();
+                    this.smscAhlrA.execute();
+                    this.hlrAsmscA.execute();
+                    this.mscAsmscA.execute();
+                    this.smscAmscA.execute();
+
+                    this.attackerBhlrA.checkStore();
+                    this.hlrAattackerB.checkStore();
+                    this.smscAhlrA.checkStore();
+                    this.hlrAsmscA.checkStore();
+                    this.mscAsmscA.checkStore();
+                    this.smscAmscA.checkStore();
                     break;
             }
             //this.isupClient.execute();
@@ -523,6 +554,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                         this.attackLocationPsi();
                         break;
                     case INTERCEPT_SMS:
+                        this.attackInterceptSms();
                         break;
                 }
                 break;
