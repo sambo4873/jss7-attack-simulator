@@ -787,8 +787,8 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
         Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(sendRoutingInfoForSMInd.getMsisdn());
         IMSI imsi = subscriber.getImsi();
-        ISDNAddressString networkNodeNumber = this.testerHost.getAttackSimulationOrganizer().getDefaultVlrAddress();
-        AdditionalNumber additionalNumber = mapProvider.getMAPParameterFactory().createAdditionalNumberMscNumber(this.testerHost.getAttackSimulationOrganizer().getDefaultMscAddress());
+        ISDNAddressString networkNodeNumber = subscriber.getCurrentVlrNumber();
+        AdditionalNumber additionalNumber = mapProvider.getMAPParameterFactory().createAdditionalNumberMscNumber(subscriber.getCurrentMscNumber());
 
         try {
             LocationInfoWithLMSI li = mapProvider.getMAPParameterFactory().createLocationInfoWithLMSI(networkNodeNumber, null, null, false, additionalNumber);
