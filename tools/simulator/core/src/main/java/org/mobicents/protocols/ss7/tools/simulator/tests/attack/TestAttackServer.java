@@ -13,6 +13,7 @@ import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
 import org.mobicents.protocols.ss7.map.api.primitives.*;
 import org.mobicents.protocols.ss7.map.api.service.callhandling.*;
+import org.mobicents.protocols.ss7.map.api.service.lsm.AdditionalNumber;
 import org.mobicents.protocols.ss7.map.api.service.mobility.MAPDialogMobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.MAPServiceMobilityListener;
 import org.mobicents.protocols.ss7.map.api.service.mobility.authentication.*;
@@ -786,13 +787,11 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
         Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(sendRoutingInfoForSMInd.getMsisdn());
         IMSI imsi = subscriber.getImsi();
-        ISDNAddressString networkNodeNumber = mapProvider.getMAPParameterFactory().createISDNAddressString(
-                this.testerHost.getAttackSimulationOrganizer().getVlrAattackerB().getConfigurationData().getTestAttackServerConfigurationData().getAddressNature(),
-                this.testerHost.getAttackSimulationOrganizer().getVlrAattackerB().getConfigurationData().getTestAttackServerConfigurationData().getNumberingPlan(),
-                this.testerHost.getAttackSimulationOrganizer().getVlrAattackerB().getSccpMan().getCallingPartyAddressDigits());
+        ISDNAddressString networkNodeNumber = this.testerHost.getAttackSimulationOrganizer().getDefaultVlrAddress();
+        AdditionalNumber additionalNumber = mapProvider.getMAPParameterFactory().createAdditionalNumberMscNumber(this.testerHost.getAttackSimulationOrganizer().getDefaultMscAddress());
 
         try {
-            LocationInfoWithLMSI li = mapProvider.getMAPParameterFactory().createLocationInfoWithLMSI(networkNodeNumber, null, null, false, null);
+            LocationInfoWithLMSI li = mapProvider.getMAPParameterFactory().createLocationInfoWithLMSI(networkNodeNumber, null, null, false, additionalNumber);
             curDialog.addSendRoutingInfoForSMResponse(invokeId, imsi, li, null, null);
 
             this.needSendClose = true;

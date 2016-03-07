@@ -29,6 +29,10 @@ public class AttackSimulationOrganizer implements Stoppable {
     private int chanceOfAttack;
     private int numberOfSubscribers;
 
+    private ISDNAddressString defaultMscAddress;
+    private ISDNAddressString defaultHlrAddress;
+    private ISDNAddressString defaultVlrAddress;
+
     private SubscriberManager subscriberManager;
 
     private AttackTesterHost mscAmscB;
@@ -81,15 +85,15 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         MAPParameterFactory mapParameterFactory = new MAPParameterFactoryImpl();
 
-        ISDNAddressString defaultMscAddress = mapParameterFactory.createISDNAddressString(
+        this.defaultMscAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
                 AttackConfigurationData.MSC_A_NUMBER);
-        ISDNAddressString defaultHlrAddress = mapParameterFactory.createISDNAddressString(
+        this.defaultHlrAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
                 AttackConfigurationData.HLR_A_NUMBER);
-        ISDNAddressString defaultVlrAddress = mapParameterFactory.createISDNAddressString(
+        this.defaultVlrAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
                 AttackConfigurationData.VLR_A_NUMBER);
@@ -169,6 +173,18 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.attackerBvlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_VLR_A, this);
             this.vlrAattackerB = new AttackTesterHost("VLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_ATTACKER_B, this);
         }
+    }
+
+    public ISDNAddressString getDefaultMscAddress() {
+        return defaultMscAddress;
+    }
+
+    public ISDNAddressString getDefaultHlrAddress() {
+        return defaultHlrAddress;
+    }
+
+    public ISDNAddressString getDefaultVlrAddress() {
+        return defaultVlrAddress;
     }
 
     public AttackTesterHost getMscAmscB() {
