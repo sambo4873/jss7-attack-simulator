@@ -1455,6 +1455,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
             curDialog.addUpdateLocationRequest(imsi, mscNumber, roamingNumber, vlrNumber, lmsi, mapExtensionContainer, vlrCapability, informPreviousNetworkEntity, csLCSNotSupportedByUE, gsnAddress, addInfo, pagingArea, skipSubscriberAreaUpdate, restorationIndicator);
             curDialog.send();
+            System.out.println("Sendt updateLocationReq");
         } catch (MAPException ex) {
             System.out.println("Exception when sending UpdateLocationRequest :" + ex.toString());
         }
