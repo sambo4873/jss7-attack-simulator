@@ -1444,17 +1444,20 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                             this.mapMan.createDestAddress(),
                             null);
 
-            ISDNAddressString roamingNumber = mapProvider.getMAPParameterFactory().createISDNAddressString(
-                    AddressNature.international_number,
-                    NumberingPlan.ISDN,
-                    "123123123");
-            LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[]{11, 12, 13, 14});
+            //ISDNAddressString roamingNumber = mapProvider.getMAPParameterFactory().createISDNAddressString(
+            //        AddressNature.international_number,
+            //        NumberingPlan.ISDN,
+            //        "123123123");
+            ISDNAddressString roamingNumber = null;
+            //LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[]{11, 12, 13, 14});
+            LMSI lmsi = null;
             MAPExtensionContainer mapExtensionContainer = null;
             VLRCapability vlrCapability = getVLRCapability(mapProvider.getMAPParameterFactory());
             boolean informPreviousNetworkEntity = false;
             boolean csLCSNotSupportedByUE = false;
-            GSNAddress gsnAddress = mapProvider.getMAPParameterFactory().createGSNAddress(GSNAddressAddressType.IPv4, new byte[]{10, 10, 10, 10});
-            ADDInfo addInfo = mapProvider.getMAPParameterFactory().createADDInfo(new IMEIImpl("123491838128138"), true);
+            GSNAddress gsnAddress = null;
+            //ADDInfo addInfo = mapProvider.getMAPParameterFactory().createADDInfo(new IMEIImpl("123491838128138"), true);
+            ADDInfo addInfo = null;
             ArrayList arrayList = new ArrayList<LocationArea>();
             arrayList.add(mapProvider.getMAPParameterFactory().createLocationArea(mapProvider.getMAPParameterFactory().createLAC(1311)));
             PagingArea pagingArea = mapProvider.getMAPParameterFactory().createPagingArea(arrayList);
