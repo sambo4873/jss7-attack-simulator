@@ -1424,11 +1424,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             needSendClose = true;
     }
 
-    public String performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber) {
-        return doUpdateLocationRequest(imsi, mscNumber, vlrNumber);
-    }
-
-    public String doUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber) {
+    public void performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
 
         MAPApplicationContextVersion vers = MAPApplicationContextVersion.version3;
@@ -1460,9 +1456,8 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             curDialog.addUpdateLocationRequest(imsi, mscNumber, roamingNumber, vlrNumber, lmsi, mapExtensionContainer, vlrCapability, informPreviousNetworkEntity, csLCSNotSupportedByUE, gsnAddress, addInfo, pagingArea, skipSubscriberAreaUpdate, restorationIndicator);
             curDialog.send();
         } catch (MAPException ex) {
-            return "Exception when sending UpdateLocationRequest :" + ex.toString();
+            System.out.println("Exception when sending UpdateLocationRequest :" + ex.toString());
         }
-        return "UpdateLocationRequest has been sent";
     }
 
     private VLRCapability getVLRCapability(MAPParameterFactory mapParameterFactory) {
