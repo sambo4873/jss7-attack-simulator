@@ -1114,7 +1114,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                 curDialog.addUpdateLocationResponse(invokeId, hlrNumber, null, false, false);
                 this.needSendClose = true;
             } catch(MAPException e) {
-                System.out.println("ERROR when sending UpdateLocationRequest: " + e.toString());
+                System.out.println("ERROR when sending UpdateLocationResponse: " + e.toString());
             }
         } else {
             System.out.println("ERROR in onUpdateLocationRequest.Could not find subscriber with IMSI: " + ind.getImsi().getData());

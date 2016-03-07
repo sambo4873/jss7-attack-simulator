@@ -841,10 +841,12 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
                 this.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
 
+        System.out.println("DOING A UPDATELOCATIONREQ");
+
         this.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress);
 
         try {
-            Thread.sleep(1000);
+            Thread.sleep(5000);
         } catch(InterruptedException e) {
             System.exit(50);
         }

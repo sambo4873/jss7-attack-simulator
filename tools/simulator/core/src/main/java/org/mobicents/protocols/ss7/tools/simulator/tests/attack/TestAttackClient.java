@@ -40,6 +40,7 @@ import org.mobicents.protocols.ss7.map.api.service.pdpContextActivation.MAPServi
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
 import org.mobicents.protocols.ss7.map.api.service.supplementary.*;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
+import org.mobicents.protocols.ss7.map.primitives.IMEIImpl;
 import org.mobicents.protocols.ss7.map.primitives.IMSIImpl;
 import org.mobicents.protocols.ss7.map.primitives.LMSIImpl;
 import org.mobicents.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
@@ -58,8 +59,10 @@ import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.Instance_L2;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 
+import javax.xml.stream.Location;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Random;
 
 /**
@@ -1441,15 +1444,20 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                             this.mapMan.createDestAddress(),
                             null);
 
-            ISDNAddressString roamingNumber = null;
+            ISDNAddressString roamingNumber = mapProvider.getMAPParameterFactory().createISDNAddressString(
+                    AddressNature.international_number,
+                    NumberingPlan.ISDN,
+                    "123123123");
             LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[]{11, 12, 13, 14});
             MAPExtensionContainer mapExtensionContainer = null;
             VLRCapability vlrCapability = getVLRCapability(mapProvider.getMAPParameterFactory());
             boolean informPreviousNetworkEntity = false;
             boolean csLCSNotSupportedByUE = false;
-            GSNAddress gsnAddress = null;
-            ADDInfo addInfo = null;
-            PagingArea pagingArea = null;
+            GSNAddress gsnAddress = mapProvider.getMAPParameterFactory().createGSNAddress(GSNAddressAddressType.IPv4, new byte[]{10, 10, 10, 10});
+            ADDInfo addInfo = mapProvider.getMAPParameterFactory().createADDInfo(new IMEIImpl("123491838128138"), true);
+            ArrayList arrayList = new ArrayList<LocationArea>();
+            arrayList.add(mapProvider.getMAPParameterFactory().createLocationArea(mapProvider.getMAPParameterFactory().createLAC(1311)));
+            PagingArea pagingArea = mapProvider.getMAPParameterFactory().createPagingArea(arrayList);
             boolean skipSubscriberAreaUpdate = false;
             boolean restorationIndicator = false;
 
