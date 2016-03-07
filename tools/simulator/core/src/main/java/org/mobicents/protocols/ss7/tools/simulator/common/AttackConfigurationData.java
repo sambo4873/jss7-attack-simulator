@@ -35,6 +35,11 @@ import org.mobicents.protocols.ss7.tools.simulator.level2.SccpConfigurationData;
  */
 public class AttackConfigurationData extends ConfigurationData {
 
+    public static final String MSC_A_NUMBER = "1111";
+    public static final String HLR_A_NUMBER = "1112";
+    public static final String SMSC_A_NUMBER = "1112";
+    public static final String VLR_A_NUMBER = "1114";
+
     public static final String INSTANCE_L1 = "instance_L1";
     public static final String INSTANCE_L2 = "instance_L2";
     public static final String INSTANCE_L3 = "instance_L3";

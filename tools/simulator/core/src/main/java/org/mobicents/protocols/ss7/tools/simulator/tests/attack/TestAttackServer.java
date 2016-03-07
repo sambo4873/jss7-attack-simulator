@@ -1095,7 +1095,31 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onUpdateLocationRequest(UpdateLocationRequest ind) {
+        MAPDialogMobility curDialog = ind.getMAPDialog();
+        long invokeId = ind.getInvokeId();
 
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(ind.getImsi());
+
+        if(subscriber != null) {
+            MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+            MAPParameterFactory mapParameterFactory = this.mapMan.getMAPStack().getMAPProvider().getMAPParameterFactory();
+
+            ISDNAddressString newMscNumber = ind.getMscNumber();
+            ISDNAddressString hlrNumber = subscriber.getCurrentHlrNumber();
+            ISDNAddressString newVlrNumber = ind.getVlrNumber();
+
+            subscriber.setCurrentMscNumber(newMscNumber);
+            subscriber.setCurrentVlrNumber(newVlrNumber);
+
+            try {
+                curDialog.addUpdateLocationResponse(invokeId, hlrNumber, null, false, false);
+                this.needSendClose = true;
+            } catch(MAPException e) {
+                System.out.println("ERROR when sending UpdateLocationRequest: " + e.toString());
+            }
+        } else {
+            System.out.println("ERROR in onUpdateLocationRequest.Could not find subscriber with IMSI: " + ind.getImsi().getData());
+        }
     }
 
     @Override

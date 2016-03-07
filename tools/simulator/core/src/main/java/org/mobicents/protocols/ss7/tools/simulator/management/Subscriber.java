@@ -14,12 +14,18 @@ public class Subscriber {
     private IMSI imsi;
     private ISDNAddressString msisdn;
     private SubscriberInfo subscriberInfo;
+    private ISDNAddressString currentMscNumber;
+    private ISDNAddressString currentVlrNumber;
+    private ISDNAddressString currentHlrNumber;
 
-    public Subscriber(int subscriberId, IMSI imsi, ISDNAddressString msisdn, SubscriberInfo subscriberInfo) {
+    public Subscriber(int subscriberId, IMSI imsi, ISDNAddressString msisdn, SubscriberInfo subscriberInfo, ISDNAddressString currentMscNumber, ISDNAddressString currentVlrNumber, ISDNAddressString currentHlrNumber) {
         this.subscriberId = subscriberId;
         this.imsi = imsi;
         this.msisdn = msisdn;
         this.subscriberInfo = subscriberInfo;
+        this.currentMscNumber = currentMscNumber;
+        this.currentVlrNumber = currentVlrNumber;
+        this.currentHlrNumber = currentHlrNumber;
     }
 
     public SubscriberInfo getSubscriberInfo() {
@@ -52,5 +58,29 @@ public class Subscriber {
 
     public void setMsisdn(ISDNAddressString msisdn) {
         this.msisdn = msisdn;
+    }
+
+    public ISDNAddressString getCurrentMscNumber() {
+        return currentMscNumber;
+    }
+
+    public void setCurrentMscNumber(ISDNAddressString currentMscNumber) {
+        this.currentMscNumber = currentMscNumber;
+    }
+
+    public ISDNAddressString getCurrentVlrNumber() {
+        return currentVlrNumber;
+    }
+
+    public void setCurrentVlrNumber(ISDNAddressString currentVlrNumber) {
+        this.currentVlrNumber = currentVlrNumber;
+    }
+
+    public ISDNAddressString getCurrentHlrNumber() {
+        return currentHlrNumber;
+    }
+
+    public void setCurrentHlrNumber(ISDNAddressString currentHlrNumber) {
+        this.currentHlrNumber = currentHlrNumber;
     }
 }

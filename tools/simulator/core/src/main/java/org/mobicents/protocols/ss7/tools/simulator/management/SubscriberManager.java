@@ -22,11 +22,17 @@ public class SubscriberManager {
 
     private Random random;
     private List<Subscriber> subscribers;
+    private ISDNAddressString defaultMscNumber;
+    private ISDNAddressString defaultVlrNumber;
+    private ISDNAddressString defaultHlrNumber;
 
-    public SubscriberManager() {
+    public SubscriberManager(ISDNAddressString defaultMscNumber, ISDNAddressString defaultVlrNumber, ISDNAddressString defaultHlrNumber) {
         this.random = new Random(System.currentTimeMillis());
         this.subscribers = new ArrayList<Subscriber>();
         this.mapParameterFactory = new MAPParameterFactoryImpl();
+        this.defaultMscNumber = defaultMscNumber;
+        this.defaultVlrNumber = defaultVlrNumber;
+        this.defaultHlrNumber = defaultHlrNumber;
     }
 
     public void createRandomSubscribers(int number) {
@@ -46,7 +52,7 @@ public class SubscriberManager {
         IMSI imsi = this.mapParameterFactory.createIMSI(generateRandomNumericalString(15));
         ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, generateRandomNumericalString(10));
         try {
-            return new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo());
+            return new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrNumber);
         } catch(MAPException ex) {
             System.out.println("Exception when creating Subscriber data: " + ex.toString());
             return null;

