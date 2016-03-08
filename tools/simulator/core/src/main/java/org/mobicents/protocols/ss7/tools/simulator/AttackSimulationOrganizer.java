@@ -957,7 +957,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performSendRoutingInformation() {
-        //this.mscAhlrA.getTestAttackClient().performSendRoutingInformation();
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.mscAhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
     }
 
     private void performProvideRoamingNumber() {
