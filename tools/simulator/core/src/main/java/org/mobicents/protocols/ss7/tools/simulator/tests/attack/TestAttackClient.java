@@ -1839,6 +1839,26 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performProvideRoamingNumber(IMSI imsi, ISDNAddressString mscNumber) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.roamingNumberEnquiryContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogCallHandling curDialog = mapProvider.getMAPServiceCallHandling().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addProvideRoamingNumberRequest(imsi, mscNumber, null, null, null, null, false, null, null, false,
+                    null, null, false, null, null, false, false, false, false, null, false, null, null, false, null);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending CheckIMEI Req: " + ex.toString());
+        }
+    }
+
     @Override
     public void onActivateTraceModeRequest_Oam(ActivateTraceModeRequest_Oam ind) {
 

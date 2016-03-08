@@ -8,6 +8,7 @@ import org.mobicents.protocols.ss7.isup.ISUPProvider;
 import org.mobicents.protocols.ss7.isup.ISUPTimeoutEvent;
 import org.mobicents.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
 import org.mobicents.protocols.ss7.isup.message.parameter.LocationNumber;
+import org.mobicents.protocols.ss7.isup.message.parameter.Number;
 import org.mobicents.protocols.ss7.map.api.*;
 import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
@@ -1377,7 +1378,20 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onProvideRoamingNumberRequest(ProvideRoamingNumberRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogCallHandling curDialog = request.getMAPDialog();
+        ISDNAddressString roamingNumber = this.mapMan.getMAPStack().getMAPProvider().getMAPParameterFactory()
+                .createISDNAddressString(
+                        AddressNature.international_number,
+                        NumberingPlan.ISDN,
+                        "9999999999");
 
+        try {
+            curDialog.addProvideRoamingNumberResponse(invokeId, roamingNumber, null, false, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending InsertSubscriberData Resp: " + e.toString());
+        }
     }
 
     @Override

@@ -971,7 +971,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performProvideRoamingNumber() {
-        //this.hlrAvlrA.getTestAttackClient().performProvideRoamingNumber();
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.hlrAvlrA.getTestAttackClient().performProvideRoamingNumber(subscriber.getImsi(), subscriber.getCurrentMscNumber());
     }
 
     private void performRegisterSS() {
