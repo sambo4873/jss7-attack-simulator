@@ -625,7 +625,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 36;
+        int numberOfAvailableMessages = 37;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
@@ -672,69 +672,72 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performProvideSubscriberInfo();
                 break;
             case 14:
-                this.performActivateTraceMode();
+                this.performActivateTraceMode_Oam();
                 break;
             case 15:
-                this.performSendIMSI();
+                this.performActivateTraceMode_Mobility();
                 break;
             case 16:
-                this.performSendRoutingInformation();
+                this.performSendIMSI();
                 break;
             case 17:
-                this.performProvideRoamingNumber();
+                this.performSendRoutingInformation();
                 break;
             case 18:
-                this.performRegisterSS();
+                this.performProvideRoamingNumber();
                 break;
             case 19:
-                this.performEraseSS();
+                this.performRegisterSS();
                 break;
             case 20:
-                this.performActivateSS();
+                this.performEraseSS();
                 break;
             case 21:
-                this.performDeactivateSS();
+                this.performActivateSS();
                 break;
             case 22:
-                this.performInterrogateSS();
+                this.performDeactivateSS();
                 break;
             case 23:
-                this.performRegisterPassword();
+                this.performInterrogateSS();
                 break;
             case 24:
-                this.performGetPassword();
+                this.performRegisterPassword();
                 break;
             case 25:
-                this.performProcessUnstructuredSSRequest();
+                this.performGetPassword();
                 break;
             case 26:
-                this.performUnstructuredSSRequest();
+                this.performProcessUnstructuredSSRequest();
                 break;
             case 27:
-                this.performUnstructuredSSNotify();
+                this.performUnstructuredSSRequest();
                 break;
             case 28:
-                this.performSendRoutingInfoForSM();
+                this.performUnstructuredSSNotify();
                 break;
             case 29:
-                this.performMoForwardSM();
+                this.performSendRoutingInfoForSM();
                 break;
             case 30:
-                this.performReportSMDeliveryStatus();
+                this.performMoForwardSM();
                 break;
             case 31:
-                this.performReadyForSM();
+                this.performReportSMDeliveryStatus();
                 break;
             case 32:
-                this.performAlertServiceCentre();
+                this.performReadyForSM();
                 break;
             case 33:
-                this.performInformServiceCentre();
+                this.performAlertServiceCentre();
                 break;
             case 34:
-                this.performMtForwardSM();
+                this.performInformServiceCentre();
                 break;
             case 35:
+                this.performMtForwardSM();
+                break;
+            case 36:
                 this.performSendRoutingInfoForGPRS();
                 break;
 
@@ -953,7 +956,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performActivateTraceMode_Mobility() {
-        this.hlrAvlrA.getTestAttackClient().performActivateTraceMode_Mobility();
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.hlrAvlrA.getTestAttackClient().performActivateTraceMode_Mobility(subscriber.getImsi());
     }
 
     private void performSendIMSI() {
