@@ -1992,14 +1992,18 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         try {
             MAPDialogSupplementary curDialog = mapProvider.getMAPServiceSupplementary().createNewDialog(applicationContext,
                     this.mapMan.createOrigAddress(),
-                    null,
+                    this.mapMan.createOrigReference(),
                     this.mapMan.createDestAddress(),
-                    null);
+                    this.mapMan.createDestReference());
 
             SSCode ssCode = parameterFactory.createSSCode(SupplementaryCodeValue.universal);
 
             curDialog.setUserObject(new DialogData());
-            curDialog.addRegisterSSRequest(ssCode, null, null, null, 0, null, null, null);
+
+            BasicServiceCode basicServiceCode = parameterFactory.createBasicServiceCode(
+                    parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices));
+
+            curDialog.addRegisterSSRequest(ssCode, basicServiceCode, null, null, 0, null, null, null);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending RegisterSS Req: " + ex.toString());
