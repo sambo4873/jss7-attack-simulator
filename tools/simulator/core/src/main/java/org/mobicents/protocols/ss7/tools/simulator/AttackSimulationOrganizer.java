@@ -859,7 +859,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress);
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch(InterruptedException e) {
             System.exit(50);
         }

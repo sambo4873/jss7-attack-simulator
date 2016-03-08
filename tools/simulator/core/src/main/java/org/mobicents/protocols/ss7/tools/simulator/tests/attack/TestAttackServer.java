@@ -1725,7 +1725,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             curDialog.addReadyForSMRequest(imsi, AlertReason.msPresent, true, null, false);
             curDialog.send();
         } catch (MAPException ex) {
-            System.out.println("Error when sending RegisterSS Req: " + ex.toString());
+            System.out.println("Error when sending ReadyForSM Req: " + ex.toString());
         }
     }
 

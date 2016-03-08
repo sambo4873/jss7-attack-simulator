@@ -2204,7 +2204,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             curDialog.addReadyForSMResponse(invokeId, null);
             this.needSendClose = true;
         } catch (MAPException e) {
-            System.out.println("Error when sending InsertSubscriberData Resp: " + e.toString());
+            System.out.println("Error when sending ReadyForSM Resp: " + e.toString());
         }
     }
 
