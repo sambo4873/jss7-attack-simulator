@@ -1330,7 +1330,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
-        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.networkFunctionalSsContext, MAPApplicationContextVersion.version2);
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.shortMsgGatewayContext, MAPApplicationContextVersion.version3);
         try {
             MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(applicationContext,
                     this.mapMan.createOrigAddress(),
