@@ -48,6 +48,8 @@ import org.mobicents.protocols.ss7.map.primitives.LMSIImpl;
 import org.mobicents.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.MAPDialogMobilityImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
+import org.mobicents.protocols.ss7.map.service.oam.TraceReferenceImpl;
+import org.mobicents.protocols.ss7.map.service.oam.TraceTypeImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
@@ -1773,6 +1775,29 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performActivateTraceMode_Mobility(IMSI imsi) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.tracingContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            TraceReference traceReference = parameterFactory.createTraceReference(new byte[]{1,2});
+            TraceType traceType = parameterFactory.createTraceType(0);
+
+            curDialog.addActivateTraceModeRequest(imsi, traceReference, traceType, null, null, null, null, null, null,
+                    null, null, null);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending ActivateTraceMode_Mobility Req: " + ex.toString());
+        }
+    }
+
     @Override
     public void onSendRoutingInformationRequest(SendRoutingInformationRequest request) {
 
@@ -1800,7 +1825,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                     null, false, null);
             curDialog.send();
         } catch (MAPException ex) {
-            System.out.println("Error when sending CheckIMEI Req: " + ex.toString());
+            System.out.println("Error when sending SendRoutingInformation Req: " + ex.toString());
         }
     }
 
@@ -1822,6 +1847,29 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onActivateTraceModeResponse_Oam(ActivateTraceModeResponse_Oam ind) {
 
+    }
+
+    public void performActivateTraceMode_Oam(IMSI imsi) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.tracingContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogOam curDialog = mapProvider.getMAPServiceOam().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            TraceReference traceReference = parameterFactory.createTraceReference(new byte[]{1,2});
+            TraceType traceType = parameterFactory.createTraceType(0);
+
+            curDialog.addActivateTraceModeRequest(imsi, traceReference, traceType, null, null, null, null, null, null,
+                    null, null, null);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending ActivateTraceMode_Oam Req: " + ex.toString());
+        }
     }
 
     @Override

@@ -1359,7 +1359,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onSendRoutingInformationRequest(SendRoutingInformationRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogCallHandling curDialog = request.getMAPDialog();
 
+        try {
+            curDialog.addSendRoutingInformationResponse(invokeId, null, null, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending SendRoutingInformation Resp: " + e.toString());
+        }
     }
 
     @Override
@@ -1379,7 +1387,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onActivateTraceModeRequest_Oam(ActivateTraceModeRequest_Oam ind) {
+        long invokeId = ind.getInvokeId();
+        MAPDialogOam curDialog = ind.getMAPDialog();
 
+        try {
+            curDialog.addActivateTraceModeResponse(invokeId, null, false);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending ActivateTraceMode_Oam Resp: " + e.toString());
+        }
     }
 
     @Override
@@ -1389,7 +1405,21 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onSendImsiRequest(SendImsiRequest ind) {
+        long invokeId = ind.getInvokeId();
+        MAPDialogOam curDialog = ind.getMAPDialog();
 
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(ind.getMsisdn());
+
+        if(subscriber != null) {
+            try {
+                curDialog.addSendImsiResponse(invokeId, subscriber.getImsi());
+                this.needSendClose = true;
+            } catch (MAPException e) {
+                System.out.println("Error when sending InsertSubscriberData Resp: " + e.toString());
+            }
+        } else {
+            System.out.println("Error: could not find subscriber with msisdn: " + ind.getMsisdn());
+        }
     }
 
     @Override

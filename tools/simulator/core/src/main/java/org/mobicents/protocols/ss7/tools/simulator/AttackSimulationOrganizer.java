@@ -947,8 +947,13 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(new IMSIImpl("123"));
     }
 
-    private void performActivateTraceMode() {
-        //this.hlrAvlrA.getTestAttackServer().performActivateTraceMode();
+    private void performActivateTraceMode_Oam() {
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.hlrAvlrA.getTestAttackClient().performActivateTraceMode_Oam(subscriber.getImsi());
+    }
+
+    private void performActivateTraceMode_Mobility() {
+        this.hlrAvlrA.getTestAttackClient().performActivateTraceMode_Mobility();
     }
 
     private void performSendIMSI() {
