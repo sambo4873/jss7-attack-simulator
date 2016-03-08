@@ -923,7 +923,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performInsertSubscriberData() {
-        //this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
+        this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
     }
 
     private void performDeleteSubscriberData() {

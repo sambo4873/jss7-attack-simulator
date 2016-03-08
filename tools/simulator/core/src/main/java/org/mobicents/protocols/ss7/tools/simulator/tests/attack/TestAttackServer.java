@@ -1273,7 +1273,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onInsertSubscriberDataRequest(InsertSubscriberDataRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogMobility curDialog = request.getMAPDialog();
 
+        try {
+            curDialog.addInsertSubscriberDataResponse(invokeId, null, null, null, null, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending InsertSubscriberData Resp: " + e.toString());
+        }
     }
 
     @Override
