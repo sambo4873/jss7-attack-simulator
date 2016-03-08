@@ -1324,8 +1324,31 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onReportSMDeliveryStatusResponse(ReportSMDeliveryStatusResponse reportSMDeliveryStatusRespInd) {
-        // TODO Auto-generated method stub
+    }
 
+    public void performReportSMDeliveryStatus(ISDNAddressString msisdn) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.networkFunctionalSsContext, MAPApplicationContextVersion.version2);
+        try {
+            MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            AddressString serviceCentreAddress = parameterFactory.createAddressString(
+                    this.testerHost.getAttackSimulationOrganizer().getDefaultHlrAddress().getAddressNature(),
+                    this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getNumberingPlan(),
+                    this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getAddress());
+            SMDeliveryOutcome smDeliveryOutcome = SMDeliveryOutcome.successfulTransfer;
+
+            curDialog.addReportSMDeliveryStatusRequest(msisdn, serviceCentreAddress, smDeliveryOutcome, 0, null, false, true, null, 0);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending RegisterSS Req: " + ex.toString());
+        }
     }
 
     @Override
@@ -2174,7 +2197,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onReadyForSMRequest(ReadyForSMRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogSms curDialog = request.getMAPDialog();
 
+        try {
+            curDialog.addReadyForSMResponse(invokeId, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending InsertSubscriberData Resp: " + e.toString());
+        }
     }
 
     @Override

@@ -32,6 +32,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private ISDNAddressString defaultMscAddress;
     private ISDNAddressString defaultHlrAddress;
+    private ISDNAddressString defaultSmscAddress;
     private ISDNAddressString defaultVlrAddress;
 
     private SubscriberManager subscriberManager;
@@ -90,6 +91,10 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
                 AttackConfigurationData.MSC_A_NUMBER);
+        this.defaultSmscAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                AttackConfigurationData.SMSC_A_NUMBER);
         this.defaultHlrAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
@@ -178,6 +183,10 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     public ISDNAddressString getDefaultMscAddress() {
         return defaultMscAddress;
+    }
+
+    public ISDNAddressString getDefaultSmscAddress() {
+        return defaultSmscAddress;
     }
 
     public ISDNAddressString getDefaultHlrAddress() {
@@ -625,7 +634,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 37;
+        int numberOfAvailableMessages = 35;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
@@ -720,24 +729,18 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performSendRoutingInfoForSM();
                 break;
             case 30:
-                this.performMoForwardSM();
-                break;
-            case 31:
                 this.performReportSMDeliveryStatus();
                 break;
-            case 32:
+            case 31:
                 this.performReadyForSM();
                 break;
-            case 33:
+            case 32:
                 this.performAlertServiceCentre();
                 break;
-            case 34:
+            case 33:
                 this.performInformServiceCentre();
                 break;
-            case 35:
-                this.performMtForwardSM();
-                break;
-            case 36:
+            case 34:
                 this.performSendRoutingInfoForGPRS();
                 break;
 
@@ -1033,21 +1036,21 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performSendRoutingInfoForSM() {
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
         //this.mscAhlrA.getTestAttackClient().performSendRoutingInfoForSM("", "");
-        //this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM("", "");
-    }
-
-    private void performMoForwardSM() {
-        //this.mscAsmscA.getTestAttackClient().performMoForwardSM("", "", "");
+        this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.smscAhlrA.getTestAttackClient().getServiceCenterAddress());
     }
 
     private void performReportSMDeliveryStatus() {
-        //this.mscAhlrA.getTestAttackClient().performReportSMDeliveryStatus();
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.smscAhlrA.getTestAttackClient().performReportSMDeliveryStatus(subscriber.getMsisdn());
     }
 
     private void performReadyForSM() {
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+
         //this.mscAvlrA.getTestAttackClient().performReadyForSM();
-        //this.vlrAhlrA.getTestAttackServer().performReadyForSM();
+        this.vlrAhlrA.getTestAttackServer().performReadyForSM(subscriber.getImsi());
         //this.sgsnAhlrA.getTestAttackClient().performReadyForSM();
         //this.smscAhlrA.getTestAttackClient().performReadyForSM();
     }
@@ -1058,11 +1061,6 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void performInformServiceCentre() {
         //this.hlrAmscA.getTestAttackServer().performInformServiceCentre();
-    }
-
-    private void performMtForwardSM() {
-        //this.mscAmscB.getTestAttackClient().performMtForwardSM();
-        //this.mscAsgsnA.getTestAttackClient().performMtForwardSM();
     }
 
     private void performSendRoutingInfoForGPRS() {

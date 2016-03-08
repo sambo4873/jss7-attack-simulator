@@ -1702,14 +1702,31 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onReadyForSMRequest(ReadyForSMRequest request) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void onReadyForSMResponse(ReadyForSMResponse response) {
-        // TODO Auto-generated method stub
 
+    }
+
+    public void performReadyForSM(IMSI imsi) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.mwdMngtContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addReadyForSMRequest(imsi, AlertReason.msPresent, true, null, false);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending RegisterSS Req: " + ex.toString());
+        }
     }
 
     @Override
