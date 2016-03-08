@@ -384,7 +384,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         int opc = 4,
                 opc2 = 0,
-                dpc = 9,
+                dpc = 5,
                 dpc2 = 0,
                 localPort = 8028,
                 localPort2 = 0,
@@ -407,7 +407,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         int localSpc = 4,
                 localSpc2 = 0,
                 localSsn = 7,
-                remoteSpc = 9,
+                remoteSpc = 5,
                 remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
@@ -420,7 +420,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "2225";
+                remoteAddressDigits = "2221";
 
         ////////////////////////////////////////
 
@@ -442,7 +442,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureAttackerBVlrA() {
         //////// L1 Configuration Data //////////
 
-        int opc = 9,
+        int opc = 5,
                 opc2 = 0,
                 dpc = 4,
                 dpc2 = 0,
@@ -464,14 +464,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 9,
+        int localSpc = 5,
                 localSpc2 = 0,
                 localSsn = 8,
                 remoteSpc = 4,
                 remoteSpc2 = 0,
                 remoteSsn = 7;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "2225";
+        String callingPartyAddressDigits = "2221";
 
         ////////////////////////////////////////
 
@@ -504,7 +504,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         int opc = 3,
                 opc2 = 0,
-                dpc = 9,
+                dpc = 5,
                 dpc2 = 0,
                 localPort = 8026,
                 localPort2 = 0,
@@ -527,7 +527,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         int localSpc = 3,
                 localSpc2 = 0,
                 localSsn = 8,
-                remoteSpc = 9,
+                remoteSpc = 5,
                 remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
@@ -540,7 +540,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "2225";
+                remoteAddressDigits = "2221";
 
         ////////////////////////////////////////
 
@@ -562,7 +562,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureAttackerBSmscA() {
         //////// L1 Configuration Data //////////
 
-        int opc = 9,
+        int opc = 5,
                 opc2 = 0,
                 dpc = 3,
                 dpc2 = 0,
@@ -584,14 +584,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 9,
+        int localSpc = 5,
                 localSpc2 = 0,
                 localSsn = 8,
                 remoteSpc = 3,
                 remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "2225";
+        String callingPartyAddressDigits = "2221";
 
         ////////////////////////////////////////
 
@@ -624,7 +624,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         int opc = 2,
                 opc2 = 0,
-                dpc = 9,
+                dpc = 5,
                 dpc2 = 0,
                 localPort = 8024,
                 localPort2 = 0,
@@ -647,7 +647,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         int localSpc = 2,
                 localSpc2 = 0,
                 localSsn = 6,
-                remoteSpc = 9,
+                remoteSpc = 5,
                 remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
@@ -660,7 +660,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "2225";
+                remoteAddressDigits = "2221";
 
         ////////////////////////////////////////
 
@@ -682,7 +682,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureAttackerBHlrA() {
         //////// L1 Configuration Data //////////
 
-        int opc = 9,
+        int opc = 5,
                 opc2 = 0,
                 dpc = 2,
                 dpc2 = 0,
@@ -704,14 +704,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 9,
+        int localSpc = 5,
                 localSpc2 = 0,
                 localSsn = 8,
                 remoteSpc = 2,
                 remoteSpc2 = 0,
                 remoteSsn = 6;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "2225";
+        String callingPartyAddressDigits = "2221";
 
         ////////////////////////////////////////
 
@@ -744,7 +744,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         int opc = 1,
                 opc2 = 0,
-                dpc = 9,
+                dpc = 5,
                 dpc2 = 0,
                 localPort = 8030,
                 localPort2 = 0,
@@ -767,7 +767,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         int localSpc = 1,
                 localSpc2 = 0,
                 localSsn = 8,
-                remoteSpc = 9,
+                remoteSpc = 5,
                 remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
@@ -780,7 +780,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "2225";
+                remoteAddressDigits = "2221";
 
         ////////////////////////////////////////
 
@@ -802,7 +802,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureAttackerBMscA() {
         //////// L1 Configuration Data //////////
 
-        int opc = 9,
+        int opc = 5,
                 opc2 = 0,
                 dpc = 1,
                 dpc2 = 0,
@@ -824,14 +824,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 9,
+        int localSpc = 5,
                 localSpc2 = 0,
                 localSsn = 8,
                 remoteSpc = 1,
                 remoteSpc2 = 0,
                 remoteSsn = 8;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "2225";
+        String callingPartyAddressDigits = "2221";
 
         ////////////////////////////////////////
 

@@ -939,7 +939,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performAnyTimeInterrogation() {
-        //this.gsmscfAhlrA.getTestAttackClient().performAnyTimeInterrogation();
+        this.gsmscfAhlrA.getTestAttackClient().performATI("");
     }
 
     private void performProvideSubscriberInfo() {
