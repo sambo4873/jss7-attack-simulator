@@ -1748,7 +1748,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
-    public void performDeleteSubscriberData() {
+    public void performDeleteSubscriberData(IMSI imsi) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
@@ -1760,7 +1760,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addDeleteSubscriberDataRequest(null, null, null, false, null, false, false, false, null, null, false, null, false, false, null, false, false, null, false, false);
+            curDialog.addDeleteSubscriberDataRequest(imsi, null, null, false, null, false, false, false, null, null, false, null, false, false, null, false, false, null, false, false);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending DeleteSubscriberData Req: " + ex.toString());
@@ -1839,8 +1839,10 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addSendRoutingInformationRequest(msisdn, null, 0, null, false, 0, null, null, null, null, null,
-                    null, false, null, null, false, 0, null, null, false, null, false, false, false, false, null, null,
+            InterrogationType interrogationType = InterrogationType.basicCall;
+
+            curDialog.addSendRoutingInformationRequest(msisdn, null, 0, interrogationType, false, 0, null, null, null,
+                    null, null, null, false, null, null, false, 0, null, null, false, null, false, false, false, false, null, null,
                     null, false, null);
             curDialog.send();
         } catch (MAPException ex) {
