@@ -95,7 +95,7 @@ public class SubscriberManager {
                 LocationNumber._APRI_ALLOWED,
                 LocationNumber._SI_USER_PROVIDED_VERIFIED_PASSED));
         CellGlobalIdOrServiceAreaIdOrLAI cgiosaiol = mapParameterFactory.createCellGlobalIdOrServiceAreaIdOrLAI(
-                new CellGlobalIdOrServiceAreaIdFixedLengthImpl(242,01, 115, 8462));
+                new CellGlobalIdOrServiceAreaIdFixedLengthImpl(242, 01, 115, 8462));
         MAPExtensionContainer mapExtensionContainer = null;
         LSAIdentity lsaIdentity = null;
         ISDNAddressString mscNumber = null;

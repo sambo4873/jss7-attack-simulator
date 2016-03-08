@@ -935,19 +935,22 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performForwardCheckSSIndication() {
-        //this.hlrAmscA.getTestAttackServer().performForwardCheckSSIndication();
+        this.hlrAmscA.getTestAttackServer().performForwardCheckSSIndication();
     }
 
     private void performRestoreData() {
-        //this.vlrAhlrA.getTestAttackServer().performRestoreData();
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.vlrAhlrA.getTestAttackServer().performRestoreData(subscriber.getImsi());
     }
 
     private void performAnyTimeInterrogation() {
-        this.gsmscfAhlrA.getTestAttackClient().performATI("");
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.gsmscfAhlrA.getTestAttackClient().performATI(subscriber.getMsisdn().getAddress());
     }
 
     private void performProvideSubscriberInfo() {
-        this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(new IMSIImpl("123"));
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(subscriber.getImsi());
     }
 
     private void performActivateTraceMode_Oam() {
@@ -976,12 +979,12 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performRegisterSS() {
-        //this.mscAvlrA.getTestAttackClient().performRegisterSS();
+        this.mscAvlrA.getTestAttackClient().performRegisterSS();
         //this.vlrAhlrA.getTestAttackServer().performRegisterSS();
     }
 
     private void performEraseSS() {
-        //this.mscAvlrA.getTestAttackClient().performEraseSS();
+        this.mscAvlrA.getTestAttackClient().performEraseSS();
         //this.vlrAhlrA.getTestAttackServer().performEraseSS();
     }
 

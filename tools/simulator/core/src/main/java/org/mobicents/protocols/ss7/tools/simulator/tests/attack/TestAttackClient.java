@@ -48,6 +48,7 @@ import org.mobicents.protocols.ss7.map.primitives.LMSIImpl;
 import org.mobicents.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.MAPDialogMobilityImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
+import org.mobicents.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.mobicents.protocols.ss7.map.service.oam.TraceReferenceImpl;
 import org.mobicents.protocols.ss7.map.service.oam.TraceTypeImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
@@ -470,6 +471,9 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
             mapProvider.getMAPServiceOam().acivate();
             mapProvider.getMAPServiceOam().addMAPServiceListener(this);
+
+            mapProvider.getMAPServiceSupplementary().acivate();
+            mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
 
             mapProvider.addMAPDialogListener(this);
         } else {
@@ -1570,12 +1574,27 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onForwardCheckSSIndicationRequest(ForwardCheckSSIndicationRequest ind) {
-
+        long invokeId = ind.getInvokeId();
+        MAPDialogMobility curDialog = ind.getMAPDialog();
     }
 
     @Override
     public void onRestoreDataRequest(RestoreDataRequest ind) {
+        long invokeId = ind.getInvokeId();
+        MAPDialogMobility curDialog = ind.getMAPDialog();
 
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(ind.getImsi());
+
+        if(subscriber != null) {
+            try {
+                curDialog.addRestoreDataResponse(invokeId, subscriber.getCurrentHlrNumber(), false, null);
+                this.needSendClose = true;
+            } catch (MAPException e) {
+                System.out.println("Error when sending RestoreData Resp: " + e.toString());
+            }
+        } else {
+            System.out.println("Error: Could not find subscriber with IMSI: " + ind.getImsi());
+        }
     }
 
     @Override
@@ -1855,7 +1874,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                     null, null, false, null, null, false, false, false, false, null, false, null, null, false, null);
             curDialog.send();
         } catch (MAPException ex) {
-            System.out.println("Error when sending CheckIMEI Req: " + ex.toString());
+            System.out.println("Error when sending ProvideRoamingNumber Req: " + ex.toString());
         }
     }
 
@@ -1918,12 +1937,41 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onRegisterSSRequest(RegisterSSRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogSupplementary curDialog = request.getMAPDialog();
 
+        try {
+            curDialog.addRegisterSSResponse(invokeId, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending RegisterSS Resp: " + e.toString());
+        }
     }
 
     @Override
     public void onRegisterSSResponse(RegisterSSResponse response) {
 
+    }
+
+    public void performRegisterSS() {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.networkFunctionalSsContext, MAPApplicationContextVersion.version2);
+        try {
+            MAPDialogSupplementary curDialog = mapProvider.getMAPServiceSupplementary().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            SSCode ssCode = parameterFactory.createSSCode(SupplementaryCodeValue.universal);
+
+            curDialog.addRegisterSSRequest(ssCode, null, null, null, 0, null, null, null);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending RegisterSS Req: " + ex.toString());
+        }
     }
 
     @Override
@@ -1934,6 +1982,29 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onEraseSSResponse(EraseSSResponse response) {
 
+    }
+
+    public void performEraseSS() {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.networkFunctionalSsContext, MAPApplicationContextVersion.version2);
+        try {
+            MAPDialogSupplementary curDialog = mapProvider.getMAPServiceSupplementary().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            SSForBSCode ssForBSCode = parameterFactory.createSSForBSCode(parameterFactory.createSSCode(SupplementaryCodeValue.universal),
+                    parameterFactory.createBasicServiceCode(parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices)),
+                    false);
+
+            curDialog.addEraseSSRequest(ssForBSCode);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending EraseSS Req: " + ex.toString());
+        }
     }
 
     @Override
