@@ -1840,8 +1840,9 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                     null);
 
             InterrogationType interrogationType = InterrogationType.basicCall;
+            ISDNAddressString gsmcAddress = this.testerHost.getAttackSimulationOrganizer().getDefaultMscAddress();
 
-            curDialog.addSendRoutingInformationRequest(msisdn, null, 0, interrogationType, false, 0, null, null, null,
+            curDialog.addSendRoutingInformationRequest(msisdn, null, 0, interrogationType, false, 0, gsmcAddress, null, null,
                     null, null, null, false, null, null, false, 0, null, null, false, null, false, false, false, false, null, null,
                     null, false, null);
             curDialog.send();
