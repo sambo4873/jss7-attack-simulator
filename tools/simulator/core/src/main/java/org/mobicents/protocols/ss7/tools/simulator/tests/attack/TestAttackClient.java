@@ -1716,6 +1716,25 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performDeleteSubscriberData() {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addDeleteSubscriberDataRequest(null, null, null, false, null, false, false, false, null, null, false, null, false, false, null, false, false, null, false, false);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending DeleteSubscriberData Req: " + ex.toString());
+        }
+    }
+
     @Override
     public void onCheckImeiRequest(CheckImeiRequest request) {
         long invokeId = request.getInvokeId();

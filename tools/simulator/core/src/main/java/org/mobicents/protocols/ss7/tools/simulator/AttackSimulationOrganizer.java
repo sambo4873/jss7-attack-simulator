@@ -927,7 +927,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performDeleteSubscriberData() {
-        //this.hlrAvlrA.getTestAttackClient().performDeleteSubscriberData();
+        this.hlrAvlrA.getTestAttackClient().performDeleteSubscriberData();
     }
 
     private void performForwardCheckSSIndication() {

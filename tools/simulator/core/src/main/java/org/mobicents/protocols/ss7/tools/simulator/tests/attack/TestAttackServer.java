@@ -1291,7 +1291,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onDeleteSubscriberDataRequest(DeleteSubscriberDataRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogMobility curDialog = request.getMAPDialog();
 
+        try {
+            curDialog.addDeleteSubscriberDataResponse(invokeId, null, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending DeleteSubscriberData Resp: " + e.toString());
+        }
     }
 
     @Override
