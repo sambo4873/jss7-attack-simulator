@@ -23,6 +23,7 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.Restor
 import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.RestoreDataResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.imei.CheckImeiRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.imei.CheckImeiResponse;
+import org.mobicents.protocols.ss7.map.api.service.mobility.imei.RequestedEquipmentInfo;
 import org.mobicents.protocols.ss7.map.api.service.mobility.locationManagement.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeRequest_Mobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
@@ -1298,6 +1299,27 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onCheckImeiResponse(CheckImeiResponse response) {
 
+    }
+
+    public void performCheckIMEI(IMEI imei) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.equipmentMngtContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            RequestedEquipmentInfo equipmentInfo = parameterFactory.createRequestedEquipmentInfo(true, false);
+
+            curDialog.addCheckImeiRequest(imei, equipmentInfo, null);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending CheckIMEI Req: " + ex.toString());
+        }
     }
 
     @Override

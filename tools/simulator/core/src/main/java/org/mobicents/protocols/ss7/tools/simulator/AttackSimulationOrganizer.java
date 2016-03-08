@@ -915,7 +915,9 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performCheckIMEI() {
-        //this.vlrAmscA.getTestAttackServer().performCheckIMEI();
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+
+        this.vlrAmscA.getTestAttackServer().performCheckIMEI(subscriber.getSubscriberInfo().getIMEI());
         //this.mscAeirA.getTestAttackClient().performCheckIMEI();
         //this.sgsnAeirA.getTestAttackClient().performCheckIMEI();
     }

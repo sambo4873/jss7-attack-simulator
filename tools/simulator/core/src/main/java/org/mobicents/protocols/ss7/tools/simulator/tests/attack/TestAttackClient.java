@@ -30,6 +30,7 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.Restor
 import org.mobicents.protocols.ss7.map.api.service.mobility.faultRecovery.RestoreDataResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.imei.CheckImeiRequest;
 import org.mobicents.protocols.ss7.map.api.service.mobility.imei.CheckImeiResponse;
+import org.mobicents.protocols.ss7.map.api.service.mobility.imei.EquipmentStatus;
 import org.mobicents.protocols.ss7.map.api.service.mobility.locationManagement.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeRequest_Mobility;
 import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceModeResponse_Mobility;
@@ -1699,7 +1700,14 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onCheckImeiRequest(CheckImeiRequest request) {
-
+        long invokeId = request.getInvokeId();
+        MAPDialogMobility curDialog = request.getMAPDialog();
+        try {
+            curDialog.addCheckImeiResponse(invokeId, EquipmentStatus.whiteListed, null, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending CheckImei Resp: " + e.toString());
+        }
     }
 
     @Override
