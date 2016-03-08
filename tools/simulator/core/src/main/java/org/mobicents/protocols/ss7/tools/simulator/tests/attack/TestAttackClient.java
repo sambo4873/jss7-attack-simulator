@@ -1955,6 +1955,11 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    private class DialogData {
+        public Long invokeId;
+        public String currentRequestDef = "";
+    }
+
     public void performRegisterSS() {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
@@ -1969,6 +1974,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
             SSCode ssCode = parameterFactory.createSSCode(SupplementaryCodeValue.universal);
 
+            curDialog.setUserObject(new DialogData());
             curDialog.addRegisterSSRequest(ssCode, null, null, null, 0, null, null, null);
             curDialog.send();
         } catch (MAPException ex) {
@@ -2002,6 +2008,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                     parameterFactory.createBasicServiceCode(parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices)),
                     false);
 
+            curDialog.setUserObject(new DialogData());
             curDialog.addEraseSSRequest(ssForBSCode);
             curDialog.send();
         } catch (MAPException ex) {
