@@ -906,7 +906,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performPurgeMS() {
-        this.vlrAhlrA.getTestAttackServer().performPurgeMS();
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.vlrAhlrA.getTestAttackServer().performPurgeMS(subscriber.getImsi(), subscriber.getCurrentVlrNumber());
     }
 
     private void performUpdateGPRSLocation() {

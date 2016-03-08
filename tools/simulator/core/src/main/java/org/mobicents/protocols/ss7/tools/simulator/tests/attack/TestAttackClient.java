@@ -1444,27 +1444,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                             this.mapMan.createDestAddress(),
                             null);
 
-            //ISDNAddressString roamingNumber = mapProvider.getMAPParameterFactory().createISDNAddressString(
-            //        AddressNature.international_number,
-            //        NumberingPlan.ISDN,
-            //        "123123123");
-            ISDNAddressString roamingNumber = null;
-            //LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[]{11, 12, 13, 14});
-            LMSI lmsi = null;
-            MAPExtensionContainer mapExtensionContainer = null;
-            VLRCapability vlrCapability = getVLRCapability(mapProvider.getMAPParameterFactory());
-            boolean informPreviousNetworkEntity = false;
-            boolean csLCSNotSupportedByUE = false;
-            GSNAddress gsnAddress = null;
-            //ADDInfo addInfo = mapProvider.getMAPParameterFactory().createADDInfo(new IMEIImpl("123491838128138"), true);
-            ADDInfo addInfo = null;
-            ArrayList arrayList = new ArrayList<LocationArea>();
-            arrayList.add(mapProvider.getMAPParameterFactory().createLocationArea(mapProvider.getMAPParameterFactory().createLAC(1311)));
-            PagingArea pagingArea = mapProvider.getMAPParameterFactory().createPagingArea(arrayList);
-            boolean skipSubscriberAreaUpdate = false;
-            boolean restorationIndicator = false;
-
-            curDialog.addUpdateLocationRequest(imsi, mscNumber, roamingNumber, vlrNumber, lmsi, mapExtensionContainer, vlrCapability, informPreviousNetworkEntity, csLCSNotSupportedByUE, gsnAddress, addInfo, pagingArea, skipSubscriberAreaUpdate, restorationIndicator);
+            curDialog.addUpdateLocationRequest(imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, null, true, false);
             curDialog.send();
             System.out.println("Sendt updateLocationReq");
         } catch (MAPException ex) {
@@ -1533,7 +1513,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onPurgeMSRequest(PurgeMSRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogMobility curDialog = request.getMAPDialog();
 
+        try {
+            curDialog.addPurgeMSResponse(invokeId, false, false, null, false);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending PurgeMS Resp" + e.toString());
+        }
     }
 
     @Override
