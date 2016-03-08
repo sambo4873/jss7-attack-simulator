@@ -8,6 +8,7 @@ import org.mobicents.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.AnyTimeInterrogationResponse;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
+import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
 import org.mobicents.protocols.ss7.map.primitives.IMSIImpl;
 import org.mobicents.protocols.ss7.tools.simulator.common.AttackConfigurationData;
@@ -951,7 +952,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performSendIMSI() {
-
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        this.vlrAhlrA.getTestAttackServer().performSendIMSI(subscriber.getMsisdn());
     }
 
     private void performSendRoutingInformation() {

@@ -1,6 +1,7 @@
 package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
 
 import org.apache.log4j.Level;
+import org.apache.log4j.net.SyslogAppender;
 import org.mobicents.protocols.ss7.isup.*;
 import org.mobicents.protocols.ss7.isup.impl.message.ISUPMessageImpl;
 import org.mobicents.protocols.ss7.isup.impl.message.InitialAddressMessageImpl;
@@ -58,6 +59,7 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
 import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.Instance_L2;
+import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
 
 import javax.xml.stream.Location;
@@ -1794,7 +1796,21 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onSendImsiRequest(SendImsiRequest ind) {
+        long invokeId = ind.getInvokeId();
+        MAPDialogOam curDialog = ind.getMAPDialog();
 
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(ind.getMsisdn());
+
+        if (subscriber != null) {
+            try {
+                curDialog.addSendImsiResponse(invokeId, subscriber.getImsi());
+                this.needSendClose = true;
+            } catch (MAPException e) {
+                System.out.println("Error when sending SendImsi Resp: " + e.toString());
+            }
+        } else {
+            System.out.println("Error: could not find subscriber with MSISDN: " + ind.getMsisdn());
+        }
     }
 
     @Override
