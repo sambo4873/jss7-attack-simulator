@@ -595,10 +595,13 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void generateTraffic() {
         boolean generateNoise = this.random.nextInt(100) >= this.chanceOfAttack;
 
-        if(generateNoise)
+        if(generateNoise) {
+            System.out.print("Generating noise: ");
             this.generateNoise();
-        else
+        } else {
+            System.out.print("Generating attack: ");
             this.generateAttack();
+        }
     }
 
     private void generateNoise() {
@@ -611,12 +614,15 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         switch(randomAttack) {
             case 0:
+                System.out.println("Location:AnyTimeInterrogation");
                 this.attackLocationAti();
                 break;
             case 1:
+                System.out.println("Location:ProvideSubscriberInfo");
                 this.attackLocationPsi();
                 break;
             case 2:
+                System.out.println("Intercept:SMS");
                 this.attackInterceptSms();
                 break;
         }
@@ -639,108 +645,143 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         switch (randomMessage) {
             case 0:
+                System.out.println("MoForwardSMS");
                 this.performMoSMS();
                 break;
             case 1:
+                System.out.println("MtForwardSMS");
                 this.performMtSMS();
                 break;
             case 2:
+                System.out.println("UpdateLocation");
                 this.performUpdateLocation();
                 break;
             case 3:
+                System.out.println("CancelLocation");
                 this.performCancelLocation();
                 break;
             case 4:
+                System.out.println("SendIdentification");
                 this.performSendIdentification();
                 break;
             case 5:
+                System.out.println("PurgeMS");
                 this.performPurgeMS();
                 break;
             case 6:
+                System.out.println("UpdateGPRSLocation");
                 this.performUpdateGPRSLocation();
                 break;
             case 7:
+                System.out.println("CheckIMEI");
                 this.performCheckIMEI();
                 break;
             case 8:
+                System.out.println("SubscriberData");
                 this.performInsertSubscriberData();
                 break;
             case 9:
+                System.out.println("DeleteSubscriberData");
                 this.performDeleteSubscriberData();
                 break;
             case 10:
+                System.out.println("ForwardCheckSSIndication");
                 this.performForwardCheckSSIndication();
                 break;
             case 11:
+                System.out.println("RestoreData");
                 this.performRestoreData();
                 break;
             case 12:
+                System.out.println("AnyTimeInterrogation");
                 this.performAnyTimeInterrogation();
                 break;
             case 13:
+                System.out.println("ProvideSubscriberInfo");
                 this.performProvideSubscriberInfo();
                 break;
             case 14:
+                System.out.println("ActivateTraceMode_Oam");
                 this.performActivateTraceMode_Oam();
                 break;
             case 15:
+                System.out.println("ActivateTraceMode_Mobility");
                 this.performActivateTraceMode_Mobility();
                 break;
             case 16:
+                System.out.println("SendIMSI");
                 this.performSendIMSI();
                 break;
             case 17:
+                System.out.println("SendRoutingInformation");
                 this.performSendRoutingInformation();
                 break;
             case 18:
+                System.out.println("ProvideRoamingNumber");
                 this.performProvideRoamingNumber();
                 break;
             case 19:
+                System.out.println("RegisterSS");
                 this.performRegisterSS();
                 break;
             case 20:
+                System.out.println("EraseSS");
                 this.performEraseSS();
                 break;
             case 21:
+                System.out.println("ActivateSS");
                 this.performActivateSS();
                 break;
             case 22:
+                System.out.println("DeactivateSS");
                 this.performDeactivateSS();
                 break;
             case 23:
+                System.out.println("InterrogateSS");
                 this.performInterrogateSS();
                 break;
             case 24:
+                System.out.println("RegisterPassword");
                 this.performRegisterPassword();
                 break;
             case 25:
+                System.out.println("GetPassword");
                 this.performGetPassword();
                 break;
             case 26:
+                System.out.println("ProcessUnstructuredSSRequest");
                 this.performProcessUnstructuredSSRequest();
                 break;
             case 27:
+                System.out.println("UnstructuredSSRequest");
                 this.performUnstructuredSSRequest();
                 break;
             case 28:
+                System.out.println("UnstructuredSSNotify");
                 this.performUnstructuredSSNotify();
                 break;
             case 29:
+                System.out.println("SendRoutingInfoForSM");
                 this.performSendRoutingInfoForSM();
                 break;
             case 30:
+                System.out.println("ReportSMDeliveryStatus");
                 this.performReportSMDeliveryStatus();
                 break;
             case 31:
+                System.out.println("ReadyForSM");
                 this.performReadyForSM();
                 break;
             case 32:
+                System.out.println("AlertServiceCentre");
                 this.performAlertServiceCentre();
                 break;
             case 33:
+                System.out.println("InformServiceCentre");
                 this.performInformServiceCentre();
                 break;
             case 34:
+                System.out.println("SendRoutingInfoForGPRS");
                 this.performSendRoutingInfoForGPRS();
                 break;
 
@@ -854,8 +895,6 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
                 this.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
 
-        System.out.println("DOING A UPDATELOCATIONREQ");
-
         this.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress);
 
         try {
@@ -876,7 +915,6 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
         this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
-        System.out.println("Got SRI after successful attack: VLR: " + sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber() + ". MSC: " + sriResponse.getLocationInfoWithLMSI().getAdditionalNumber().getMSCNumber().getAddress());
         this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI().getData(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress());
     }
 
