@@ -506,7 +506,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         return null;
     }
 
-    public String performMoForwardSM(String msg, String destIsdnNumber, String origIsdnNumber) {
+    public String performMoForwardSM(String msg, String destIsdnNumber, String origIsdnNumber, String serviceCentreAddress) {
         if (!isStarted)
             return "The tester is not started";
         if (msg == null || msg.equals(""))
@@ -521,7 +521,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
         currentRequestDef = "";
 
-        return doMoForwardSM(msg, destIsdnNumber, origIsdnNumber, this.getServiceCenterAddress(), 0, 0, 0);
+        return doMoForwardSM(msg, destIsdnNumber, origIsdnNumber, serviceCentreAddress, 0, 0, 0);
     }
 
     public String performMoForwardSMPartial(String msg, String destIsdnNumber, String origIsdnNumber, int msgRef, int segmCnt, int segmNum) {

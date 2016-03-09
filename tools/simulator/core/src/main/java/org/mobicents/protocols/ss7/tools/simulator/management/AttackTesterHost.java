@@ -2140,7 +2140,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         testAttackClientConfigurationData.setOneNotificationFor100Dialogs(false);
         testAttackClientConfigurationData.setReportSMDeliveryStatusReaction(ReportSMDeliveryStatusReaction.createInstance("Return success"));
         testAttackClientConfigurationData.setReturn20PersDeliveryErrors(false);
-        testAttackClientConfigurationData.setServiceCenterAddress("45454545");
+        testAttackClientConfigurationData.setServiceCenterAddress("");
         testAttackClientConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
         testAttackClientConfigurationData.setSmscSsn(8);
         testAttackClientConfigurationData.setSRIInformServiceCenter(SRIInformServiceCenter.createInstance("No data in MWD file"));

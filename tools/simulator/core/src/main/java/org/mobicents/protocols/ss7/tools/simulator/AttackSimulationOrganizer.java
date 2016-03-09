@@ -933,7 +933,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         String origIsdnNumber = originator.getMsisdn().getAddress();
         String destIsdnNumber = destination.getMsisdn().getAddress();
 
-        this.mscAsmscA.getTestAttackClient().performMoForwardSM("SMS Message", destIsdnNumber, origIsdnNumber);
+        this.mscAsmscA.getTestAttackClient().performMoForwardSM("SMS Message", destIsdnNumber, origIsdnNumber, this.getDefaultSmscAddress().getAddress());
     }
 
     private void performMtSMS() {
