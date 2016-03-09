@@ -698,7 +698,6 @@ public class AttackSimulationOrganizer implements Stoppable {
         while (true) {
             try {
                 sleepTime = this.random.nextInt((1000 - 100) + 1) + 100;
-                sleepTime = 50;
                 Thread.sleep(sleepTime);
 
                 if (this.testerHostsNeedQuit())
@@ -954,7 +953,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.attackerBhlrA.gotSRIForSMResponse()) {
             try{
-                Thread.sleep(10);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 System.exit(50);
             }
@@ -971,7 +970,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.attackerBvlrA.gotPSIResponse()) {
             try{
-                Thread.sleep(10);
+                Thread.sleep(50);
             } catch (InterruptedException e) {
                 System.exit(50);
             }
@@ -989,7 +988,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.smscAhlrA.gotSRIForSMResponse()) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(50);
             } catch(InterruptedException e) {
                 System.exit(50);
             }
@@ -1009,7 +1008,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.attackerBhlrA.gotSRIForSMResponse()) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(50);
             } catch(InterruptedException e) {
                 System.exit(50);
             }
@@ -1039,7 +1038,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.smscAhlrA.gotSRIForSMResponse()) {
             try {
-                Thread.sleep(10);
+                Thread.sleep(50);
             } catch(InterruptedException e) {
                 System.exit(50);
             }
