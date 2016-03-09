@@ -30,6 +30,9 @@ public class AttackSimulationOrganizer implements Stoppable {
     private int chanceOfAttack;
     private int numberOfSubscribers;
 
+    private int countGenuine = 0;
+    private int countAttack = 0;
+
     private ISDNAddressString defaultMscAddress;
     private ISDNAddressString defaultHlrAddress;
     private ISDNAddressString defaultSmscAddress;
@@ -590,15 +593,20 @@ public class AttackSimulationOrganizer implements Stoppable {
 
             msgNum++;
         }
+
+        System.out.println("Number of genuine messages generated: " + this.countGenuine);
+        System.out.println("Number of attacks generated: " + this.countAttack);
     }
 
     private void generateTraffic() {
         boolean generateNoise = this.random.nextInt(100) >= this.chanceOfAttack;
 
         if(generateNoise) {
+            this.countGenuine++;
             System.out.print("Generating noise: ");
             this.generateNoise();
         } else {
+            this.countAttack++;
             System.out.print("Generating attack: ");
             this.generateAttack();
         }
