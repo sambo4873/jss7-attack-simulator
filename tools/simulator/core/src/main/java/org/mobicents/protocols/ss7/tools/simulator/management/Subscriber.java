@@ -18,7 +18,8 @@ public class Subscriber {
     private ISDNAddressString currentVlrNumber;
     private ISDNAddressString currentHlrNumber;
 
-    public Subscriber(int subscriberId, IMSI imsi, ISDNAddressString msisdn, SubscriberInfo subscriberInfo, ISDNAddressString currentMscNumber, ISDNAddressString currentVlrNumber, ISDNAddressString currentHlrNumber) {
+    public Subscriber(int subscriberId, IMSI imsi, ISDNAddressString msisdn, SubscriberInfo subscriberInfo,
+                      ISDNAddressString currentMscNumber, ISDNAddressString currentVlrNumber, ISDNAddressString currentHlrNumber) {
         this.subscriberId = subscriberId;
         this.imsi = imsi;
         this.msisdn = msisdn;
