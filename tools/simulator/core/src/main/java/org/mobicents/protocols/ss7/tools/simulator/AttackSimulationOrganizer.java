@@ -676,7 +676,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
                 //Sleep for some seconds, so nodes can shutdown.
                 try{
-                    Thread.sleep(2000);
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
