@@ -27,11 +27,11 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private SimpleAttackGoal simpleAttackGoal;
 
-    private int chanceOfAttack;
-    private int numberOfSubscribers;
+    private static int chanceOfAttack;
+    private static int numberOfSubscribers;
 
-    public static int countGenuine = 0;
-    public static int countAttack = 0;
+    private static int countGenuine = 0;
+    private static int countAttack = 0;
 
     private ISDNAddressString defaultMscAddress;
     private ISDNAddressString defaultHlrAddress;
@@ -553,8 +553,10 @@ public class AttackSimulationOrganizer implements Stoppable {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 System.out.println();
-                System.out.println("Number of genuine messages generated: " + AttackSimulationOrganizer.countGenuine);
-                System.out.println("Number of attacks generated: " + AttackSimulationOrganizer.countAttack);
+                System.out.println("Exiting..");
+                System.out.println("Chance of attack used: " + chanceOfAttack);
+                System.out.println("Number of genuine messages generated: " + countGenuine);
+                System.out.println("Number of attacks generated: " + countAttack);
             }
         });
     }
