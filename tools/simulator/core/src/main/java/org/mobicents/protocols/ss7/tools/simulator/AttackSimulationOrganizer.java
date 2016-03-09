@@ -30,8 +30,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     private int chanceOfAttack;
     private int numberOfSubscribers;
 
-    private int countGenuine = 0;
-    private int countAttack = 0;
+    public static int countGenuine = 0;
+    public static int countAttack = 0;
 
     private ISDNAddressString defaultMscAddress;
     private ISDNAddressString defaultHlrAddress;
@@ -549,16 +549,23 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    public void start() {
+    private void configureShutDownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            public void run() {
+                System.out.println("Number of genuine messages generated: " + AttackSimulationOrganizer.countGenuine);
+                System.out.println("Number of attacks generated: " + AttackSimulationOrganizer.countAttack);
+            }
+        });
+    }
 
+    public void start() {
+        configureShutDownHook();
         startAttackSimulationHosts();
 
         if (!waitForM3UALinks())
             return;
 
         int sleepTime = 50;
-
-        int msgNum = 0;
 
         while (true) {
             try {
@@ -590,12 +597,8 @@ public class AttackSimulationOrganizer implements Stoppable {
             } else {
                 this.generateTraffic();
             }
-
-            msgNum++;
         }
 
-        System.out.println("Number of genuine messages generated: " + this.countGenuine);
-        System.out.println("Number of attacks generated: " + this.countAttack);
     }
 
     private void generateTraffic() {
