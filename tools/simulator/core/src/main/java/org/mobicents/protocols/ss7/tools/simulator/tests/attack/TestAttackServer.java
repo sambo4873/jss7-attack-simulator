@@ -1660,7 +1660,6 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
             curDialog.addPurgeMSRequest(imsi, vlrNumber, null, null);
             curDialog.send();
-            System.out.println("Sent PurgeMS Req");
         } catch (MAPException e) {
             System.out.println("Error performing PurgeMS: " + e.toString());
         }
