@@ -828,8 +828,6 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void attackLocationPsi() {
-        System.out.println("-----------STARTING LOCATION PSI ATTACK-----------");
-
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
 
         //Get necessary information from request, use in next message.
@@ -861,14 +859,8 @@ public class AttackSimulationOrganizer implements Stoppable {
             }
         }
 
-        System.out.println("-----------GOT PSI RESPONSE-----------");
-
         ProvideSubscriberInfoResponse psiResponse = this.attackerBvlrA.getTestAttackClient().getLastPsiResponse();
         this.attackerBvlrA.getTestAttackClient().clearLastPsiResponse();
-
-        System.out.println(psiResponse.toString());
-
-        //Location information aquired.
     }
 
     private void attackInterceptSms() {
