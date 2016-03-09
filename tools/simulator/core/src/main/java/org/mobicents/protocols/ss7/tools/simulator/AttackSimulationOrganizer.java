@@ -787,17 +787,17 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 35;
+        int numberOfAvailableMessages = 34;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
             case 0:
                 printSentMessage("MoForwardSMS", true);
-                this.performMoSMS();
+                this.performShortMessageMobileOriginated();
                 break;
             case 1:
                 printSentMessage("MtForwardSMS", true);
-                this.performMtSMS();
+                this.performShortMessageMobileTerminated();
                 break;
             case 2:
                 printSentMessage("UpdateLocation", true);
@@ -868,28 +868,28 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performProvideRoamingNumber();
                 break;
             case 19:
-                printSentMessage("RegisterSS", true);
-                this.performRegisterSS();
+                printSentMessage("RegistrationProcedure", true);
+                this.performRegistrationProcedure();
                 break;
             case 20:
-                printSentMessage("EraseSS", true);
-                this.performEraseSS();
+                printSentMessage("ErasureProcedure", true);
+                this.performErasureProcedure();
                 break;
             case 21:
-                printSentMessage("ActivateSS", true);
-                this.performActivateSS();
+                printSentMessage("ActivationProcedure", true);
+                this.performActivationProcedure();
                 break;
             case 22:
-                printSentMessage("DeactivateSS", true);
-                this.performDeactivateSS();
+                printSentMessage("DeactivationProcedure", true);
+                this.performDeactivationProcedure();
                 break;
             case 23:
-                printSentMessage("InterrogateSS", true);
-                this.performInterrogateSS();
+                printSentMessage("InterrogationProcedure", true);
+                this.performInterrogationProcedure();
                 break;
             case 24:
-                printSentMessage("RegisterPassword", true);
-                this.performRegisterPassword();
+                printSentMessage("PasswordRegistrationProcedure", true);
+                this.performPasswordRegistrationProcedure();
                 break;
             case 25:
                 printSentMessage("GetPassword", true);
@@ -916,18 +916,14 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performReportSMDeliveryStatus();
                 break;
             case 31:
-                printSentMessage("ReadyForSM", true);
-                this.performReadyForSM();
+                printSentMessage("ShortMessageAlertProcedure", true);
+                this.performShortMessageAlertProcedure();
                 break;
             case 32:
-                printSentMessage("AlertServiceCentre", true);
-                this.performAlertServiceCentre();
-                break;
-            case 33:
                 printSentMessage("InformServiceCentre", true);
                 this.performInformServiceCentre();
                 break;
-            case 34:
+            case 33:
                 printSentMessage("SendRoutingInfoForGPRS", true);
                 this.performSendRoutingInfoForGPRS();
                 break;
@@ -1057,7 +1053,16 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI().getData(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress());
     }
 
-    private void performMoSMS() {
+    private void performShortMessageMobileOriginated() {
+        /**
+         * Process per 3GPP TS 23.040 section 10.2:
+         * MSC/SGSN             SMSC                         HLR                         MSC/SGSN
+         *  |---MoForwardSMReq--->|--------SRIForSMReq------->|                              |
+         *  |                     |<-------SrIForSMResp-------|                              |
+         *  |                     |-----------------MtForwardShortMessageReq---------------->|
+         *  |<--MoForwardSMResp---|<----------------MtForwardShortMessageResp----------------|
+        */
+
         Subscriber originator = this.subscriberManager.getRandomSubscriber();
         Subscriber destination = this.subscriberManager.getRandomSubscriber();
 
@@ -1067,13 +1072,44 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.mscAsmscA.getTestAttackClient().performMoForwardSM("SMS Message", destIsdnNumber, origIsdnNumber, this.getDefaultSmscAddress().getAddress());
     }
 
-    private void performMtSMS() {
+    private void performShortMessageMobileTerminated() {
+        /**
+         * Process per 3GPP TS 23.040 section 10.1:
+         *  SMSC              SMSC                         HLR                         MSC/SGSN
+         *    |-MtForwardSMReq->|--------SRIForSMReq------->|                              |
+         *    |                 |<-------SrIForSMResp-------|                              |
+         *    |                 |-----------------MtForwardShortMessageReq---------------->|
+         *    |                 |<----------------MtForwardShortMessageResp----------------|
+         *    |                 |----ReportSMDeliveryReq--->|
+         */
+
+        Subscriber originator = this.subscriberManager.getRandomSubscriber();
         Subscriber destination = this.subscriberManager.getRandomSubscriber();
 
         String destIsdnNumber = destination.getMsisdn().getAddress();
 
         this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(destIsdnNumber,
                 hlrAsmscA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+    }
+
+    private void performShortMessageAlertProcedure() {
+        /**
+         * Process per 3GPP TS 23.040 section 10.3:
+         * Mobile is present:
+         * VLR/SGSN                    HLR                           SMSC
+         *    |-----ReadyForSMReq/----->|----AlertServiceCentreReq--->|
+         *    |----UpdateLocationReq--->|                             |
+         *    |<----ReadyForSMResp------|                             |
+         *    |                         |<---AlertServiceCentreResp---|
+         *
+         * MS memory capacity available:
+         * MSC/SGSN                    VLR                           HLR                           SMSC
+         *    |-----ReadyForSMReq------>|--------ReadyForSMReq------->|----AlertServiceCentreReq--->|
+         *    |<----ReadyForSMResp------|<------ReadyForSMResp--------|                             |
+         *    |                         |                             |<---AlertServiceCentreResp---|
+         *
+         */
+
     }
 
     private void performUpdateLocation() {
@@ -1159,34 +1195,179 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.hlrAvlrA.getTestAttackClient().performProvideRoamingNumber(subscriber.getImsi(), subscriber.getCurrentMscNumber());
     }
 
-    private void performRegisterSS() {
-        this.mscAvlrA.getTestAttackClient().performRegisterSS();
-        //this.vlrAhlrA.getTestAttackServer().performRegisterSS();
+    private void performRegistrationProcedure() {
+        /**
+         * Category 3 message, is used between operator networks.
+         *
+         * Process per standard 22.2:
+         * MSC                  VLR                           HLR
+         *  |---RegisterSSReq--->|--------RegisterSSReq------->|
+         *  |<--RegisterSSResp---|<-------RegisterSSResp-------|
+         *  |                    |<--InsertSubscriberDataReq---|
+         *  |                    |---InsertSubscriberDataResp->|
+         */
+
+        int messageOrigin = this.random.nextInt(3);
+
+        switch(messageOrigin) {
+            case 0:
+                this.mscAvlrA.getTestAttackClient().performRegisterSS();
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+            case 1:
+                this.vlrBhlrA.getTestAttackClient().performRegisterSS();
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+            case 2:
+                this.vlrAhlrB.getTestAttackClient().performRegisterSS();
+                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+        }
     }
 
-    private void performEraseSS() {
-        this.mscAvlrA.getTestAttackClient().performEraseSS();
-        //this.vlrAhlrA.getTestAttackServer().performEraseSS();
+    private void performErasureProcedure() {
+        /**
+         * EraseSS is a Category 3 message, is used between operator networks.
+         *
+         * Process per standard 22.3:
+         * MSC                  VLR                           HLR
+         *  |-----EraseSSReq---->|---------EraseSSReq--------->|
+         *  |<----EraseSSResp----|<--------EraseSSResp---------|
+         *  |                    |<--InsertSubscriberDataReq---|
+         *  |                    |---InsertSubscriberDataResp->|
+         */
+
+        int messageOrigin = this.random.nextInt(3);
+
+        switch(messageOrigin) {
+            case 0:
+                this.mscAvlrA.getTestAttackClient().performEraseSS();
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+            case 1:
+                this.vlrBhlrA.getTestAttackClient().performEraseSS();
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+            case 2:
+                this.vlrAhlrB.getTestAttackClient().performEraseSS();
+                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+        }
     }
 
-    private void performActivateSS() {
-        //this.mscAvlrA.getTestAttackClient().performActivateSS();
-        //this.vlrAhlrA.getTestAttackServer().performActivateSS();
+    private void performActivationProcedure() {
+        /**
+         * Process per standard 22.4:
+         * MSC                  VLR                           HLR
+         *  |----ActivateSSReq-->|-------ActivateSSReq-------->|
+         *  |<--GetPasswordReq---|<------GetPasswordReq--------|
+         *  |---GetPasswordResp->|-------GetPasswordResp------>|
+         *  |<---ActivateSSResp--|<------ActivateSSResp--------|
+         *  |                    |<--InsertSubscriberDataReq---|
+         *  |                    |---InsertSubscriberDataResp->|
+         */
+
+        int messageOrigin = this.random.nextInt(3);
+
+        switch(messageOrigin) {
+            case 0:
+                this.mscAvlrA.getTestAttackClient().performActivateSS();
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+            case 1:
+                this.vlrBhlrA.getTestAttackClient().performActivateSS();
+                this.hlrAvlrB.getTestAttackClient().performInsertSubscriberData();
+                break;
+            case 2:
+                this.vlrAhlrB.getTestAttackClient().performActivateSS();
+                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+        }
     }
 
-    private void performDeactivateSS() {
-        //this.mscAvlrA.getTestAttackClient().performDeactivateSS();
-        //this.vlrAhlrA.getTestAttackServer().performDeactivateSS();
+    private void performDeactivationProcedure() {
+        /**
+         * Process per standard 22.5:
+         * MSC                    VLR                             HLR
+         *  |----DeactivateSSReq-->|-------DeactivateSSReq-------->|
+         *  |<---GetPasswordReq----|<-------GetPasswordReq---------|
+         *  |----GetPasswordResp-->|--------GetPasswordResp------->|
+         *  |<---DeactivateSSResp--|<------DeactivateSSResp--------|
+         *  |                      |<---InsertSubscriberDataReq----|
+         *  |                      |----InsertSubscriberDataResp-->|
+         */
+
+        int messageOrigin = this.random.nextInt(3);
+
+        switch(messageOrigin) {
+            case 0:
+                this.mscAvlrA.getTestAttackClient().performDeactivateSS();
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+            case 1:
+                this.vlrBhlrA.getTestAttackClient().performDeactivateSS();
+                this.hlrAvlrB.getTestAttackClient().performInsertSubscriberData();
+                break;
+            case 2:
+                this.vlrAhlrB.getTestAttackClient().performDeactivateSS();
+                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
+                break;
+        }
     }
 
-    private void performInterrogateSS() {
-        //this.mscAvlrA.getTestAttackClient().performInterrogateSS();
-        //this.vlrAhlrA.getTestAttackServer().performInterrogateSS();
+    private void performInterrogationProcedure() {
+        /**
+         * Process per standard 22.6:
+         * MSC                     VLR                           HLR
+         *  |---InterrogateSSReq--->|------InterrogateSSReq------>|
+         *  |<--InterrogateSSResp---|<-----InterrogateSSResp------|
+         *
+         *  NOTE: Message to HLR is optional.
+         */
+
+        int messageOrigin = this.random.nextInt(3);
+        boolean forwardToHLR = this.random.nextBoolean();
+
+        switch(messageOrigin) {
+            case 0:
+                this.mscAvlrA.getTestAttackClient().performInterrogateSS(forwardToHLR);
+                break;
+            case 1:
+                this.vlrBhlrA.getTestAttackClient().performInterrogateSS(false);
+                break;
+            case 2:
+                this.vlrAhlrB.getTestAttackClient().performInterrogateSS(false);
+                break;
+        }
     }
 
-    private void performRegisterPassword() {
-        //this.mscAvlrA.getTestAttackClient().performRegisterSS();
-        //this.vlrAhlrA.getTestAttackServer().performRegisterSS();
+    private void performPasswordRegistrationProcedure() {
+        /**
+         * Process per standard 22.8:
+         * MSC                        VLR                             HLR
+         *  |----RegisterPasswordReq-->|-----RegisterPasswordReq------>|
+         *  |<-----GetPasswordReq------|<-------GetPasswordReq---------|
+         *  |------GetPasswordResp---->|--------GetPasswordResp------->|
+         *  |<-----GetPasswordReq------|<-------GetPasswordReq---------|
+         *  |------GetPasswordResp---->|--------GetPasswordResp------->|
+         *  |<-----GetPasswordReq------|<-------GetPasswordReq---------|
+         *  |------GetPasswordResp---->|--------GetPasswordResp------->|
+         *  |<---RegisterPasswordResp--|<----RegisterPasswordResp------|
+         */
+
+        int messageOrigin = this.random.nextInt(3);
+
+        switch(messageOrigin) {
+            case 0:
+                this.mscAvlrA.getTestAttackClient().performRegisterPassword();
+                break;
+            case 1:
+                this.vlrBhlrA.getTestAttackClient().performRegisterPassword();
+                break;
+            case 2:
+                this.vlrAhlrB.getTestAttackClient().performRegisterPassword();
+                break;
+        }
     }
 
     private void performGetPassword() {
@@ -1221,19 +1402,6 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void performReportSMDeliveryStatus() {
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
         this.smscAhlrA.getTestAttackClient().performReportSMDeliveryStatus(subscriber.getMsisdn());
-    }
-
-    private void performReadyForSM() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-
-        //this.mscAvlrA.getTestAttackClient().performReadyForSM();
-        this.vlrAhlrA.getTestAttackServer().performReadyForSM(subscriber.getImsi());
-        //this.sgsnAhlrA.getTestAttackClient().performReadyForSM();
-        //this.smscAhlrA.getTestAttackClient().performReadyForSM();
-    }
-
-    private void performAlertServiceCentre() {
-        //this.hlrAmscA.getTestAttackServer().performAlertServiceCentre();
     }
 
     private void performInformServiceCentre() {
