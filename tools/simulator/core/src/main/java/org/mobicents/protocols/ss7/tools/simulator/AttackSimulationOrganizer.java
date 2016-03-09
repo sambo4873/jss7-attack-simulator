@@ -64,6 +64,33 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost gsmscfAvlrA;
     private AttackTesterHost vlrAgsmscfA;
 
+    private AttackTesterHost mscBhlrA;
+    private AttackTesterHost hlrAmscB;
+
+    private AttackTesterHost mscBsmscA;
+    private AttackTesterHost smscAmscB;
+
+    private AttackTesterHost mscBvlrA;
+    private AttackTesterHost vlrAmscB;
+
+    private AttackTesterHost hlrBsmscA;
+    private AttackTesterHost smscAhlrB;
+
+    private AttackTesterHost hlrBvlrA;
+    private AttackTesterHost vlrAhlrB;
+
+    private AttackTesterHost vlrBvlrA;
+    private AttackTesterHost vlrAvlrB;
+
+    private AttackTesterHost smscBsmscA;
+    private AttackTesterHost smscAsmscB;
+
+    private AttackTesterHost smscBhlrA;
+    private AttackTesterHost hlrAsmscB;
+
+    private AttackTesterHost vlrBhlrA;
+    private AttackTesterHost hlrAvlrB;
+
     private AttackTesterHost attackerBmscA;
     private AttackTesterHost mscAattackerB;
 
@@ -75,15 +102,6 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private AttackTesterHost attackerBvlrA;
     private AttackTesterHost vlrAattackerB;
-
-    private AttackTesterHost smscAsmscB;
-    private AttackTesterHost smscBsmscA;
-
-    private AttackTesterHost smscAhlrB;
-    private AttackTesterHost hlrBsmscA;
-
-    private AttackTesterHost smscBhlrA;
-    private AttackTesterHost hlrAsmscB;
 
     private AttackTesterHost isupClient;
     private AttackTesterHost isupServer;
@@ -136,46 +154,67 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     public static final int MSC_A_MSC_B_PORT = 8011;
     public static final int MSC_B_MSC_A_PORT = 8012;
+
     public static final int MSC_A_HLR_A_PORT = 8013;
     public static final int HLR_A_MSC_A_PORT = 8014;
+
     public static final int MSC_A_SMSC_A_PORT = 8015;
     public static final int SMSC_A_MSC_A_PORT = 8016;
+
     public static final int MSC_A_VLR_A_PORT = 8017;
     public static final int VLR_A_MSC_A_PORT = 8018;
+
     public static final int SMSC_A_HLR_A_PORT = 8019;
     public static final int HLR_A_SMSC_A_PORT = 8020;
+
     public static final int HLR_A_VLR_A_PORT = 8021;
     public static final int VLR_A_HLR_A_PORT = 8022;
+
     public static final int SGSN_A_HLR_A_PORT = 8023;
     public static final int HLR_A_SGSN_A_PORT = 8024;
+
     public static final int GSMSCF_A_HLR_A_PORT = 8025;
     public static final int HLR_A_GSMSCF_A_PORT = 8026;
+
     public static final int GSMSCF_A_VLR_A_PORT = 8027;
     public static final int VLR_A_GSMSCF_A_PORT = 8028;
+
     public static final int MSC_B_HLR_A_PORT = 8029;
     public static final int HLR_A_MSC_B_PORT = 8030;
+
     public static final int MSC_B_SMSC_A_PORT = 8031;
     public static final int SMSC_A_MSC_B_PORT = 8032;
+
     public static final int MSC_B_VLR_A_PORT = 8033;
     public static final int VLR_A_MSC_B_PORT = 8034;
+
     public static final int HLR_B_SMSC_A_PORT = 8035;
     public static final int SMSC_A_HLR_B_PORT = 8036;
+
     public static final int HLR_B_VLR_A_PORT = 8037;
     public static final int VLR_A_HLR_B_PORT = 8038;
+
     public static final int VLR_B_VLR_A_PORT = 8039;
     public static final int VLR_A_VLR_B_PORT = 8040;
+
     public static final int SMSC_B_SMSC_A_PORT = 8041;
     public static final int SMSC_A_SMSC_B_PORT = 8042;
+
     public static final int SMSC_B_HLR_A_PORT = 8043;
     public static final int HLR_A_SMSC_B_PORT = 8044;
+
     public static final int VLR_B_HLR_A_PORT = 8045;
     public static final int HLR_A_VLR_B_PORT = 8046;
+
     public static final int ATTACKER_MSC_A_PORT = 8047;
     public static final int MSC_A_ATTACK_PORT = 8048;
+
     public static final int ATTACKER_HLR_A_PORT = 8049;
     public static final int HLR_A_ATTACKER_PORT = 8050;
+
     public static final int ATTACKER_SMSC_A_PORT = 8051;
     public static final int SMSC_A_ATTACKER_PORT = 8052;
+
     public static final int ATTACKER_VLR_A_PORT = 8053;
     public static final int VLR_A_ATTACKER_PORT = 8054;
 
@@ -296,8 +335,26 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.smscAhlrB = new AttackTesterHost("SMSC_A_HLR_B", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_HLR_B, this);
         this.hlrBsmscA = new AttackTesterHost("HLR_B_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.HLR_B_SMSC_A, this);
 
-        this.smscBhlrA = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.SMSC_B_HLR_A, this);
-        this.hlrAsmscB = new AttackTesterHost("ATTACKER_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_SMSC_B, this);
+        this.smscBhlrA = new AttackTesterHost("SMSC_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.SMSC_B_HLR_A, this);
+        this.hlrAsmscB = new AttackTesterHost("HLR_A_SMSC_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_SMSC_B, this);
+
+        this.mscBhlrA = new AttackTesterHost("MSC_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.MSC_B_HLR_A, this);
+        this.hlrAmscB = new AttackTesterHost("HLR_A_MSC_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_MSC_B, this);
+
+        this.mscBsmscA = new AttackTesterHost("MSC_B_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_B_SMSC_A, this);
+        this.smscAmscB = new AttackTesterHost("SMSC_A_MSC_B", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_MSC_B, this);
+
+        this.mscBvlrA = new AttackTesterHost("MSC_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.MSC_B_VLR_A, this);
+        this.vlrAmscB = new AttackTesterHost("VLR_A_MSC_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_MSC_B, this);
+
+        this.hlrBvlrA = new AttackTesterHost("HLR_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.HLR_B_VLR_A, this);
+        this.vlrAhlrB = new AttackTesterHost("VLR_A_HLR_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_HLR_B, this);
+
+        this.vlrBvlrA = new AttackTesterHost("VLR_B_VLR_A", simulatorHome, AttackTesterHost.AttackNode.VLR_B_VLR_A, this);
+        this.vlrAvlrB = new AttackTesterHost("VLR_A_VLR_B", simulatorHome, AttackTesterHost.AttackNode.VLR_A_VLR_B, this);
+
+        this.vlrBhlrA = new AttackTesterHost("VLR_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.VLR_B_HLR_A, this);
+        this.hlrAvlrB = new AttackTesterHost("HLR_A_VLR_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_VLR_B, this);
     }
 
     public ISDNAddressString getDefaultMscAddress() {
@@ -401,6 +458,24 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         this.smscBhlrA.start();
         this.hlrAsmscB.start();
+
+        this.mscBhlrA.start();
+        this.hlrAmscB.start();
+
+        this.mscBsmscA.start();
+        this.smscAmscB.start();
+
+        this.mscBvlrA.start();
+        this.vlrAmscB.start();
+
+        this.hlrBvlrA.start();
+        this.vlrAhlrB.start();
+
+        this.vlrBvlrA.start();
+        this.vlrAvlrB.start();
+
+        this.vlrBhlrA.start();
+        this.hlrAvlrB.start();
     }
 
     private boolean waitForM3UALinks() {
@@ -423,7 +498,13 @@ public class AttackSimulationOrganizer implements Stoppable {
                             attackerBvlrA.getM3uaMan().getState().contains("ACTIVE") &&
                             smscAsmscB.getM3uaMan().getState().contains("ACTIVE") &&
                             smscAhlrB.getM3uaMan().getState().contains("ACTIVE") &&
-                            smscBhlrA.getM3uaMan().getState().contains("ACTIVE"))
+                            smscBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            mscBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            mscBsmscA.getM3uaMan().getState().contains("ACTIVE") &&
+                            mscBvlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            hlrBvlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            vlrBvlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                            vlrBhlrA.getM3uaMan().getState().contains("ACTIVE"))
                         return true;
                 } else {
                     switch(this.simpleAttackGoal) {
@@ -493,7 +574,13 @@ public class AttackSimulationOrganizer implements Stoppable {
                     this.attackerBvlrA.isNeedQuit() || this.vlrAattackerB.isNeedQuit() ||
                     this.smscAsmscB.isNeedQuit() || this.smscBsmscA.isNeedQuit() ||
                     this.smscAhlrB.isNeedQuit() || this.hlrBsmscA.isNeedQuit() ||
-                    this.smscBhlrA.isNeedQuit() || this.hlrAsmscB.isNeedQuit();
+                    this.smscBhlrA.isNeedQuit() || this.hlrAsmscB.isNeedQuit() ||
+                    this.mscBhlrA.isNeedQuit() || this.hlrAmscB.isNeedQuit() ||
+                    this.mscBsmscA.isNeedQuit() || this.smscAmscB.isNeedQuit() ||
+                    this.mscBvlrA.isNeedQuit() || this.vlrAmscB.isNeedQuit() ||
+                    this.hlrBvlrA.isNeedQuit() || this.vlrAhlrB.isNeedQuit() ||
+                    this.vlrBvlrA.isNeedQuit() || this.vlrAvlrB.isNeedQuit() ||
+                    this.vlrBhlrA.isNeedQuit() || this.hlrAvlrB.isNeedQuit();
         }
     }
 
@@ -563,6 +650,18 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.hlrBsmscA.execute();
             this.smscBhlrA.execute();
             this.hlrAsmscB.execute();
+            this.mscBhlrA.execute();
+            this.hlrAmscB.execute();
+            this.mscBsmscA.execute();
+            this.smscAmscB.execute();
+            this.mscBvlrA.execute();
+            this.vlrAmscB.execute();
+            this.hlrBvlrA.execute();
+            this.vlrAhlrB.execute();
+            this.vlrBvlrA.execute();
+            this.vlrAvlrB.execute();
+            this.vlrBhlrA.execute();
+            this.hlrAvlrB.execute();
         }
     }
 
