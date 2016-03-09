@@ -552,6 +552,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void configureShutDownHook() {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
+                System.out.println();
                 System.out.println("Number of genuine messages generated: " + AttackSimulationOrganizer.countGenuine);
                 System.out.println("Number of attacks generated: " + AttackSimulationOrganizer.countAttack);
             }
