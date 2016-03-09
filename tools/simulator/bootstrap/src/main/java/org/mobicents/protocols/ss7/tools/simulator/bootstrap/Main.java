@@ -148,7 +148,6 @@ public class Main {
                 case 'a':
                     //Attack simulation type
                     arg = g.getOptarg();
-                    System.out.println("Passed " + String.valueOf(c) + " value: " + arg);
                     if (arg.equals("simple")) {
                         this.attack_command = "simple";
                     } else if (arg.equals("complex")){
@@ -161,19 +160,16 @@ public class Main {
                 case 'c':
                     //Change of generating an attack.
                     arg = g.getOptarg();
-                    System.out.println("Passed " + Character.getNumericValue(c) + " value: " + arg);
                     this.chanceOfAttack = Integer.valueOf(arg);
                     break;
                 case 'm':
                     //Attack goal to perform, in cooperation with -a simple
                     arg = g.getOptarg();
-                    System.out.println("Passed " + String.valueOf(c) + " value: " + arg);
                     this.simple_attack_goal = arg;
                     break;
                 case 's':
                     //Number of subscribers to generate in complex attack simulation.
                     arg = g.getOptarg();
-                    System.out.println("Passed " + String.valueOf(c) + " value: " + arg);
                     this.complexNumSubs = Integer.valueOf(arg);
                     break;
                 case 1:
