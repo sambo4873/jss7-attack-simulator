@@ -700,36 +700,36 @@ public class AttackSimulationOrganizer implements Stoppable {
                 sleepTime = this.random.nextInt((1000 - 100) + 1) + 100;
                 sleepTime = 50;
                 Thread.sleep(sleepTime);
-            } catch (InterruptedException e) {
+
+                if (this.testerHostsNeedQuit())
+                    break;
+
+                this.testerHostsExecuteCheckStore();
+
+                if (simpleSimulation) {
+                    switch (this.simpleAttackGoal) {
+                        case LOCATION_ATI:
+                            this.attackLocationAti();
+                            break;
+                        case LOCATION_PSI:
+                            this.attackLocationPsi();
+                            break;
+                        case INTERCEPT_SMS:
+                            this.attackInterceptSms();
+                            break;
+                        case TEST_PORTS:
+                            break;
+                    }
+                    break;
+                } else {
+                    this.generateTraffic();
+                }
+            }
+            catch (InterruptedException e) {
                 e.printStackTrace();
                 break;
             }
-
-            if(this.testerHostsNeedQuit())
-                break;
-
-            this.testerHostsExecuteCheckStore();
-
-            if(simpleSimulation) {
-                switch (this.simpleAttackGoal) {
-                    case LOCATION_ATI:
-                        this.attackLocationAti();
-                        break;
-                    case LOCATION_PSI:
-                        this.attackLocationPsi();
-                        break;
-                    case INTERCEPT_SMS:
-                        this.attackInterceptSms();
-                        break;
-                    case TEST_PORTS:
-                        break;
-                }
-                break;
-            } else {
-                this.generateTraffic();
-            }
         }
-
     }
 
     private void generateTraffic() {
@@ -1238,13 +1238,55 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     @Override
-    public void stop() {
-
+    public synchronized void stop() {
+        this.mscAmscB.stop();
+        this.mscBmscA.stop();
+        this.mscAhlrA.stop();
+        this.hlrAmscA.stop();
+        this.mscAsmscA.stop();
+        this.smscAmscA.stop();
+        this.mscAvlrA.stop();
+        this.vlrAmscA.stop();
+        this.smscAhlrA.stop();
+        this.hlrAsmscA.stop();
+        this.hlrAvlrA.stop();
+        this.vlrAhlrA.stop();
+        this.sgsnAhlrA.stop();
+        this.hlrAsgsnA.stop();
+        this.gsmscfAhlrA.stop();
+        this.hlrAgsmscfA.stop();
+        this.gsmscfAvlrA.stop();
+        this.vlrAgsmscfA.stop();
+        this.attackerBmscA.stop();
+        this.mscAattackerB.stop();
+        this.attackerBhlrA.stop();
+        this.hlrAattackerB.stop();
+        this.attackerBsmscA.stop();
+        this.smscAattackerB.stop();
+        this.attackerBvlrA.stop();
+        this.vlrAattackerB.stop();
+        this.smscAsmscB.stop();
+        this.smscBsmscA.stop();
+        this.smscAhlrB.stop();
+        this.hlrBsmscA.stop();
+        this.smscBhlrA.stop();
+        this.hlrAsmscB.stop();
+        this.mscBhlrA.stop();
+        this.hlrAmscB.stop();
+        this.mscBsmscA.stop();
+        this.smscAmscB.stop();
+        this.mscBvlrA.stop();
+        this.vlrAmscB.stop();
+        this.hlrBvlrA.stop();
+        this.vlrAhlrB.stop();
+        this.vlrBvlrA.stop();
+        this.vlrAvlrB.stop();
+        this.vlrBhlrA.stop();
+        this.hlrAvlrB.stop();
     }
 
     @Override
     public void execute() {
-
     }
 
     @Override
