@@ -673,6 +673,13 @@ public class AttackSimulationOrganizer implements Stoppable {
                 System.out.println("Chance of attack used: " + chanceOfAttack);
                 System.out.println("Number of genuine messages generated: " + countGenuine);
                 System.out.println("Number of attacks generated: " + countAttack);
+
+                //Sleep for some seconds, so nodes can shutdown.
+                try{
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
