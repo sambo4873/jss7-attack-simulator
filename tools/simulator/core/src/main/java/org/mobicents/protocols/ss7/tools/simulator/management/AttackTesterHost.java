@@ -2,7 +2,6 @@ package org.mobicents.protocols.ss7.tools.simulator.management;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Properties;
 
@@ -10,8 +9,6 @@ import javax.management.Notification;
 
 import javolution.text.TextBuilder;
 import javolution.xml.XMLBinding;
-import javolution.xml.XMLObjectReader;
-import javolution.xml.XMLObjectWriter;
 
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
@@ -35,7 +32,6 @@ import org.mobicents.protocols.ss7.sccp.SccpStack;
 import org.mobicents.protocols.ss7.tools.simulator.AttackSimulationOrganizer;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 import org.mobicents.protocols.ss7.tools.simulator.common.AttackConfigurationData;
-import org.mobicents.protocols.ss7.tools.simulator.common.ConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.level1.*;
 import org.mobicents.protocols.ss7.tools.simulator.level2.*;
 import org.mobicents.protocols.ss7.tools.simulator.level3.*;
@@ -44,7 +40,6 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClient
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServer;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServerConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.*;
-import sun.security.jca.GetInstance;
 
 /**
  * @author Kristoffer Jensen
@@ -99,6 +94,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private int isupDpc;
 
     private AttackSimulationOrganizer attackSimulationOrganizer;
+
 
     public AttackTesterHost() {
         this.appName = null;
@@ -235,27 +231,136 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             case HLR_A_SMSC_A:
                 this.configureHlrASmscA();
                 break;
+            case SMSC_A_SMSC_B:
+                this.configureSmscASmscB();
+                break;
+            case SMSC_B_SMSC_A:
+                this.configureSmscBSmscA();
+                break;
+            case SMSC_A_HLR_B:
+                this.configureSmscAHlrB();
+                break;
+            case HLR_B_SMSC_A:
+                this.configureHlrBSmscA();
+                break;
+            case MSC_B_HLR_A:
+                this.configureMscBHlrA();
+                break;
+            case HLR_A_MSC_B:
+                this.configureHlrAMscB();
+                break;
+            case MSC_B_SMSC_A:
+                this.configureMscBSmscA();
+                break;
+            case SMSC_A_MSC_B:
+                this.configureSmscAMscB();
+                break;
+            case MSC_B_VLR_A:
+                this.configureMscBVlrA();
+                break;
+            case VLR_A_MSC_B:
+                this.configureVlrAMscB();
+                break;
+            case HLR_B_VLR_A:
+                this.configureHlrBVlrA();
+                break;
+            case VLR_A_HLR_B:
+                this.configureVlrAHlrB();
+                break;
+            case VLR_B_VLR_A:
+                this.configureVlrBVlrA();
+                break;
+            case VLR_A_VLR_B:
+                this.configureVlrAVlrB();
+                break;
+            case SMSC_B_HLR_A:
+                this.configureSmscBHlrA();
+                break;
+            case HLR_A_SMSC_B:
+                this.configureHlrASmscB();
+                break;
+            case VLR_B_HLR_A:
+                this.configureVlrBHlrA();
+                break;
+            case HLR_A_VLR_B:
+                this.configureHlrAVlrB();
+                break;
 
             default:
                 break;
         }
     }
 
-    private void configureSmscAHlrA() {
+    private void configureHlrAVlrB() {
         //////// L1 Configuration Data //////////
 
-        int opc = 3,
+        int opc = AttackSimulationOrganizer.HLR_A_OPC,
                 opc2 = 0,
-                dpc = 2,
+                dpc = AttackSimulationOrganizer.VLR_B_OPC,
                 dpc2 = 0,
-                localPort = 8018,
+                localPort = AttackSimulationOrganizer.HLR_A_VLR_B_PORT,
                 localPort2 = 0,
-                remotePort = 8019,
+                remotePort = AttackSimulationOrganizer.VLR_B_HLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.HLR_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.VLR_B_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.VLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureVlrBHlrA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.VLR_B_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.HLR_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.VLR_B_HLR_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.HLR_A_VLR_B_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -266,14 +371,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 3,
+        int localSpc = AttackSimulationOrganizer.VLR_B_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 2,
+                localSsn = AttackSimulationOrganizer.VLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 6;
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1113";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
 
         ////////////////////////////////////////
 
@@ -282,14 +387,944 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1112";
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureHlrASmscB() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.HLR_A_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.SMSC_B_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.HLR_A_SMSC_B_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.SMSC_B_HLR_A_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
 
         ////////////////////////////////////////
 
 
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
+        //////// L2 Configuration Data //////////
 
+        int localSpc = AttackSimulationOrganizer.HLR_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.SMSC_B_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.SMSC_B_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureSmscBHlrA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.SMSC_B_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.HLR_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.SMSC_B_HLR_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.HLR_A_SMSC_B_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.SMSC_B_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.SMSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_A_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_B_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureVlrAVlrB() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.VLR_A_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.VLR_B_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.VLR_A_VLR_B_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.VLR_B_VLR_A_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.VLR_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.VLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.VLR_B_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.VLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureVlrBVlrA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.VLR_B_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.VLR_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.VLR_B_VLR_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.VLR_A_VLR_B_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.VLR_B_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.VLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.VLR_A_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.VLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureVlrAHlrB() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.VLR_A_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.HLR_B_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.VLR_A_HLR_B_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.HLR_B_VLR_A_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.VLR_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.VLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_B_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_B_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureHlrBVlrA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.HLR_B_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.VLR_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.HLR_B_VLR_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.VLR_A_HLR_B_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.HLR_B_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.VLR_A_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.VLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_B_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureVlrAMscB() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.VLR_A_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.MSC_B_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.VLR_A_MSC_B_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.MSC_B_VLR_A_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.VLR_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.VLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.MSC_B_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.MSC_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureMscBVlrA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.MSC_B_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.VLR_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.MSC_B_VLR_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.VLR_A_MSC_B_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.MSC_B_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.MSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.VLR_A_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.VLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureSmscAMscB() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.SMSC_A_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.MSC_B_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.SMSC_A_MSC_B_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.MSC_B_SMSC_A_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.SMSC_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.SMSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.MSC_B_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.MSC_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureMscBSmscA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.MSC_B_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.SMSC_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.MSC_B_SMSC_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.SMSC_A_MSC_B_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.MSC_B_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.MSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.SMSC_A_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureHlrAMscB() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.HLR_A_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.MSC_B_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.HLR_A_MSC_B_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.MSC_B_HLR_A_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.HLR_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.MSC_B_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.MSC_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureMscBHlrA(){
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.MSC_B_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.HLR_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.MSC_B_HLR_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.HLR_A_MSC_B_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.MSC_B_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.MSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_A_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureHlrBSmscA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.HLR_B_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.SMSC_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.HLR_B_SMSC_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.SMSC_A_HLR_B_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.HLR_B_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.SMSC_A_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_B_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureSmscAHlrB() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.SMSC_A_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.HLR_B_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.SMSC_A_HLR_B_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.HLR_B_SMSC_A_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.SMSC_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.SMSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_B_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_B_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureSmscBSmscA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.SMSC_B_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.SMSC_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.SMSC_B_SMSC_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.SMSC_A_SMSC_B_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.SMSC_B_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.SMSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.SMSC_A_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_B_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureSmscASmscB() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.SMSC_A_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.SMSC_B_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.SMSC_A_SMSC_B_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.SMSC_B_SMSC_A_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = true;
+        IPSPType ipspType = IPSPType.SERVER;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.SMSC_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.SMSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.SMSC_B_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.SMSC_B_GT;
+
+        ////////////////////////////////////////
+
+        configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
+        configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
+        configureL3(destReferenceDigits, origReferenceDigits, remoteAddressDigits);
+
+        if(isSctpServer)
+            configureTestAttackServer();
+        else
+            configureTestAttackClient();
+    }
+
+    private void configureSmscAHlrA() {
+        //////// L1 Configuration Data //////////
+
+        int opc = AttackSimulationOrganizer.SMSC_A_OPC,
+                opc2 = 0,
+                dpc = AttackSimulationOrganizer.HLR_A_OPC,
+                dpc2 = 0,
+                localPort = AttackSimulationOrganizer.SMSC_A_HLR_A_PORT,
+                localPort2 = 0,
+                remotePort = AttackSimulationOrganizer.HLR_A_SMSC_A_PORT,
+                remotePort2 = 0;
+
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
+                localHost2 = "",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = "";
+
+        boolean isSctpServer = false;
+        IPSPType ipspType = IPSPType.CLIENT;
+
+        ////////////////////////////////////////
+
+
+        //////// L2 Configuration Data //////////
+
+        int localSpc = AttackSimulationOrganizer.SMSC_A_SPC,
+                localSpc2 = 0,
+                localSsn = AttackSimulationOrganizer.SMSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_A_SPC,
+                remoteSpc2 = 0,
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
+        boolean routeonGtMode = true;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+
+        ////////////////////////////////////////
+
+
+        //////// L3 Configuration Data //////////
+
+        String destReferenceDigits = "",
+                origReferenceDigits = "",
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+
+        ////////////////////////////////////////
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -304,18 +1339,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureHlrASmscA() {
         //////// L1 Configuration Data //////////
 
-        int opc = 2,
+        int opc = AttackSimulationOrganizer.HLR_A_OPC,
                 opc2 = 0,
-                dpc = 3,
+                dpc = AttackSimulationOrganizer.SMSC_A_OPC,
                 dpc2 = 0,
-                localPort = 8019,
+                localPort = AttackSimulationOrganizer.HLR_A_SMSC_A_PORT,
                 localPort2 = 0,
-                remotePort = 8018,
+                remotePort = AttackSimulationOrganizer.SMSC_A_HLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -326,14 +1361,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 2,
+        int localSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 6,
-                remoteSpc = 3,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.SMSC_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1112";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
 
@@ -342,14 +1377,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1113";
+                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -364,18 +1394,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureVlrAAttackerB() {
         //////// L1 Configuration Data //////////
 
-        int opc = 4,
+        int opc = AttackSimulationOrganizer.VLR_A_OPC,
                 opc2 = 0,
-                dpc = 5,
+                dpc = AttackSimulationOrganizer.ATTACKER_OPC,
                 dpc2 = 0,
-                localPort = 8028,
+                localPort = AttackSimulationOrganizer.VLR_A_ATTACKER_PORT,
                 localPort2 = 0,
-                remotePort = 8027,
+                remotePort = AttackSimulationOrganizer.ATTACKER_VLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -386,14 +1416,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 4,
+        int localSpc = AttackSimulationOrganizer.VLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 7,
-                remoteSpc = 5,
+                localSsn = AttackSimulationOrganizer.VLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.ATTACKER_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.ATTACKER_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1114";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
 
@@ -402,14 +1432,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "2221";
+                remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -424,18 +1449,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureAttackerBVlrA() {
         //////// L1 Configuration Data //////////
 
-        int opc = 5,
+        int opc = AttackSimulationOrganizer.ATTACKER_OPC,
                 opc2 = 0,
-                dpc = 4,
+                dpc = AttackSimulationOrganizer.VLR_A_OPC,
                 dpc2 = 0,
-                localPort = 8027,
+                localPort = AttackSimulationOrganizer.ATTACKER_VLR_A_PORT,
                 localPort2 = 0,
-                remotePort = 8028,
+                remotePort = AttackSimulationOrganizer.VLR_A_ATTACKER_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -446,14 +1471,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 5,
+        int localSpc = AttackSimulationOrganizer.ATTACKER_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 4,
+                localSsn = AttackSimulationOrganizer.ATTACKER_SSN,
+                remoteSpc = AttackSimulationOrganizer.VLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 7;
+                remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "2221";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
 
@@ -462,14 +1487,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1114";
+                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -484,18 +1504,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureSmscAAttackerB() {
         //////// L1 Configuration Data //////////
 
-        int opc = 3,
+        int opc = AttackSimulationOrganizer.SMSC_A_OPC,
                 opc2 = 0,
-                dpc = 5,
+                dpc = AttackSimulationOrganizer.ATTACKER_OPC,
                 dpc2 = 0,
-                localPort = 8026,
+                localPort = AttackSimulationOrganizer.SMSC_A_ATTACKER_PORT,
                 localPort2 = 0,
-                remotePort = 8025,
+                remotePort = AttackSimulationOrganizer.ATTACKER_SMSC_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -506,14 +1526,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 3,
+        int localSpc = AttackSimulationOrganizer.SMSC_A_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 5,
+                localSsn = AttackSimulationOrganizer.SMSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.ATTACKER_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.ATTACKER_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1113";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
 
         ////////////////////////////////////////
 
@@ -522,14 +1542,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "2221";
+                remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -544,18 +1559,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureAttackerBSmscA() {
         //////// L1 Configuration Data //////////
 
-        int opc = 5,
+        int opc = AttackSimulationOrganizer.ATTACKER_OPC,
                 opc2 = 0,
-                dpc = 3,
+                dpc = AttackSimulationOrganizer.SMSC_A_OPC,
                 dpc2 = 0,
-                localPort = 8025,
+                localPort = AttackSimulationOrganizer.ATTACKER_SMSC_A_PORT,
                 localPort2 = 0,
-                remotePort = 8026,
+                remotePort = AttackSimulationOrganizer.SMSC_A_ATTACKER_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -566,14 +1581,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 5,
+        int localSpc = AttackSimulationOrganizer.ATTACKER_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 3,
+                localSsn = AttackSimulationOrganizer.ATTACKER_SSN,
+                remoteSpc = AttackSimulationOrganizer.SMSC_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "2221";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
 
@@ -582,14 +1597,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1113";
+                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -604,18 +1614,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureHlrAAttackerB() {
         //////// L1 Configuration Data //////////
 
-        int opc = 2,
+        int opc = AttackSimulationOrganizer.HLR_A_OPC,
                 opc2 = 0,
-                dpc = 5,
+                dpc = AttackSimulationOrganizer.ATTACKER_OPC,
                 dpc2 = 0,
-                localPort = 8024,
+                localPort = AttackSimulationOrganizer.HLR_A_ATTACKER_PORT,
                 localPort2 = 0,
-                remotePort = 8023,
+                remotePort = AttackSimulationOrganizer.ATTACKER_HLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -626,14 +1636,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 2,
+        int localSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 6,
-                remoteSpc = 5,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.ATTACKER_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.ATTACKER_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1112";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
 
@@ -642,14 +1652,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "2221";
+                remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -664,18 +1669,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureAttackerBHlrA() {
         //////// L1 Configuration Data //////////
 
-        int opc = 5,
+        int opc = AttackSimulationOrganizer.ATTACKER_OPC,
                 opc2 = 0,
-                dpc = 2,
+                dpc = AttackSimulationOrganizer.HLR_A_OPC,
                 dpc2 = 0,
-                localPort = 8023,
+                localPort = AttackSimulationOrganizer.ATTACKER_HLR_A_PORT,
                 localPort2 = 0,
-                remotePort = 8024,
+                remotePort = AttackSimulationOrganizer.HLR_A_ATTACKER_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -686,14 +1691,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 5,
+        int localSpc = AttackSimulationOrganizer.ATTACKER_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 2,
+                localSsn = AttackSimulationOrganizer.ATTACKER_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 6;
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "2221";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
 
@@ -702,14 +1707,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1112";
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -724,18 +1724,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureMscAAttackerB() {
         //////// L1 Configuration Data //////////
 
-        int opc = 1,
+        int opc = AttackSimulationOrganizer.MSC_A_OPC,
                 opc2 = 0,
-                dpc = 5,
+                dpc = AttackSimulationOrganizer.ATTACKER_OPC,
                 dpc2 = 0,
-                localPort = 8030,
+                localPort = AttackSimulationOrganizer.MSC_A_ATTACK_PORT,
                 localPort2 = 0,
-                remotePort = 8029,
+                remotePort = AttackSimulationOrganizer.ATTACKER_MSC_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -746,14 +1746,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 1,
+        int localSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 5,
+                localSsn = AttackSimulationOrganizer.MSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.ATTACKER_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.ATTACKER_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1111";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
 
@@ -762,14 +1762,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "2221";
+                remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -784,18 +1779,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     private void configureAttackerBMscA() {
         //////// L1 Configuration Data //////////
 
-        int opc = 5,
+        int opc = AttackSimulationOrganizer.ATTACKER_OPC,
                 opc2 = 0,
-                dpc = 1,
+                dpc = AttackSimulationOrganizer.MSC_A_OPC,
                 dpc2 = 0,
-                localPort = 8029,
+                localPort = AttackSimulationOrganizer.ATTACKER_MSC_A_PORT,
                 localPort2 = 0,
-                remotePort = 8030,
+                remotePort = AttackSimulationOrganizer.MSC_A_ATTACK_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -806,14 +1801,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 5,
+        int localSpc = AttackSimulationOrganizer.ATTACKER_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 1,
+                localSsn = AttackSimulationOrganizer.ATTACKER_SSN,
+                remoteSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "2221";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
 
@@ -822,14 +1817,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1111";
+                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -845,19 +1835,19 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 1,
+        int opc = AttackSimulationOrganizer.MSC_A_OPC,
                 opc2 = 0,
-                dpc = 5,
+                dpc = AttackSimulationOrganizer.MSC_B_OPC,
                 dpc2 = 0,
-                localPort = 8011,
+                localPort = AttackSimulationOrganizer.MSC_A_MSC_B_PORT,
                 localPort2 = 0,
-                remotePort = 8111,
+                remotePort = AttackSimulationOrganizer.MSC_B_MSC_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
-                remoteHost2 = "";
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
+                remoteHost2 = null;
 
         boolean isSctpServer = false;
         IPSPType ipspType = IPSPType.CLIENT;
@@ -867,14 +1857,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 1,
+        int localSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 5,
+                localSsn = AttackSimulationOrganizer.MSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.MSC_B_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1111";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
 
@@ -883,14 +1873,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "2221";
+                remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -906,18 +1891,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 5,
+        int opc = AttackSimulationOrganizer.MSC_B_OPC,
                 opc2 = 0,
-                dpc = 1,
+                dpc = AttackSimulationOrganizer.MSC_A_OPC,
                 dpc2 = 0,
-                localPort = 8111,
+                localPort = AttackSimulationOrganizer.MSC_B_MSC_A_PORT,
                 localPort2 = 0,
-                remotePort = 8011,
+                remotePort = AttackSimulationOrganizer.MSC_A_MSC_B_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -928,14 +1913,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 5,
+        int localSpc = AttackSimulationOrganizer.MSC_B_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 1,
+                localSsn = AttackSimulationOrganizer.MSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "2221";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
 
         ////////////////////////////////////////
 
@@ -944,22 +1929,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1111";
+                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
-
-        //dpc2 = 0;
-        //opc2 = 0;
-        //localPort2 = 0;
-        //remotePort2 = 0;
-        //localHost2 = "";
-        //remoteHost2 = "";
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -975,18 +1947,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 1,
+        int opc = AttackSimulationOrganizer.MSC_A_OPC,
                 opc2 = 0,
-                dpc = 2,
+                dpc = AttackSimulationOrganizer.HLR_A_OPC,
                 dpc2 = 0,
-                localPort = 8012,
+                localPort = AttackSimulationOrganizer.MSC_A_HLR_A_PORT,
                 localPort2 = 0,
-                remotePort = 8015,
+                remotePort = AttackSimulationOrganizer.HLR_A_MSC_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -997,14 +1969,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 1,
+        int localSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 2,
+                localSsn = AttackSimulationOrganizer.MSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 6;
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1111";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
 
@@ -1013,22 +1985,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1112";
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
-
-        //dpc2 = 0;
-        //opc2 = 0;
-        //localPort2 = 0;
-        //remotePort2 = 0;
-        //localHost2 = "";
-        //remoteHost2 = "";
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1044,18 +2003,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 2,
+        int opc = AttackSimulationOrganizer.HLR_A_OPC,
                 opc2 = 0,
-                dpc = 1,
+                dpc = AttackSimulationOrganizer.MSC_A_OPC,
                 dpc2 = 0,
-                localPort = 8015,
+                localPort = AttackSimulationOrganizer.HLR_A_MSC_A_PORT,
                 localPort2 = 0,
-                remotePort = 8012,
+                remotePort = AttackSimulationOrganizer.MSC_A_HLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -1066,14 +2025,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 2,
+        int localSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 6,
-                remoteSpc = 1,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1112";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1082,22 +2041,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1111";
+                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
-
-        //dpc2 = 0;
-        //opc2 = 0;
-        //localPort2 = 0;
-        //remotePort2 = 0;
-        //localHost2 = "";
-        //remoteHost2 = "";
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1113,18 +2059,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 1,
+        int opc = AttackSimulationOrganizer.MSC_A_OPC,
                 opc2 = 0,
-                dpc = 3,
+                dpc = AttackSimulationOrganizer.SMSC_A_OPC,
                 dpc2 = 0,
-                localPort = 8013,
+                localPort = AttackSimulationOrganizer.MSC_A_SMSC_A_PORT,
                 localPort2 = 0,
-                remotePort = 8016,
+                remotePort = AttackSimulationOrganizer.SMSC_A_MSC_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -1135,14 +2081,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 1,
+        int localSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 3,
+                localSsn = AttackSimulationOrganizer.MSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.SMSC_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1111";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
 
@@ -1151,22 +2097,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1113";
+                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
-
-        //dpc2 = 0;
-        //opc2 = 0;
-        //localPort2 = 0;
-        //remotePort2 = 0;
-        //localHost2 = "";
-        //remoteHost2 = "";
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1182,18 +2115,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 3,
+        int opc = AttackSimulationOrganizer.SMSC_A_OPC,
                 opc2 = 0,
-                dpc = 1,
+                dpc = AttackSimulationOrganizer.MSC_A_OPC,
                 dpc2 = 0,
-                localPort = 8016,
+                localPort = AttackSimulationOrganizer.SMSC_A_MSC_A_PORT,
                 localPort2 = 0,
-                remotePort = 8013,
+                remotePort = AttackSimulationOrganizer.MSC_A_SMSC_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -1204,14 +2137,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 3,
+        int localSpc = AttackSimulationOrganizer.SMSC_A_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 1,
+                localSsn = AttackSimulationOrganizer.SMSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1113";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
 
         ////////////////////////////////////////
 
@@ -1220,22 +2153,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1111";
+                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
-
-        //dpc2 = 0;
-        //opc2 = 0;
-        //localPort2 = 0;
-        //remotePort2 = 0;
-        //localHost2 = "";
-        //remoteHost2 = "";
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1252,18 +2172,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 1,
+        int opc = AttackSimulationOrganizer.MSC_A_OPC,
                 opc2 = 0,
-                dpc = 4,
+                dpc = AttackSimulationOrganizer.VLR_A_OPC,
                 dpc2 = 0,
-                localPort = 8014,
+                localPort = AttackSimulationOrganizer.MSC_A_VLR_A_PORT,
                 localPort2 = 0,
-                remotePort = 8017,
+                remotePort = AttackSimulationOrganizer.VLR_A_MSC_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -1274,14 +2194,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 1,
+        int localSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 localSpc2 = 0,
-                localSsn = 8,
-                remoteSpc = 4,
+                localSsn = AttackSimulationOrganizer.MSC_SSN,
+                remoteSpc = AttackSimulationOrganizer.VLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 7;
+                remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1111";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
 
@@ -1290,14 +2210,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1114";
+                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1313,18 +2228,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 4,
+        int opc = AttackSimulationOrganizer.VLR_A_OPC,
                 opc2 = 0,
-                dpc = 1,
+                dpc = AttackSimulationOrganizer.MSC_A_OPC,
                 dpc2 = 0,
-                localPort = 8017,
+                localPort = AttackSimulationOrganizer.VLR_A_MSC_A_PORT,
                 localPort2 = 0,
-                remotePort = 8014,
+                remotePort = AttackSimulationOrganizer.MSC_A_VLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -1335,14 +2250,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 4,
+        int localSpc = AttackSimulationOrganizer.VLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 7,
-                remoteSpc = 1,
+                localSsn = AttackSimulationOrganizer.VLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.MSC_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 8;
+                remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1114";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1351,14 +2266,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1111";
+                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1374,18 +2284,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 2,
+        int opc = AttackSimulationOrganizer.HLR_A_OPC,
                 opc2 = 0,
-                dpc = 4,
+                dpc = AttackSimulationOrganizer.VLR_A_OPC,
                 dpc2 = 0,
-                localPort = 8020,
+                localPort = AttackSimulationOrganizer.HLR_A_VLR_A_PORT,
                 localPort2 = 0,
-                remotePort = 8021,
+                remotePort = AttackSimulationOrganizer.VLR_A_HLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -1396,14 +2306,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 2,
+        int localSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 6,
-                remoteSpc = 4,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.VLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 7;
+                remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1112";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1412,14 +2322,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1114";
+                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1435,18 +2340,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 4,
+        int opc = AttackSimulationOrganizer.VLR_A_OPC,
                 opc2 = 0,
-                dpc = 2,
+                dpc = AttackSimulationOrganizer.HLR_A_OPC,
                 dpc2 = 0,
-                localPort = 8021,
+                localPort = AttackSimulationOrganizer.VLR_A_HLR_A_PORT,
                 localPort2 = 0,
-                remotePort = 8020,
+                remotePort = AttackSimulationOrganizer.HLR_A_VLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -1454,17 +2359,16 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         ////////////////////////////////////////
 
-
         //////// L2 Configuration Data //////////
 
-        int localSpc = 4,
+        int localSpc = AttackSimulationOrganizer.VLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 7,
-                remoteSpc = 2,
+                localSsn = AttackSimulationOrganizer.VLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 6;
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1114";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1473,14 +2377,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1112";
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1496,18 +2395,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 10,
+        int opc = AttackSimulationOrganizer.SGSN_A_OPC,
                 opc2 = 0,
-                dpc = 2,
+                dpc = AttackSimulationOrganizer.HLR_A_OPC,
                 dpc2 = 0,
-                localPort = 8035,
+                localPort = AttackSimulationOrganizer.SGSN_A_HLR_A_PORT,
                 localPort2 = 0,
-                remotePort = 8036,
+                remotePort = AttackSimulationOrganizer.HLR_A_SGSN_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -1518,14 +2417,14 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L2 Configuration Data //////////
 
-        int localSpc = 10,
+        int localSpc = AttackSimulationOrganizer.SGSN_A_SPC,
                 localSpc2 = 0,
-                localSsn = 149,
-                remoteSpc = 2,
+                localSsn = AttackSimulationOrganizer.SGSN_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 6;
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1115";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.SGSN_A_GT;
 
         ////////////////////////////////////////
 
@@ -1534,14 +2433,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1112";
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1557,18 +2451,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 2,
+        int opc = AttackSimulationOrganizer.HLR_A_OPC,
                 opc2 = 0,
-                dpc = 10,
+                dpc = AttackSimulationOrganizer.SGSN_A_OPC,
                 dpc2 = 0,
-                localPort = 8036,
+                localPort = AttackSimulationOrganizer.HLR_A_SGSN_A_PORT,
                 localPort2 = 0,
-                remotePort = 8035,
+                remotePort = AttackSimulationOrganizer.SGSN_A_HLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -1576,17 +2470,16 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         ////////////////////////////////////////
 
-
         //////// L2 Configuration Data //////////
 
-        int localSpc = 2,
+        int localSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 6,
-                remoteSpc = 10,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.SGSN_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 149;
+                remoteSsn = AttackSimulationOrganizer.SGSN_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1112";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1595,14 +2488,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1115";
+                remoteAddressDigits = AttackSimulationOrganizer.SGSN_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1618,18 +2506,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 11,
+        int opc = AttackSimulationOrganizer.GSMSCF_A_OPC,
                 opc2 = 0,
-                dpc = 2,
+                dpc = AttackSimulationOrganizer.HLR_A_OPC,
                 dpc2 = 0,
-                localPort = 8031,
+                localPort = AttackSimulationOrganizer.GSMSCF_A_HLR_A_PORT,
                 localPort2 = 0,
-                remotePort = 8032,
+                remotePort = AttackSimulationOrganizer.HLR_A_GSMSCF_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -1637,33 +2525,26 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         ////////////////////////////////////////
 
-
         //////// L2 Configuration Data //////////
 
-        int localSpc = 11,
+        int localSpc = AttackSimulationOrganizer.GSMSCF_A_SPC,
                 localSpc2 = 0,
-                localSsn = 147,
-                remoteSpc = 2,
+                localSsn = AttackSimulationOrganizer.GSMSCF_SSN,
+                remoteSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 6;
+                remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1116";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.GSMSCF_A_GT;
 
         ////////////////////////////////////////
-
 
         //////// L3 Configuration Data //////////
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1112";
+                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1679,18 +2560,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 2,
+        int opc = AttackSimulationOrganizer.HLR_A_OPC,
                 opc2 = 0,
-                dpc = 11,
+                dpc = AttackSimulationOrganizer.GSMSCF_A_OPC,
                 dpc2 = 0,
-                localPort = 8032,
+                localPort = AttackSimulationOrganizer.HLR_A_GSMSCF_A_PORT,
                 localPort2 = 0,
-                remotePort = 8031,
+                remotePort = AttackSimulationOrganizer.GSMSCF_A_HLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -1698,17 +2579,16 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         ////////////////////////////////////////
 
-
         //////// L2 Configuration Data //////////
 
-        int localSpc = 2,
+        int localSpc = AttackSimulationOrganizer.HLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 6,
-                remoteSpc = 11,
+                localSsn = AttackSimulationOrganizer.HLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.GSMSCF_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 147;
+                remoteSsn = AttackSimulationOrganizer.GSMSCF_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1112";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1717,14 +2597,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1116";
+                remoteAddressDigits = AttackSimulationOrganizer.GSMSCF_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1740,18 +2615,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 11,
+        int opc = AttackSimulationOrganizer.GSMSCF_A_OPC,
                 opc2 = 0,
-                dpc = 4,
+                dpc = AttackSimulationOrganizer.VLR_A_OPC,
                 dpc2 = 0,
-                localPort = 8033,
+                localPort = AttackSimulationOrganizer.GSMSCF_A_VLR_A_PORT,
                 localPort2 = 0,
-                remotePort = 8034,
+                remotePort = AttackSimulationOrganizer.VLR_A_GSMSCF_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = false;
@@ -1759,17 +2634,16 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         ////////////////////////////////////////
 
-
         //////// L2 Configuration Data //////////
 
-        int localSpc = 11,
+        int localSpc = AttackSimulationOrganizer.GSMSCF_A_SPC,
                 localSpc2 = 0,
-                localSsn = 147,
-                remoteSpc = 4,
+                localSsn = AttackSimulationOrganizer.GSMSCF_SSN,
+                remoteSpc = AttackSimulationOrganizer.VLR_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 7;
+                remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1116";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.GSMSCF_A_GT;
 
         ////////////////////////////////////////
 
@@ -1778,14 +2652,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1114";
+                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -1801,18 +2670,18 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L1 Configuration Data //////////
 
-        int opc = 4,
+        int opc = AttackSimulationOrganizer.VLR_A_OPC,
                 opc2 = 0,
-                dpc = 11,
+                dpc = AttackSimulationOrganizer.GSMSCF_A_OPC,
                 dpc2 = 0,
-                localPort = 8034,
+                localPort = AttackSimulationOrganizer.VLR_A_GSMSCF_A_PORT,
                 localPort2 = 0,
-                remotePort = 8033,
+                remotePort = AttackSimulationOrganizer.GSMSCF_A_VLR_A_PORT,
                 remotePort2 = 0;
 
-        String localHost = "127.0.0.1",
+        String localHost = AttackSimulationOrganizer.LOCALHOST,
                 localHost2 = "",
-                remoteHost = "127.0.0.1",
+                remoteHost = AttackSimulationOrganizer.LOCALHOST,
                 remoteHost2 = "";
 
         boolean isSctpServer = true;
@@ -1820,33 +2689,26 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         ////////////////////////////////////////
 
-
         //////// L2 Configuration Data //////////
 
-        int localSpc = 4,
+        int localSpc = AttackSimulationOrganizer.VLR_A_SPC,
                 localSpc2 = 0,
-                localSsn = 7,
-                remoteSpc = 11,
+                localSsn = AttackSimulationOrganizer.VLR_SSN,
+                remoteSpc = AttackSimulationOrganizer.GSMSCF_A_SPC,
                 remoteSpc2 = 0,
-                remoteSsn = 147;
+                remoteSsn = AttackSimulationOrganizer.GSMSCF_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = "1114";
+        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
-
 
         //////// L3 Configuration Data //////////
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = "1116";
+                remoteAddressDigits = AttackSimulationOrganizer.GSMSCF_A_GT;
 
         ////////////////////////////////////////
-
-
-        //////// Test Configuration Data //////////
-        ///////////////////////////////////////////
-
 
         configureL1(dpc, dpc2, isSctpServer, localHost, localHost2, localPort, localPort2, ipspType, opc, opc2, remoteHost, remoteHost2, remotePort, remotePort2);
         configureL2(callingPartyAddressDigits, localSpc, localSpc2, localSsn, remoteSpc, remoteSpc2, remoteSsn, routeonGtMode);
@@ -2573,30 +3435,70 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         ATTACK_SERVER,
         MSC_A_MSC_B,
         MSC_B_MSC_A,
+
         MSC_A_HLR_A,
         HLR_A_MSC_A,
+
         MSC_A_SMSC_A,
         SMSC_A_MSC_A,
+
         MSC_A_VLR_A,
         SMSC_A_HLR_A,
+
         HLR_A_SMSC_A,
         VLR_A_MSC_A,
+
         HLR_A_VLR_A,
         VLR_A_HLR_A,
+
         SGSN_A_HLR_A,
         HLR_A_SGSN_A,
+
         GSMSCF_A_HLR_A,
         HLR_A_GSMSCF_A,
+
         GSMSCF_A_VLR_A,
         VLR_A_GSMSCF_A,
+
         ATTACKER_B_MSC_A,
         MSC_A_ATTACKER_B,
+
         ATTACKER_B_HLR_A,
         HLR_A_ATTACKER_B,
+
         ATTACKER_B_SMSC_A,
         SMSC_A_ATTACKER_B,
+
         ATTACKER_B_VLR_A,
         VLR_A_ATTACKER_B,
+
+        SMSC_A_SMSC_B,
+        SMSC_B_SMSC_A,
+
+        SMSC_A_HLR_B,
+        HLR_B_SMSC_A,
+
+        SMSC_B_HLR_A,
+        HLR_A_SMSC_B,
+
+        MSC_B_HLR_A,
+        HLR_A_MSC_B,
+
+        MSC_B_SMSC_A,
+        SMSC_A_MSC_B,
+
+        MSC_B_VLR_A,
+        VLR_A_MSC_B,
+
+        HLR_B_VLR_A,
+        VLR_A_HLR_B,
+
+        VLR_B_VLR_A,
+        VLR_A_VLR_B,
+
+        VLR_B_HLR_A,
+        HLR_A_VLR_B,
+
         ISUP_CLIENT,
         ISUP_SERVER,
     }
