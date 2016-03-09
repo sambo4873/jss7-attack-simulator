@@ -561,6 +561,15 @@ public class AttackSimulationOrganizer implements Stoppable {
         });
     }
 
+    private void printSentMessage(String messageSent, boolean genuineMessage) {
+        //if(genuineMessage)
+        //    System.out.print("Generating noise: ");
+        //else
+        //    System.out.print("Generating attack: ");
+
+        //System.out.println(messageSent);
+    }
+
     public void start() {
         configureShutDownHook();
         startAttackSimulationHosts();
@@ -609,11 +618,9 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         if(generateNoise) {
             this.countGenuine++;
-            System.out.print("Generating noise: ");
             this.generateNoise();
         } else {
             this.countAttack++;
-            System.out.print("Generating attack: ");
             this.generateAttack();
         }
     }
@@ -628,15 +635,15 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         switch(randomAttack) {
             case 0:
-                System.out.println("Location:AnyTimeInterrogation");
+                printSentMessage("Location:AnyTimeInterrogation", false);
                 this.attackLocationAti();
                 break;
             case 1:
-                System.out.println("Location:ProvideSubscriberInfo");
+                printSentMessage("Location:ProvideSubscriberInfo", false);
                 this.attackLocationPsi();
                 break;
             case 2:
-                System.out.println("Intercept:SMS");
+                printSentMessage("Intercept:SMS", false);
                 this.attackInterceptSms();
                 break;
         }
@@ -659,143 +666,143 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         switch (randomMessage) {
             case 0:
-                System.out.println("MoForwardSMS");
+                printSentMessage("MoForwardSMS", true);
                 this.performMoSMS();
                 break;
             case 1:
-                System.out.println("MtForwardSMS");
+                printSentMessage("MtForwardSMS", true);
                 this.performMtSMS();
                 break;
             case 2:
-                System.out.println("UpdateLocation");
+                printSentMessage("UpdateLocation", true);
                 this.performUpdateLocation();
                 break;
             case 3:
-                System.out.println("CancelLocation");
+                printSentMessage("CancelLocation", true);
                 this.performCancelLocation();
                 break;
             case 4:
-                System.out.println("SendIdentification");
+                printSentMessage("SendIdentification", true);
                 this.performSendIdentification();
                 break;
             case 5:
-                System.out.println("PurgeMS");
+                printSentMessage("PurgeMS", true);
                 this.performPurgeMS();
                 break;
             case 6:
-                System.out.println("UpdateGPRSLocation");
+                printSentMessage("UpdateGPRSLocation", true);
                 this.performUpdateGPRSLocation();
                 break;
             case 7:
-                System.out.println("CheckIMEI");
+                printSentMessage("CheckIMEI", true);
                 this.performCheckIMEI();
                 break;
             case 8:
-                System.out.println("SubscriberData");
+                printSentMessage("SubscriberData", true);
                 this.performInsertSubscriberData();
                 break;
             case 9:
-                System.out.println("DeleteSubscriberData");
+                printSentMessage("DeleteSubscriberData", true);
                 this.performDeleteSubscriberData();
                 break;
             case 10:
-                System.out.println("ForwardCheckSSIndication");
+                printSentMessage("ForwardCheckSSIndication", true);
                 this.performForwardCheckSSIndication();
                 break;
             case 11:
-                System.out.println("RestoreData");
+                printSentMessage("RestoreData", true);
                 this.performRestoreData();
                 break;
             case 12:
-                System.out.println("AnyTimeInterrogation");
+                printSentMessage("AnyTimeInterrogation", true);
                 this.performAnyTimeInterrogation();
                 break;
             case 13:
-                System.out.println("ProvideSubscriberInfo");
+                printSentMessage("ProvideSubscriberInfo", true);
                 this.performProvideSubscriberInfo();
                 break;
             case 14:
-                System.out.println("ActivateTraceMode_Oam");
+                printSentMessage("ActivateTraceMode_Oam", true);
                 this.performActivateTraceMode_Oam();
                 break;
             case 15:
-                System.out.println("ActivateTraceMode_Mobility");
+                printSentMessage("ActivateTraceMode_Mobility", true);
                 this.performActivateTraceMode_Mobility();
                 break;
             case 16:
-                System.out.println("SendIMSI");
+                printSentMessage("SendIMSI", true);
                 this.performSendIMSI();
                 break;
             case 17:
-                System.out.println("SendRoutingInformation");
+                printSentMessage("SendRoutingInformation", true);
                 this.performSendRoutingInformation();
                 break;
             case 18:
-                System.out.println("ProvideRoamingNumber");
+                printSentMessage("ProvideRoamingNumber", true);
                 this.performProvideRoamingNumber();
                 break;
             case 19:
-                System.out.println("RegisterSS");
+                printSentMessage("RegisterSS", true);
                 this.performRegisterSS();
                 break;
             case 20:
-                System.out.println("EraseSS");
+                printSentMessage("EraseSS", true);
                 this.performEraseSS();
                 break;
             case 21:
-                System.out.println("ActivateSS");
+                printSentMessage("ActivateSS", true);
                 this.performActivateSS();
                 break;
             case 22:
-                System.out.println("DeactivateSS");
+                printSentMessage("DeactivateSS", true);
                 this.performDeactivateSS();
                 break;
             case 23:
-                System.out.println("InterrogateSS");
+                printSentMessage("InterrogateSS", true);
                 this.performInterrogateSS();
                 break;
             case 24:
-                System.out.println("RegisterPassword");
+                printSentMessage("RegisterPassword", true);
                 this.performRegisterPassword();
                 break;
             case 25:
-                System.out.println("GetPassword");
+                printSentMessage("GetPassword", true);
                 this.performGetPassword();
                 break;
             case 26:
-                System.out.println("ProcessUnstructuredSSRequest");
+                printSentMessage("ProcessUnstructuredSSRequest", true);
                 this.performProcessUnstructuredSSRequest();
                 break;
             case 27:
-                System.out.println("UnstructuredSSRequest");
+                printSentMessage("UnstructuredSSRequest", true);
                 this.performUnstructuredSSRequest();
                 break;
             case 28:
-                System.out.println("UnstructuredSSNotify");
+                printSentMessage("UnstructuredSSNotify", true);
                 this.performUnstructuredSSNotify();
                 break;
             case 29:
-                System.out.println("SendRoutingInfoForSM");
+                printSentMessage("SendRoutingInfoForSM", true);
                 this.performSendRoutingInfoForSM();
                 break;
             case 30:
-                System.out.println("ReportSMDeliveryStatus");
+                printSentMessage("ReportSMDeliveryStatus", true);
                 this.performReportSMDeliveryStatus();
                 break;
             case 31:
-                System.out.println("ReadyForSM");
+                printSentMessage("ReadyForSM", true);
                 this.performReadyForSM();
                 break;
             case 32:
-                System.out.println("AlertServiceCentre");
+                printSentMessage("AlertServiceCentre", true);
                 this.performAlertServiceCentre();
                 break;
             case 33:
-                System.out.println("InformServiceCentre");
+                printSentMessage("InformServiceCentre", true);
                 this.performInformServiceCentre();
                 break;
             case 34:
-                System.out.println("SendRoutingInfoForGPRS");
+                printSentMessage("SendRoutingInfoForGPRS", true);
                 this.performSendRoutingInfoForGPRS();
                 break;
 
