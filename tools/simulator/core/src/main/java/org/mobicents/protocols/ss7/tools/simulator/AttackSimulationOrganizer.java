@@ -30,8 +30,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     private static int chanceOfAttack;
     private static int numberOfSubscribers;
 
-    private static int countGenuine = 0;
-    private static int countAttack = 0;
+    private static long countGenuine = 0;
+    private static long countAttack = 0;
 
     private ISDNAddressString defaultMscAddress;
     private ISDNAddressString defaultHlrAddress;
