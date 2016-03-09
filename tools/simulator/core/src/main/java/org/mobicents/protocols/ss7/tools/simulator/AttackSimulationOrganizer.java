@@ -458,18 +458,12 @@ public class AttackSimulationOrganizer implements Stoppable {
                 case LOCATION_ATI:
                     this.attackerBhlrA.execute();
                     this.hlrAattackerB.execute();
-                    this.attackerBhlrA.checkStore();
-                    this.hlrAattackerB.checkStore();
                     break;
                 case LOCATION_PSI:
                     this.attackerBhlrA.execute();
                     this.hlrAattackerB.execute();
                     this.attackerBvlrA.execute();
                     this.vlrAattackerB.execute();
-                    this.attackerBhlrA.checkStore();
-                    this.hlrAattackerB.checkStore();
-                    this.attackerBvlrA.checkStore();
-                    this.vlrAattackerB.checkStore();
                     break;
                 case INTERCEPT_SMS:
                     this.attackerBhlrA.execute();
@@ -478,13 +472,6 @@ public class AttackSimulationOrganizer implements Stoppable {
                     this.hlrAsmscA.execute();
                     this.mscAsmscA.execute();
                     this.smscAmscA.execute();
-
-                    this.attackerBhlrA.checkStore();
-                    this.hlrAattackerB.checkStore();
-                    this.smscAhlrA.checkStore();
-                    this.hlrAsmscA.checkStore();
-                    this.mscAsmscA.checkStore();
-                    this.smscAmscA.checkStore();
                     break;
             }
             //this.isupClient.execute();
@@ -519,33 +506,6 @@ public class AttackSimulationOrganizer implements Stoppable {
             this.smscAattackerB.execute();
             this.attackerBvlrA.execute();
             this.vlrAattackerB.execute();
-
-            this.mscAmscB.checkStore();
-            this.mscBmscA.checkStore();
-            this.mscAhlrA.checkStore();
-            this.hlrAmscA.checkStore();
-            this.mscAsmscA.checkStore();
-            this.smscAmscA.checkStore();
-            this.mscAvlrA.checkStore();
-            this.vlrAmscA.checkStore();
-            this.smscAhlrA.checkStore();
-            this.hlrAsmscA.checkStore();
-            this.hlrAvlrA.checkStore();
-            this.vlrAhlrA.checkStore();
-            this.sgsnAhlrA.checkStore();
-            this.hlrAsgsnA.checkStore();
-            this.gsmscfAhlrA.checkStore();
-            this.hlrAgsmscfA.checkStore();
-            this.gsmscfAvlrA.checkStore();
-            this.vlrAgsmscfA.checkStore();
-            this.attackerBmscA.checkStore();
-            this.mscAattackerB.checkStore();
-            this.attackerBhlrA.checkStore();
-            this.hlrAattackerB.checkStore();
-            this.attackerBsmscA.checkStore();
-            this.smscAattackerB.checkStore();
-            this.attackerBvlrA.checkStore();
-            this.vlrAattackerB.checkStore();
         }
     }
 

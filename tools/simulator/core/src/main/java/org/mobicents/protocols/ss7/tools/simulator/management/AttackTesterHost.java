@@ -135,24 +135,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         binding.setClassAttribute(CLASS_ATTRIBUTE);
 
-        this.persistFile.clear();
-        TextBuilder persistFileOld = new TextBuilder();
-
-        if (persistDir != null) {
-            persistFileOld.append(persistDir).append(File.separator).append(this.appName).append("_")
-                    .append(PERSIST_FILE_NAME_OLD);
-            this.persistFile.append(persistDir).append(File.separator).append(this.appName).append("_")
-                    .append(PERSIST_FILE_NAME);
-        } else {
-            persistFileOld.append(System.getProperty(TESTER_HOST_PERSIST_DIR_KEY, System.getProperty(USER_DIR_KEY)))
-                    .append(File.separator).append(this.appName).append("_").append(PERSIST_FILE_NAME_OLD);
-            this.persistFile.append(System.getProperty(TESTER_HOST_PERSIST_DIR_KEY, System.getProperty(USER_DIR_KEY)))
-                    .append(File.separator).append(this.appName).append("_").append(PERSIST_FILE_NAME);
-        }
-
-        File fn = new File(persistFile.toString());
-        this.load(fn);
-
         this.configurationData.setSccpConfigurationData(new AttackSccpConfigurationData());
         this.configureNode(attackNode);
     }
@@ -2555,34 +2537,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
     }
 
     @Override
-    public void putInstance_L1Value(String val) {
-        Instance_L1 x = Instance_L1.createInstance(val);
-        if (x != null)
-            this.setInstance_L1(x);
-    }
-
-    @Override
-    public void putInstance_L2Value(String val) {
-        Instance_L2 x = Instance_L2.createInstance(val);
-        if (x != null)
-            this.setInstance_L2(x);
-    }
-
-    @Override
-    public void putInstance_L3Value(String val) {
-        Instance_L3 x = Instance_L3.createInstance(val);
-        if (x != null)
-            this.setInstance_L3(x);
-    }
-
-    @Override
-    public void putInstance_TestTaskValue(String val) {
-        Instance_TestTask x = Instance_TestTask.createInstance(val);
-        if (x != null)
-            this.setInstance_TestTask(x);
-    }
-
-    @Override
     public String getName() {
         return appName;
     }
@@ -2592,76 +2546,9 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         return persistDir;
     }
 
-//    public void setPersistDir(String persistDir) {
-//        this.persistDir = persistDir;
-//    }
-
     @Override
     public void markStore() {
         needStore = true;
-    }
-
-    @Override
-    public void checkStore() {
-        if (needStore) {
-            needStore = false;
-            this.store();
-        }
-    }
-
-    @Override
-    public synchronized void store() {
-
-        try {
-            XMLObjectWriter writer = XMLObjectWriter.newInstance(new FileOutputStream(persistFile.toString()));
-            writer.setBinding(binding);
-            // writer.setReferenceResolver(new XMLReferenceResolver());
-            writer.setIndentation(TAB_INDENT);
-
-            writer.write(this.configurationData, CONFIGURATION_DATA, ConfigurationData.class);
-
-            writer.close();
-        } catch (Exception e) {
-            this.sendNotif(SOURCE_NAME, "Error while persisting the Host state in file", e, Level.ERROR);
-        }
-    }
-
-    private boolean load(File fn) {
-
-        XMLObjectReader reader = null;
-        try {
-            if (!fn.exists()) {
-                this.sendNotif(SOURCE_NAME, "Error while reading the Host state from file: file not found: " + persistFile, "",
-                        Level.WARN);
-                return false;
-            }
-
-            reader = XMLObjectReader.newInstance(new FileInputStream(fn));
-
-            reader.setBinding(binding);
-
-            this.configurationData = reader.read(CONFIGURATION_DATA, AttackConfigurationData.class);
-
-            reader.close();
-
-            return true;
-
-        } catch (Exception ex) {
-            this.sendNotif(SOURCE_NAME, "Error while reading the Host state from file", ex, Level.WARN);
-            return false;
-        }
-    }
-
-    private void performAttackLocationPSI() {
-        //this.getTestAttackClient().performProvideSubscriberInfoRequest();
-    }
-
-    public boolean isAttackDone() {
-        return this.attackDone;
-    }
-
-    public void setAttackDone(boolean attackDone) {
-        this.attackDone = attackDone;
     }
 
     public boolean gotPSIResponse() {
