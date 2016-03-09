@@ -582,6 +582,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         while (true) {
             try {
                 sleepTime = this.random.nextInt((1000 - 100) + 1) + 100;
+                sleepTime = 50;
                 Thread.sleep(sleepTime);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -837,7 +838,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.attackerBhlrA.gotSRIForSMResponse()) {
             try{
-                Thread.sleep(50);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 System.exit(50);
             }
@@ -854,7 +855,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.attackerBvlrA.gotPSIResponse()) {
             try{
-                Thread.sleep(50);
+                Thread.sleep(10);
             } catch (InterruptedException e) {
                 System.exit(50);
             }
@@ -878,7 +879,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.smscAhlrA.gotSRIForSMResponse()) {
             try {
-                Thread.sleep(50);
+                Thread.sleep(10);
             } catch(InterruptedException e) {
                 System.exit(50);
             }
@@ -889,7 +890,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI().getData(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress());
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(2000);
         } catch(InterruptedException e) {
             System.exit(50);
         }
@@ -898,7 +899,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.attackerBhlrA.gotSRIForSMResponse()) {
             try {
-                Thread.sleep(50);
+                Thread.sleep(10);
             } catch(InterruptedException e) {
                 System.exit(50);
             }
@@ -928,7 +929,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         while(!this.smscAhlrA.gotSRIForSMResponse()) {
             try {
-                Thread.sleep(50);
+                Thread.sleep(10);
             } catch(InterruptedException e) {
                 System.exit(50);
             }
