@@ -191,7 +191,7 @@ public class MainCore {
     }
 
     private String findSimulatorHome() {
-        String sim_home = System.getProperty(AttackSimulationHost.SIMULATOR_HOME_VAR);
+        String sim_home = System.getProperty(AttackTesterHost.SIMULATOR_HOME_VAR);
         if (sim_home != null)
             sim_home += File.separator + "data";
         return sim_home;
