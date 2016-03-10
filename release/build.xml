@@ -28,7 +28,7 @@
 
 	<target name="release" depends="clean,build-asn,build-sctp,build-jss7,build-docs,copy-asn,copy-sctp,copy-jss7,copy-documentation,make-final-zip" />
 	
-  	<target name="release-restcomm" depends="build-asn,build-sctp,build-docs,copy-asn,copy-sctp,copy-jss7,copy-documentation,make-final-zip" />
+  <target name="release-restcomm" depends="build-asn,build-sctp,build-docs,copy-asn,copy-sctp,copy-jss7,copy-documentation,make-final-zip" />
 	
 
 	<!-- Build dependencies-->
@@ -45,7 +45,7 @@
 		</exec>
 
 		<exec failonerror="true" executable="${mvn.executable}" dir="${checkout.asn.dir}">
-			<arg line="clean install -Dmaven.test.skip=true" />
+			<arg line="install -Dmaven.test.skip=true" />
 		</exec>
 	</target>
 	
@@ -61,7 +61,7 @@
 		</exec>
 
 		<exec failonerror="true" executable="${mvn.executable}" dir="${checkout.sctp.dir}">
-			<arg line="clean install -Dmaven.test.skip=true -Prelease" />
+			<arg line="install -Dmaven.test.skip=true -Prelease" />
 		</exec>
 	</target>
 
@@ -188,7 +188,7 @@
 
 	<target name="build-jss7">
 		<exec failonerror="true" executable="${mvn.executable}" dir="${base.dir}/../">
-			<arg line="clean install -Dmaven.test.skip=true" />
+			<arg line="install -Dmaven.test.skip=true" />
 		</exec>
 	</target>
 	

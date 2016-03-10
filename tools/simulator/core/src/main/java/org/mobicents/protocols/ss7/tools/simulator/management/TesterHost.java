@@ -59,6 +59,8 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
 import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientMan;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfMan;
 import org.mobicents.protocols.ss7.tools.simulator.tests.checkimei.TestCheckImeiClientConfigurationData;
@@ -132,6 +134,10 @@ public class TesterHost extends NotificationBroadcasterSupport implements Tester
     TestCheckImeiServerMan testCheckImeiServerMan;
 
     // testers
+
+    public TesterHost() {
+        this.appName = null;
+    }
 
     public TesterHost(String appName, String persistDir) {
         this.appName = appName;

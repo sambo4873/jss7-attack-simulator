@@ -53,6 +53,8 @@ import org.mobicents.protocols.ss7.tools.simulator.management.TesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.checkimei.TestCheckImeiClientMan;
@@ -67,6 +69,10 @@ import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiClientFor
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiClientParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiServerForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiServerParamForm;
+import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMClientForm;
+import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMClientParamForm;
+import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMServerForm;
+import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMServerParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapSsfForm;
@@ -351,7 +357,6 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                         frame.setVisible(true);
                     }
                         break;
-
                 // TODO: other tests form options editing
                 }
             }
@@ -477,8 +482,6 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
     protected void startHost(String appName, boolean isRemote, final TesterHost hostImpl, TesterHostMBean host, M3uaManMBean m3ua, DialogicManMBean dialogic,
             SccpManMBean sccp, MapManMBean map, CapManMBean cap, TestUssdClientManMBean ussdClient, TestUssdServerManMBean ussdServer,
             TestSmsClientManMBean smsClient, TestSmsServerManMBean smsServer, TestCapScfManMBean capScf, TestCapSsfManMBean capSsf,
-            TestAtiClientManMBean atiClient, TestAtiServerManMBean atiServer,
-            TestCheckImeiClientManMBean checkImeiClient, TestCheckImeiServerManMBean checkImeiServer) {
         setTitle(getTitle() + appName);
 
         this.hostImpl = hostImpl;
@@ -496,9 +499,8 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
         this.capSsf = capSsf;
         this.atiClient = atiClient;
         this.atiServer = atiServer;
-        this.checkImeiClient = checkImeiClient;
-        this.checkImeiServer = checkImeiServer;
         this.isRemote = isRemote;
+
 
         this.btTermRemote.setEnabled(isRemote);
 

@@ -133,3 +133,5 @@ docs/sources-*/src
 /Client_sctp.xml
 /maplog.txt
 /MsgLog.pcap
+dpklnx/
+jmxtools-1.2.1.jar
