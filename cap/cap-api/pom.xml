@@ -8,9 +8,6 @@
 	</parent>
 
 	<artifactId>cap-api</artifactId>
-	</parent>
-
-	<artifactId>cap-api</artifactId>
 
 	<name>Restcomm jSS7 :: CAP :: Api :: ${project.artifactId}</name>
 
