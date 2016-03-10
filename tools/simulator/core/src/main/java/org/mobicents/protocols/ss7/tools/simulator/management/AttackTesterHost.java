@@ -2989,7 +2989,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         testAttackClientConfigurationData.setReportSMDeliveryStatusReaction(ReportSMDeliveryStatusReaction.createInstance("Return success"));
         testAttackClientConfigurationData.setReturn20PersDeliveryErrors(false);
         testAttackClientConfigurationData.setServiceCenterAddress("");
-        testAttackClientConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
+        testAttackClientConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM8"));
         testAttackClientConfigurationData.setSmscSsn(8);
         testAttackClientConfigurationData.setSRIInformServiceCenter(SRIInformServiceCenter.createInstance("No data in MWD file"));
         testAttackClientConfigurationData.setSRIReaction(SRIReaction.createInstance("Return success"));
@@ -3012,7 +3012,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         testAttackServerConfigurationData.setNumberingPlanIdentification(NumberingPlanIdentification.ISDNTelephoneNumberingPlan);
         testAttackServerConfigurationData.setSendSrsmdsIfError(false);
         testAttackServerConfigurationData.setServiceCenterAddress("45454545");
-        testAttackServerConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM7"));
+        testAttackServerConfigurationData.setSmsCodingType(SmsCodingType.createInstance("GSM8"));
         testAttackServerConfigurationData.setTypeOfNumber(TypeOfNumber.InternationalNumber);
         testAttackServerConfigurationData.setVlrSsn(8);
 

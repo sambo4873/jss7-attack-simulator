@@ -46,10 +46,7 @@ import org.mobicents.protocols.ss7.tools.simulator.common.AttackTesterBase;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapMan;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapProtocolVersion;
 import org.mobicents.protocols.ss7.tools.simulator.level3.NumberingPlanMapType;
-import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
-import org.mobicents.protocols.ss7.tools.simulator.management.Instance_L2;
-import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
-import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
+import org.mobicents.protocols.ss7.tools.simulator.management.*;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.NumberingPlanIdentificationType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.SmsCodingType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TypeOfNumberType;
@@ -477,24 +474,66 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         return doSendSri(destIsdnNumber, this.getServiceCenterAddress(), mmd);
     }
 
-    public String performMtForwardSM(String msg, String destImsi, String vlrNumber, String origIsdnNumber) {
-        if (!isStarted)
-            return "The tester is not started";
-        if (msg == null || msg.equals(""))
-            return "Msg is empty";
-        if (destImsi == null || destImsi.equals(""))
-            return "DestImsi is empty";
-        if (vlrNumber == null || vlrNumber.equals(""))
-            return "VlrNumber is empty";
-        if (origIsdnNumber == null || origIsdnNumber.equals(""))
-            return "OrigIsdnNumber is empty";
-        int maxMsgLen = this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getSmsCodingType().getSupportesMaxMessageLength(0);
-        if (msg.length() > maxMsgLen)
-            return "Simulator does not support message length for current encoding type more than " + maxMsgLen;
+    public DialogInfo performMtForwardSM(String msg, IMSI destImsi, String vlrNumber, String origIsdnNumber, String serviceCentreAddr) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
-        currentRequestDef = "";
 
-        return doMtForwardSM(msg, destImsi, vlrNumber, origIsdnNumber, this.getServiceCenterAddress());
+        AddressField originatingAddress = new AddressFieldImpl(
+                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getTypeOfNumber(), this.testerHost.getConfigurationData()
+                .getTestAttackServerConfigurationData().getNumberingPlanIdentification(), origIsdnNumber);
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(
+                MAPApplicationContextName.shortMsgMTRelayContext,
+                MAPApplicationContextVersion.version3);
+
+        SM_RP_DA da = mapProvider.getMAPParameterFactory().createSM_RP_DA(destImsi);
+        AddressString serviceCentreAddress = mapProvider.getMAPParameterFactory().createAddressString(
+                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getAddressNature(),
+                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getNumberingPlan(), serviceCentreAddr);
+        SM_RP_OA oa = mapProvider.getMAPParameterFactory().createSM_RP_OA_ServiceCentreAddressOA(serviceCentreAddress);
+
+        Calendar cld = new GregorianCalendar();
+        int year = cld.get(Calendar.YEAR);
+        int mon = cld.get(Calendar.MONTH);
+        int day = cld.get(Calendar.DAY_OF_MONTH);
+        int h = cld.get(Calendar.HOUR);
+        int m = cld.get(Calendar.MINUTE);
+        int s = cld.get(Calendar.SECOND);
+        int tz = cld.get(Calendar.ZONE_OFFSET);
+        AbsoluteTimeStamp serviceCentreTimeStamp = new AbsoluteTimeStampImpl(year - 2000, mon, day, h, m, s, tz / 1000 / 60 / 15);
+
+        int dcsVal = 4; //GSM8
+        DataCodingScheme dcs = new DataCodingSchemeImpl(dcsVal);
+
+        UserDataHeader udh = null;
+        if (dcs.getCharacterSet() == CharacterSet.GSM8) {
+            ApplicationPortAddressing16BitAddressImpl apa16 = new ApplicationPortAddressing16BitAddressImpl(16020, 0);
+            udh = new UserDataHeaderImpl();
+            udh.addInformationElement(apa16);
+        }
+
+        UserData userData = new UserDataImpl(msg, dcs, udh, isoCharset);
+        ProtocolIdentifier pi = new ProtocolIdentifierImpl(0);
+        SmsDeliverTpdu tpdu = new SmsDeliverTpduImpl(false, false, false, false, originatingAddress, pi, serviceCentreTimeStamp, userData);
+
+        try {
+            MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+            SmsSignalInfo si = mapProvider.getMAPParameterFactory().createSmsSignalInfo(tpdu, null);
+
+            long invokeId = curDialog.addMtForwardShortMessageRequest(da, oa, si, false, null);
+            curDialog.send();
+            long remoteDialogId = curDialog.getRemoteDialogId();
+            return new DialogInfo(invokeId, remoteDialogId);
+        } catch (MAPException e) {
+            System.out.println("Error when sending MtForwardSMReq: " + e.toString());
+        }
+
+        return null;
     }
 
     private String doMtForwardSM(String msg, String destImsi, String vlrNumber, String origIsdnNumber, String serviceCentreAddr) {
@@ -668,25 +707,17 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onMoForwardShortMessageRequest(MoForwardShortMessageRequest ind) {
-        if (!isStarted)
-            return;
+    }
 
-        MAPDialogSms curDialog = ind.getMAPDialog();
-        long invokeId = ind.getInvokeId();
-        SM_RP_DA da = ind.getSM_RP_DA();
-        SM_RP_OA oa = ind.getSM_RP_OA();
-        SmsSignalInfo si = ind.getSM_RP_UI();
-
-        this.onMoRequest(da, oa, si, curDialog);
+    public void performMoForwardShortMessageResponse(DialogInfo dialogInfo) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPDialogSms curDialog = (MAPDialogSms) mapProvider.getMAPDialog(dialogInfo.remoteDialogId);
 
         try {
-            curDialog.addMoForwardShortMessageResponse(invokeId, null, null);
+            curDialog.addMoForwardShortMessageResponse(dialogInfo.invokeId, null, null);
             this.needSendClose = true;
-
-            this.countMoFsmResp++;
-            this.testerHost.sendNotif(SOURCE_NAME, "Sent: moResp", "", Level.DEBUG);
         } catch (MAPException e) {
-            this.testerHost.sendNotif(SOURCE_NAME, "Exception when invoking addMoForwardShortMessageResponse : " + e.getMessage(), e, Level.ERROR);
+            System.out.println("Error when sending MoForwardSmResp: " + e.toString());
         }
     }
 

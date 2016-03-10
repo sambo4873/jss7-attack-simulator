@@ -10,6 +10,7 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformatio
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
 import org.mobicents.protocols.ss7.tools.simulator.common.AttackConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
+import org.mobicents.protocols.ss7.tools.simulator.management.DialogInfo;
 import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
 import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
 
@@ -107,6 +108,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private AttackTesterHost isupServer;
 
     public static final String LOCALHOST = "127.0.0.1";
+    public static final String DEFAULT_SMS_MESSAGE  = "SMS Message";
 
     public static final int HLR_SSN = 6;
     public static final int VLR_SSN = 7;
@@ -994,7 +996,10 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         SendRoutingInfoForSMResponse sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
         this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
-        this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI().getData(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress());
+        this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI(),
+                sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),
+                this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress(),
+                this.defaultSmscAddress.getAddress());
 
         try {
             Thread.sleep(2000);
@@ -1044,7 +1049,20 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
         this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
-        this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI().getData(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress());
+        this.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI(),
+                sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),
+                this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress(),
+                this.defaultSmscAddress.getAddress());
+    }
+
+    private void waitForSRIResponse(AttackTesterHost node) {
+        while(!node.gotSRIForSMResponse()) {
+            try {
+                Thread.sleep(50);
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
     }
 
     private void performShortMessageMobileOriginated() {
@@ -1057,13 +1075,33 @@ public class AttackSimulationOrganizer implements Stoppable {
          *  |<--MoForwardSMResp---|<----------------MtForwardShortMessageResp----------------|
         */
 
+        boolean destinationOperatorA = this.random.nextBoolean();
+
         Subscriber originator = this.subscriberManager.getRandomSubscriber();
         Subscriber destination = this.subscriberManager.getRandomSubscriber();
 
         String origIsdnNumber = originator.getMsisdn().getAddress();
         String destIsdnNumber = destination.getMsisdn().getAddress();
+        String scAddr = this.getDefaultSmscAddress().getAddress();
 
-        this.mscAsmscA.getTestAttackClient().performMoForwardSM("SMS Message", destIsdnNumber, origIsdnNumber, this.getDefaultSmscAddress().getAddress());
+        DialogInfo moInfo, mtInfo;
+
+        moInfo = this.mscAsmscA.getTestAttackClient().performMoForwardSM(DEFAULT_SMS_MESSAGE, destIsdnNumber, origIsdnNumber, scAddr);
+        this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(destIsdnNumber, scAddr);
+
+        this.waitForSRIResponse(this.smscAhlrA);
+        SendRoutingInfoForSMResponse sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+
+        if(destinationOperatorA) {
+            mtInfo = this.smscAmscA.getTestAttackServer().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
+                    sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), origIsdnNumber,
+                    this.defaultSmscAddress.getAddress());
+            this.mscAsmscA.getTestAttackClient().performMtForwardSmResp(mtInfo);
+            this.smscAmscA.getTestAttackServer().performMoForwardShortMessageResponse(moInfo);
+        } else {
+
+        }
     }
 
     private void performShortMessageMobileTerminated() {
