@@ -717,8 +717,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             SendRoutingInfoForSMResponse sriResponse = organizer.getSmscAhlrA().getTestAttackClient().getLastSRIForSMResponse();
             organizer.getSmscAhlrA().getTestAttackClient().clearLastSRIForSMResponse();
 
-            organizer.getSmscAmscA().getTestAttackServer().performMtForwardSM(data.getUserData().getDecodedMessage(), sriResponse.getIMSI(),
-                    sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),ind.getSM_RP_OA().getMsisdn().getAddress(),
+            organizer.getSmscAmscA().getTestAttackServer().performMtForwardSM(AttackSimulationOrganizer.DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),ind.getSM_RP_OA().getMsisdn().getAddress(),
                     ind.getSM_RP_DA().getServiceCentreAddressDA().getAddress());
             organizer.waitForMtForwardSMResponse(organizer.getSmscAmscA());
             MtForwardShortMessageResponse mtForwardShortMessageResponse = organizer.getSmscAmscA().getTestAttackServer().getLastMtForwardSMResponse();
