@@ -57,10 +57,6 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientManMBe
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerStandardManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientStandardManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerManMBean;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerStandardManMbBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfManMBean;
