@@ -863,27 +863,27 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 19:
                 printSentMessage("RegistrationProcedure", true);
-                this.performRegistrationProcedure();
+                //this.performRegistrationProcedure();
                 break;
             case 20:
                 printSentMessage("ErasureProcedure", true);
-                this.performErasureProcedure();
+                //this.performErasureProcedure();
                 break;
             case 21:
                 printSentMessage("ActivationProcedure", true);
-                this.performActivationProcedure();
+                //this.performActivationProcedure();
                 break;
             case 22:
                 printSentMessage("DeactivationProcedure", true);
-                this.performDeactivationProcedure();
+                //this.performDeactivationProcedure();
                 break;
             case 23:
                 printSentMessage("InterrogationProcedure", true);
-                this.performInterrogationProcedure();
+                //this.performInterrogationProcedure();
                 break;
             case 24:
                 printSentMessage("PasswordRegistrationProcedure", true);
-                this.performPasswordRegistrationProcedure();
+                //this.performPasswordRegistrationProcedure();
                 break;
             case 25:
                 printSentMessage("GetPassword", true);
