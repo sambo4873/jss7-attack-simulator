@@ -63,14 +63,6 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientManMBe
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdClientManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerManMBean;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiClientForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiClientParamForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiServerForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.ati.TestAtiServerParamForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMClientForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMClientParamForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMServerForm;
-import org.mobicents.protocols.ss7.tools.simulatorgui.tests.attack.location.TestSRIForSMServerParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapScfParamForm;
 import org.mobicents.protocols.ss7.tools.simulatorgui.tests.cap.TestCapSsfForm;
@@ -331,18 +323,6 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                         frame.setVisible(true);
                     }
                         break;
-                    case Instance_TestTask.VAL_ATI_TEST_CLIENT: {
-                        TestAtiClientParamForm frame = new TestAtiClientParamForm(getJFrame());
-                        frame.setData(atiClient);
-                        frame.setVisible(true);
-                    }
-                        break;
-                    case Instance_TestTask.VAL_ATI_TEST_SERVER: {
-                        TestAtiServerParamForm frame = new TestAtiServerParamForm(getJFrame());
-                        frame.setData(atiServer);
-                        frame.setVisible(true);
-                    }
-                        break;
                     case Instance_TestTask.VAL_CHECK_IMEI_TEST_CLIENT: {
                         TestCheckImeiClientParamForm frame = new TestCheckImeiClientParamForm(getJFrame());
                         frame.setData(checkImeiClient);
@@ -414,18 +394,6 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
                 TestCapSsfForm testCapSsfForm = new TestCapSsfForm(getJFrame());
                 testCapSsfForm.setData(capSsf);
                 dlg = testCapSsfForm;
-            }
-                break;
-            case Instance_TestTask.VAL_ATI_TEST_CLIENT: {
-                TestAtiClientForm testAtiClientForm = new TestAtiClientForm(getJFrame());
-                testAtiClientForm.setData(atiClient);
-                dlg = testAtiClientForm;
-            }
-                break;
-            case Instance_TestTask.VAL_ATI_TEST_SERVER: {
-                TestAtiServerForm testAtiServerForm = new TestAtiServerForm(getJFrame());
-                testAtiServerForm.setData(atiServer);
-                dlg = testAtiServerForm;
             }
                 break;
             case Instance_TestTask.VAL_CHECK_IMEI_TEST_CLIENT: {
