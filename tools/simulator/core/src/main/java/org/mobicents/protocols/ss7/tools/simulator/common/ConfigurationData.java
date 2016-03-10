@@ -36,6 +36,12 @@ import org.mobicents.protocols.ss7.tools.simulator.management.Instance_L3;
 import org.mobicents.protocols.ss7.tools.simulator.management.Instance_TestTask;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClient;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClientConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServer;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServerConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientConfigurationData;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.checkimei.TestCheckImeiClientConfigurationData;
@@ -72,6 +78,8 @@ public class ConfigurationData {
     public static final String TEST_ATI_SERVER = "testAtiServer";
     public static final String TEST_CHECK_IMEI_CLIENT = "testCheckImeiClient";
     public static final String TEST_CHECK_IMEI_SERVER = "testCheckImeiServer";
+    public static final String TEST_ATTACK_CLIENT = "testAttackClient";
+    public static final String TEST_ATTACK_SERVER = "testAttackServer";
 
     private Instance_L1 instance_L1 = new Instance_L1(Instance_L1.VAL_NO);
     private Instance_L2 instance_L2 = new Instance_L2(Instance_L2.VAL_NO);
@@ -94,6 +102,8 @@ public class ConfigurationData {
     private TestAtiServerConfigurationData testAtiServerConfigurationData = new TestAtiServerConfigurationData();
     private TestCheckImeiClientConfigurationData testCheckImeiClientConfigurationData = new TestCheckImeiClientConfigurationData();
     private TestCheckImeiServerConfigurationData testCheckImeiServerConfigurationData = new TestCheckImeiServerConfigurationData();
+    private TestAttackClientConfigurationData testAttackClientConfigurationData = new TestAttackClientConfigurationData();
+    private TestAttackServerConfigurationData testAttackServerConfigurationData = new TestAttackServerConfigurationData();
 
     public Instance_L1 getInstance_L1() {
         return instance_L1;
@@ -245,6 +255,21 @@ public class ConfigurationData {
 
     public void setTestCheckImeiServerConfigurationData(TestCheckImeiServerConfigurationData testCheckImeiServerConfigurationData) {
         this.testCheckImeiServerConfigurationData = testCheckImeiServerConfigurationData;
+
+    public TestAttackClientConfigurationData getTestAttackClientConfigurationData() {
+        return testAttackClientConfigurationData;
+    }
+
+    public void setTestAttackClientConfigurationData(TestAttackClientConfigurationData testAttackClientConfigurationData) {
+        this.testAttackClientConfigurationData = testAttackClientConfigurationData;
+    }
+
+    public TestAttackServerConfigurationData getTestAttackServerConfigurationData() {
+        return testAttackServerConfigurationData;
+    }
+
+    public void setTestAttackServerConfigurationData(TestAttackServerConfigurationData testAttackServerConfigurationData) {
+        this.testAttackServerConfigurationData = testAttackServerConfigurationData;
     }
 
     /**
@@ -320,6 +345,14 @@ public class ConfigurationData {
             if (checkImeiServer != null)
                 data.setTestCheckImeiServerConfigurationData(checkImeiServer);
 
+            TestAttackClientConfigurationData attackClient = xml.get(TEST_ATTACK_CLIENT, TestAttackClientConfigurationData.class);
+            if (attackClient != null)
+                data.setTestAttackClientConfigurationData(attackClient);
+
+            TestAttackServerConfigurationData attackServer = xml.get(TEST_ATTACK_SERVER, TestAttackServerConfigurationData.class);
+            if (attackServer != null)
+                data.setTestAttackServerConfigurationData(attackServer);
+
             // while (xml.hasNext()) {
             // Object o = xml.getNext();
             // }
@@ -348,6 +381,8 @@ public class ConfigurationData {
             xml.add(data.getTestCapSsfConfigurationData(), TEST_CAP_SSF, TestCapSsfConfigurationData.class);
             xml.add(data.getTestCheckImeiClientConfigurationData(), TEST_CHECK_IMEI_CLIENT, TestCheckImeiClientConfigurationData.class);
             xml.add(data.getTestCheckImeiServerConfigurationData(), TEST_CHECK_IMEI_SERVER, TestCheckImeiServerConfigurationData.class);
+            xml.add(data.getTestAttackClientConfigurationData(), TEST_ATTACK_CLIENT, TestAttackClientConfigurationData.class);
+            xml.add(data.getTestAttackServerConfigurationData(), TEST_ATTACK_SERVER, TestAttackServerConfigurationData.class);
         }
     };
 

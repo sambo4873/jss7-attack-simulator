@@ -49,6 +49,7 @@ import org.mobicents.protocols.ss7.tools.simulator.level3.CapManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.level3.CapManStandardMBean;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.level3.MapManStandardMBean;
+import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostMBean;
 import org.mobicents.protocols.ss7.tools.simulator.management.TesterHostStandardMBean;
@@ -56,6 +57,10 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientManMBe
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiClientStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.ati.TestAtiServerStandardManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientStandardManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerManMBean;
+import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerStandardManMbBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfStandardManMBean;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfManMBean;
@@ -76,9 +81,9 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.ussd.TestUssdServerStan
 import com.sun.jdmk.comm.HtmlAdaptorServer;
 
 /**
- *
  * @author sergey vetyutnev
  * @author amit bhayani
+ * @author Kristoffer Jensen
  */
 public class MainCore {
 
@@ -184,6 +189,30 @@ public class MainCore {
         MainCore main = new MainCore();
         main.start(appName, httpPort, rmiPort[0], rmiPort[1]);
 
+    private String findSimulatorHome() {
+        String sim_home = System.getProperty(AttackSimulationHost.SIMULATOR_HOME_VAR);
+        if (sim_home != null)
+            sim_home += File.separator + "data";
+        return sim_home;
+    }
+
+    public void startAttackSimulation(boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers, int chanceOfAttack) throws Throwable {
+        System.out.println("Application has been loaded...");
+        System.out.println("Loading simulation hosts...");
+
+        AttackSimulationOrganizer attackSimulationOrganizer;
+        if(simpleSimulation) {
+            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, 10, chanceOfAttack);
+        } else {
+            attackSimulationOrganizer = new AttackSimulationOrganizer(this.findSimulatorHome(), simpleSimulation, simpleAttackGoal, numberOfSubscribers, chanceOfAttack);
+        }
+
+        System.out.println("Simulation hosts loaded, starting simulation...");
+        attackSimulationOrganizer.start();
+
+        System.out.println("Terminating...");
+        System.out.println("Unload complete, shutting down...");
+        System.exit(0);
     }
 
     private static void parseRmi(int[] rmiPort, String s1) {

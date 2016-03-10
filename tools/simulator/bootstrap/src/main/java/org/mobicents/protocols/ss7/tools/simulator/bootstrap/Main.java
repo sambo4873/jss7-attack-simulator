@@ -59,6 +59,10 @@ public class Main {
     private int rmiPort = -1;
     private int rmiPort2 = -1;
     private int httpPort = -1;
+    private String attack_command = null;
+    private String simple_attack_goal = null;
+    private int complexNumSubs = 0;
+    private int chanceOfAttack = 0;
 
     public static void main(String[] args) throws Throwable {
         String homeDir = getHomeDir(args);
@@ -83,14 +87,15 @@ public class Main {
 
         int c;
         String arg;
-        LongOpt[] longopts = new LongOpt[5];
+        LongOpt[] longopts = new LongOpt[6];
         longopts[0] = new LongOpt("help", LongOpt.NO_ARGUMENT, null, 'h');
         longopts[1] = new LongOpt("name", LongOpt.REQUIRED_ARGUMENT, null, 'n');
         longopts[2] = new LongOpt("http", LongOpt.REQUIRED_ARGUMENT, null, 't');
         longopts[3] = new LongOpt("rmi", LongOpt.REQUIRED_ARGUMENT, null, 'r');
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
+        longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 0);
 
-        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h", longopts);
+        Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:c:s:m:", longopts);
         g.setOpterr(false); // We'll do our own error handling
         //
         while ((c = g.getopt()) != -1) {
@@ -140,12 +145,41 @@ public class Main {
                     System.out.println("The option '" + (char) g.getOptopt() + "' is not valid");
                     System.exit(0);
                     break;
+                case 'a':
+                    //Attack simulation type
+                    arg = g.getOptarg();
+                    if (arg.equals("simple")) {
+                        this.attack_command = "simple";
+                    } else if (arg.equals("complex")){
+                        this.attack_command = "complex";
+                    } else {
+                        System.out.println("Invalid command " + arg);
+                        this.genericHelp();
+                    }
+                    break;
+                case 'c':
+                    //Change of generating an attack.
+                    arg = g.getOptarg();
+                    this.chanceOfAttack = Integer.valueOf(arg);
+                    break;
+                case 'm':
+                    //Attack goal to perform, in cooperation with -a simple
+                    arg = g.getOptarg();
+                    this.simple_attack_goal = arg;
+                    break;
+                case 's':
+                    //Number of subscribers to generate in complex attack simulation.
+                    arg = g.getOptarg();
+                    this.complexNumSubs = Integer.valueOf(arg);
+                    break;
                 case 1:
                     String optArg = g.getOptarg();
                     if (optArg.equals("core")) {
                         this.command = "core";
                     } else if (optArg.equals("gui")) {
                         this.command = "gui";
+                    } else if (optArg.equals("attack_simulation")) {
+                        this.command = "attack_simulation";
                     } else if (optArg.equals("help")) {
                         if (this.command == null) {
                             this.genericHelp();
@@ -153,6 +187,8 @@ public class Main {
                             this.coreHelp();
                         } else if (this.command.equals("gui")) {
                             this.guiHelp();
+                        } else if (this.command.equals("attack_simulation")){
+                            this.attackHelp();
                         } else {
                             System.out.println("Invalid command " + optArg);
                             this.genericHelp();
@@ -177,6 +213,7 @@ public class Main {
         System.out.println("command:");
         System.out.println("    core      Start the SS7 simulator core");
         System.out.println("    gui       Start the SS7 simulator gui");
+        System.out.println("    attack_simulation Start the SS7 attack simulator");
         System.out.println();
         System.out.println("see 'run <command> help' for more information on a specific command:");
         System.out.println();
@@ -203,6 +240,20 @@ public class Main {
         System.out.println();
         System.out.println("options:");
         System.out.println("    -n, --name=<simulator name>   Simulator name. If not passed default is main");
+        System.out.println();
+        System.exit(0);
+    }
+
+    private void attackHelp() {
+        System.out.println("attack_simulation: Starts the attack simulator");
+        System.out.println();
+        System.out.println("usage: " + APP_NAME + " attack_simulation -a [simple/complex] [options]");
+        System.out.println();
+        System.out.println("options:");
+        System.out.println("    -a, Attack simulation type used. Can either be simple or complex.");
+        System.out.println("    -c, Distribution of attacks in simulated traffic. Integer from 0-50");
+        System.out.println("    -m, Simple attack simulation goal. Specifies which attack should be launched. Can only be used with -a simple.");
+        System.out.println("    -s, Specifies the number of subscribers that should be simulated as connected to the network. Can only be used with -a complex.");
         System.out.println();
         System.exit(0);
     }
@@ -269,8 +320,26 @@ public class Main {
         } else if (this.command.equals("core")) {
             MainCore mainCore = new MainCore();
             mainCore.start(appName, httpPort, rmiPort, rmiPort2);
+        } else if (this.command.equals("attack_simulation")) {
+            MainCore mainCore = new MainCore();
+            if (this.attack_command.equals("simple")) {
+                if(this.simple_attack_goal != null && !this.simple_attack_goal.isEmpty()) {
+                    mainCore.startAttackSimulation(true, simple_attack_goal, 0, 0);
+                } else {
+                    System.out.println("Error: Option m not specified.");
+                    this.attackHelp();
+                }
+            } else if (this.attack_command.equals("complex")) {
+                if (this.complexNumSubs > 0) {
+                    mainCore.startAttackSimulation(false, null, this.complexNumSubs, this.chanceOfAttack);
+                } else if (this.chanceOfAttack < 0 || this.chanceOfAttack > 100){
+                    mainCore.startAttackSimulation(false, null, this.complexNumSubs, this.chanceOfAttack);
+                }else {
+                    System.out.println("Error: Option s not specified.");
+                    this.attackHelp();
+                }
+            }
         }
-
     }
 
     public static URL getURL(String url) throws Exception {
