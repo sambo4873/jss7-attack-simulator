@@ -16,7 +16,8 @@ Current nightly builds can be downloaded from the project's [Jenkins CI Server](
 
 ## Instructions
 
-* How to run the simulator:
+How to run the simulator:
+  * Make sure you have SCTP support installed on Linux.
   * Download latest build artifact from the [Jenkins CI
   Server](https://jensen.ninja/jenkins/job/jss7-attack-simulator/).
   * Unzip the file.
@@ -26,13 +27,13 @@ Current nightly builds can be downloaded from the project's [Jenkins CI Server](
 ``` 
 run.sh help 
 ```
-    or
+or
 ```
 run.sh attack_simulation help 
 ```
-    for help on how to run the simulator.
+for help on how to run the simulator.
 
-* The currently supported simple attacks are:
+The currently supported simple attacks are:
   * location:ati
   * location:psi
   * intercept:sms
