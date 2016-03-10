@@ -188,6 +188,7 @@ public class MainCore {
 
         MainCore main = new MainCore();
         main.start(appName, httpPort, rmiPort[0], rmiPort[1]);
+    }
 
     private String findSimulatorHome() {
         String sim_home = System.getProperty(AttackSimulationHost.SIMULATOR_HOME_VAR);

@@ -255,6 +255,7 @@ public class ConfigurationData {
 
     public void setTestCheckImeiServerConfigurationData(TestCheckImeiServerConfigurationData testCheckImeiServerConfigurationData) {
         this.testCheckImeiServerConfigurationData = testCheckImeiServerConfigurationData;
+    }
 
     public TestAttackClientConfigurationData getTestAttackClientConfigurationData() {
         return testAttackClientConfigurationData;
