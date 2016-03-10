@@ -527,7 +527,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
             long invokeId = curDialog.addMtForwardShortMessageRequest(da, oa, si, false, null);
             curDialog.send();
-            long remoteDialogId = curDialog.getRemoteDialogId();
+            long remoteDialogId = curDialog.getLocalDialogId();
             return new DialogInfo(invokeId, remoteDialogId);
         } catch (MAPException e) {
             System.out.println("Error when sending MtForwardSMReq: " + e.toString());
@@ -707,6 +707,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onMoForwardShortMessageRequest(MoForwardShortMessageRequest ind) {
+
     }
 
     public void performMoForwardShortMessageResponse(DialogInfo dialogInfo) {
