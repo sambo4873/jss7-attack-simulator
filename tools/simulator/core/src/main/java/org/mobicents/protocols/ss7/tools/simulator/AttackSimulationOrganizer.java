@@ -35,6 +35,10 @@ public class AttackSimulationOrganizer implements Stoppable {
     private ISDNAddressString defaultHlrAddress;
     private ISDNAddressString defaultSmscAddress;
     private ISDNAddressString defaultVlrAddress;
+    private ISDNAddressString defaultMscBAddress;
+    private ISDNAddressString defaultHlrBAddress;
+    private ISDNAddressString defaultSmscBAddress;
+    private ISDNAddressString defaultVlrBAddress;
 
     private SubscriberManager subscriberManager;
 
@@ -244,6 +248,23 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
                 AttackConfigurationData.VLR_A_NUMBER);
+
+        this.defaultMscBAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                MSC_B_GT);
+        this.defaultSmscBAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                SMSC_B_GT);
+        this.defaultHlrBAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                HLR_B_GT);
+        this.defaultVlrBAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                VLR_B_GT);
 
         this.subscriberManager = new SubscriberManager(defaultMscAddress, defaultVlrAddress, defaultHlrAddress);
         this.subscriberManager.createRandomSubscribers(numberOfSubscribers);
@@ -1320,6 +1341,27 @@ public class AttackSimulationOrganizer implements Stoppable {
          *
          */
 
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+
+        int origin = this.random.nextInt(3);
+
+        switch(origin) {
+            //Operator A internal procedure.
+            case 0:
+                this.vlrAhlrA.getTestAttackServer().performReadyForSM(subscriber.getImsi());
+                this.hlrAsmscA.getTestAttackServer().performAlertServiceCentre(subscriber.getMsisdn(), this.defaultSmscAddress.getAddress());
+                break;
+            //Subscriber from B is located in A.
+            case 1:
+                this.vlrAhlrB.getTestAttackServer().performReadyForSM(subscriber.getImsi());
+                this.hlrBsmscA.getTestAttackClient().performAlertServiceCentre(subscriber.getMsisdn(), this.defaultSmscAddress.getAddress());
+                break;
+            //Subscriber from A is located in B.
+            case 2:
+                this.vlrBhlrA.getTestAttackClient().performReadyForSM(subscriber.getImsi());
+                this.hlrAsmscB.getTestAttackServer().performAlertServiceCentre(subscriber.getMsisdn(), this.defaultSmscBAddress.getAddress());
+                break;
+        }
     }
 
     private void performUpdateLocation() {

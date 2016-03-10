@@ -37,6 +37,7 @@ import org.mobicents.protocols.ss7.map.api.smstpdu.*;
 import org.mobicents.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.mobicents.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextInfoImpl;
+import org.mobicents.protocols.ss7.map.service.sms.MAPDialogSmsImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.api.MessageType;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
@@ -988,7 +989,31 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onAlertServiceCentreResponse(AlertServiceCentreResponse alertServiceCentreInd) {
         // TODO Auto-generated method stub
+    }
 
+    public void performAlertServiceCentre(ISDNAddressString msisdn, String serviceCentreAddress) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(
+                MAPApplicationContextName.shortMsgAlertContext,
+                MAPApplicationContextVersion.version2);
+
+        AddressString scAddress = mapProvider.getMAPParameterFactory().createAddressString(
+                this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getAddressNature(),
+                this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getNumberingPlan(),
+                serviceCentreAddress);
+
+        try {
+            MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addAlertServiceCentreRequest(msisdn, scAddress);
+            curDialog.send();
+        } catch (MAPException e) {
+            System.out.println("Error when sending AlertServiceCentre: " + e.toString());
+        }
     }
 
     @Override
@@ -1785,7 +1810,6 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     public void performReadyForSM(IMSI imsi) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
-        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
         MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.mwdMngtContext, MAPApplicationContextVersion.version3);
         try {

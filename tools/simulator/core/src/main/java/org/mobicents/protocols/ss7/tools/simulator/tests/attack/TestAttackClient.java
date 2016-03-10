@@ -719,15 +719,29 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         return sb.toString();
     }
 
-    public String performAlertServiceCentre(String destIsdnNumber) {
-        if (!isStarted)
-            return "The tester is not started";
-        if (destIsdnNumber == null || destIsdnNumber.equals(""))
-            return "DestIsdnNumber is empty";
+    public void performAlertServiceCentre(ISDNAddressString msisdn, String serviceCentreAddress) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(
+                MAPApplicationContextName.shortMsgAlertContext,
+                MAPApplicationContextVersion.version2);
 
-        currentRequestDef = "";
+        AddressString scAddress = mapProvider.getMAPParameterFactory().createAddressString(
+                this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getAddressNature(),
+                this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getNumberingPlan(),
+                serviceCentreAddress);
 
-        return doAlertServiceCentre(destIsdnNumber, this.getServiceCenterAddress());
+        try {
+            MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addAlertServiceCentreRequest(msisdn, scAddress);
+            curDialog.send();
+        } catch (MAPException e) {
+            System.out.println("Error when sending AlertServiceCentre: " + e.toString());
+        }
     }
 
     private String doAlertServiceCentre(String destIsdnNumber, String serviceCentreAddr) {
@@ -2246,6 +2260,24 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onReadyForSMResponse(ReadyForSMResponse response) {
 
+    }
+
+    public void performReadyForSM(IMSI imsi) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.mwdMngtContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addReadyForSMRequest(imsi, AlertReason.msPresent, true, null, false);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending ReadyForSM Req: " + ex.toString());
+        }
     }
 
     @Override
