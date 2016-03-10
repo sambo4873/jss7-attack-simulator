@@ -1291,6 +1291,17 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(destIsdnNumber,
                 hlrAsmscA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+        this.waitForSRIResponse(this.smscAhlrA);
+        SendRoutingInfoForSMResponse sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+
+        this.smscAmscA.getTestAttackServer().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
+                sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), originator.getMsisdn().getAddress(),
+                this.getDefaultSmscAddress().getAddress());
+        this.waitForMtForwardSMResponse(this.smscAmscA);
+        this.smscAmscA.getTestAttackServer().clearLastMtForwardSMResponse();
+
+        this.smscAhlrA.getTestAttackClient().performReportSMDeliveryStatus(destination.getMsisdn());
     }
 
     private void performShortMessageAlertProcedure() {

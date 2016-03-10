@@ -722,6 +722,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     ind.getSM_RP_DA().getServiceCentreAddressDA().getAddress());
             organizer.waitForMtForwardSMResponse(organizer.getSmscAmscA());
             MtForwardShortMessageResponse mtForwardShortMessageResponse = organizer.getSmscAmscA().getTestAttackServer().getLastMtForwardSMResponse();
+            organizer.getSmscAmscA().getTestAttackServer().clearLastMtForwardSMResponse();
 
             long invokeId = ind.getInvokeId();
             MAPDialogSms curDialog = ind.getMAPDialog();
