@@ -491,8 +491,8 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
         SM_RP_DA da = mapProvider.getMAPParameterFactory().createSM_RP_DA(destImsi);
         AddressString serviceCentreAddress = mapProvider.getMAPParameterFactory().createAddressString(
-                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getAddressNature(),
-                this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getNumberingPlan(), serviceCentreAddr);
+                this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getAddressNature(),
+                this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getNumberingPlan(), serviceCentreAddr);
         SM_RP_OA oa = mapProvider.getMAPParameterFactory().createSM_RP_OA_ServiceCentreAddressOA(serviceCentreAddress);
 
         Calendar cld = new GregorianCalendar();
