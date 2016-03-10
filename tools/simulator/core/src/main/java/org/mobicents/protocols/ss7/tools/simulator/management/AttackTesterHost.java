@@ -3079,17 +3079,17 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 sb.append("\n");
             sb.append(st.toString());
         }
-        //this.doSendNotif(source, msg + " - " + e.toString(), sb.toString());
+        this.doSendNotif(source, msg + " - " + e.toString(), sb.toString());
 
-        //logger.log(logLevel, msg, e);
+        logger.log(logLevel, msg, e);
     }
 
     @Override
     public void sendNotif(String source, String msg, String userData, Level logLevel) {
 
-        //this.doSendNotif(source, msg, userData);
+        this.doSendNotif(source, msg, userData);
 
-        //logger.log(Level.INFO, msg + "\n" + userData);
+        logger.log(Level.INFO, msg + "\n" + userData);
     }
 
     private synchronized void doSendNotif(String source, String msg, String userData) {
