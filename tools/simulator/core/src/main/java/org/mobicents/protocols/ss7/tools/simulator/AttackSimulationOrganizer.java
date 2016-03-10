@@ -1242,11 +1242,17 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     public void waitForMtForwardSMResponse(AttackTesterHost node) {
+        int tries = 0;
         while(!node.gotMtForwardSMResponse()) {
             try {
-                Thread.sleep(50);
+                if(tries < 100) {
+                    Thread.sleep(50);
+                    tries++;
+                } else {
+                    break;
+                }
             } catch(InterruptedException e) {
-
+                System.exit(50);
             }
         }
     }
