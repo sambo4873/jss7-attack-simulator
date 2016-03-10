@@ -135,6 +135,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         this.configureNode(attackNode);
     }
 
+    public AttackNode getAttackNode() {
+        return attackNode;
+    }
+
     public AttackSimulationOrganizer getAttackSimulationOrganizer() {
         return this.attackSimulationOrganizer;
     }
