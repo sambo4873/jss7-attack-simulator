@@ -863,27 +863,27 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 19:
                 printSentMessage("RegistrationProcedure", true);
-                //this.performRegistrationProcedure();
+                this.performRegistrationProcedure();
                 break;
             case 20:
                 printSentMessage("ErasureProcedure", true);
-                //this.performErasureProcedure();
+                this.performErasureProcedure();
                 break;
             case 21:
                 printSentMessage("ActivationProcedure", true);
-                //this.performActivationProcedure();
+                this.performActivationProcedure();
                 break;
             case 22:
                 printSentMessage("DeactivationProcedure", true);
-                //this.performDeactivationProcedure();
+                this.performDeactivationProcedure();
                 break;
             case 23:
                 printSentMessage("InterrogationProcedure", true);
-                //this.performInterrogationProcedure();
+                this.performInterrogationProcedure();
                 break;
             case 24:
                 printSentMessage("PasswordRegistrationProcedure", true);
-                //this.performPasswordRegistrationProcedure();
+                this.performPasswordRegistrationProcedure();
                 break;
             case 25:
                 printSentMessage("GetPassword", true);
@@ -1210,10 +1210,10 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 1:
                 this.vlrBhlrA.getTestAttackClient().performRegisterSS();
-                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
+                this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
                 break;
             case 2:
-                this.vlrAhlrB.getTestAttackClient().performRegisterSS();
+                this.vlrAhlrB.getTestAttackServer().performRegisterSS();
                 this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
         }
@@ -1240,10 +1240,10 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 1:
                 this.vlrBhlrA.getTestAttackClient().performEraseSS();
-                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
+                this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
                 break;
             case 2:
-                this.vlrAhlrB.getTestAttackClient().performEraseSS();
+                this.vlrAhlrB.getTestAttackServer().performEraseSS();
                 this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
         }
@@ -1270,10 +1270,10 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 1:
                 this.vlrBhlrA.getTestAttackClient().performActivateSS();
-                this.hlrAvlrB.getTestAttackClient().performInsertSubscriberData();
+                this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
                 break;
             case 2:
-                this.vlrAhlrB.getTestAttackClient().performActivateSS();
+                this.vlrAhlrB.getTestAttackServer().performActivateSS();
                 this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
         }
@@ -1300,10 +1300,10 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 1:
                 this.vlrBhlrA.getTestAttackClient().performDeactivateSS();
-                this.hlrAvlrB.getTestAttackClient().performInsertSubscriberData();
+                this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
                 break;
             case 2:
-                this.vlrAhlrB.getTestAttackClient().performDeactivateSS();
+                this.vlrAhlrB.getTestAttackServer().performDeactivateSS();
                 this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
         }
@@ -1330,7 +1330,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.vlrBhlrA.getTestAttackClient().performInterrogateSS(false);
                 break;
             case 2:
-                this.vlrAhlrB.getTestAttackClient().performInterrogateSS(false);
+                this.vlrAhlrB.getTestAttackServer().performInterrogateSS(false);
                 break;
         }
     }
@@ -1359,7 +1359,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.vlrBhlrA.getTestAttackClient().performRegisterPassword();
                 break;
             case 2:
-                this.vlrAhlrB.getTestAttackClient().performRegisterPassword();
+                this.vlrAhlrB.getTestAttackServer().performRegisterPassword();
                 break;
         }
     }

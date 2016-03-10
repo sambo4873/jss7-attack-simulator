@@ -1340,6 +1340,10 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performInsertSubscriberData() {
+
+    }
+
     @Override
     public void onDeleteSubscriberDataRequest(DeleteSubscriberDataRequest request) {
         long invokeId = request.getInvokeId();
@@ -1558,6 +1562,10 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performEraseSS() {
+
+    }
+
     @Override
     public void onActivateSSRequest(ActivateSSRequest request) {
 
@@ -1565,6 +1573,10 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onActivateSSResponse(ActivateSSResponse response) {
+
+    }
+
+    public void performActivateSS() {
 
     }
 
@@ -1578,6 +1590,10 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performDeactivateSS() {
+
+    }
+
     @Override
     public void onInterrogateSSRequest(InterrogateSSRequest request) {
 
@@ -1585,6 +1601,10 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onInterrogateSSResponse(InterrogateSSResponse response) {
+
+    }
+
+    public void performInterrogateSS(boolean forwardToHLR) {
 
     }
 
@@ -1605,6 +1625,10 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onRegisterPasswordResponse(RegisterPasswordResponse response) {
+
+    }
+
+    public void performRegisterPassword() {
 
     }
 
