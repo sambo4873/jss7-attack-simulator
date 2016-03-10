@@ -22,7 +22,12 @@ How to run the simulator:
 * Download latest build artifact from the [Jenkins CI
 Server](https://jensen.ninja/jenkins/job/jss7-attack-simulator/).
 * Unzip the file.
-* The simulator is launched with the script:RELEASE_FOLDER/ss7/restcomm-ss7-simulator/bin/run.sh
+* The simulator is launched with the script:
+
+```
+RELEASE_FOLDER/ss7/restcomm-ss7-simulator/bin/run.sh
+```
+
 * Run
 
 ``` 
