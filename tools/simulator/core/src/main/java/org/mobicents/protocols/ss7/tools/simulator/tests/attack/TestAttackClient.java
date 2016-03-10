@@ -1742,11 +1742,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
-    public void performInsertSubscriberData(AttackTesterHost.AttackNode callingNodeType) {
-        System.out.println("InsertSubscriberData called: " + callingNodeType.name());
-        if(this.mapMan == null) {
-            System.out.println("mapMan is null");
-        }
+    public void performInsertSubscriberData() {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
 
         MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version3);

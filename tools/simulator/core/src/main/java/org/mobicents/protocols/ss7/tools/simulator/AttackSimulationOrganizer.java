@@ -1137,7 +1137,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performInsertSubscriberData() {
-        this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData(hlrAvlrA.getAttackNode());
+        this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
     }
 
     private void performDeleteSubscriberData() {
@@ -1206,7 +1206,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         switch(messageOrigin) {
             case 0:
                 this.mscAvlrA.getTestAttackClient().performRegisterSS();
-                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData(hlrAvlrA.getAttackNode());
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
             case 1:
                 this.vlrBhlrA.getTestAttackClient().performRegisterSS();
@@ -1214,7 +1214,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 2:
                 this.vlrAhlrB.getTestAttackServer().performRegisterSS();
-                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData(hlrBvlrA.getAttackNode());
+                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
         }
     }
@@ -1236,7 +1236,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         switch(messageOrigin) {
             case 0:
                 this.mscAvlrA.getTestAttackClient().performEraseSS();
-                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData(hlrAvlrA.getAttackNode());
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
             case 1:
                 this.vlrBhlrA.getTestAttackClient().performEraseSS();
@@ -1244,7 +1244,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 2:
                 this.vlrAhlrB.getTestAttackServer().performEraseSS();
-                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData(hlrBvlrA.getAttackNode());
+                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
         }
     }
@@ -1266,7 +1266,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         switch(messageOrigin) {
             case 0:
                 this.mscAvlrA.getTestAttackClient().performActivateSS();
-                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData(hlrAvlrA.getAttackNode());
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
             case 1:
                 this.vlrBhlrA.getTestAttackClient().performActivateSS();
@@ -1274,7 +1274,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 2:
                 this.vlrAhlrB.getTestAttackServer().performActivateSS();
-                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData(hlrBvlrA.getAttackNode());
+                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
         }
     }
@@ -1296,7 +1296,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         switch(messageOrigin) {
             case 0:
                 this.mscAvlrA.getTestAttackClient().performDeactivateSS();
-                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData(hlrAvlrA.getAttackNode());
+                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
             case 1:
                 this.vlrBhlrA.getTestAttackClient().performDeactivateSS();
@@ -1304,7 +1304,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 2:
                 this.vlrAhlrB.getTestAttackServer().performDeactivateSS();
-                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData(hlrBvlrA.getAttackNode());
+                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
                 break;
         }
     }

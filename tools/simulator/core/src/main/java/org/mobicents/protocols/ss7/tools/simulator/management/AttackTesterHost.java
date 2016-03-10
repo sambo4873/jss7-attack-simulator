@@ -127,7 +127,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         this.testAttackServer = new TestAttackServer(appName);
         this.testAttackServer.setTesterHost(this);
 
-        this.setupLog4j(appName);
+        //this.setupLog4j(appName);
 
         binding.setClassAttribute(CLASS_ATTRIBUTE);
 
@@ -3077,23 +3077,23 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
     @Override
     public void sendNotif(String source, String msg, Throwable e, Level logLevel) {
-        StringBuilder sb = new StringBuilder();
-        for (StackTraceElement st : e.getStackTrace()) {
-            if (sb.length() > 0)
-                sb.append("\n");
-            sb.append(st.toString());
-        }
-        this.doSendNotif(source, msg + " - " + e.toString(), sb.toString());
+        //StringBuilder sb = new StringBuilder();
+        //for (StackTraceElement st : e.getStackTrace()) {
+        //    if (sb.length() > 0)
+        //        sb.append("\n");
+        //    sb.append(st.toString());
+        //}
+        //this.doSendNotif(source, msg + " - " + e.toString(), sb.toString());
 
-        logger.log(logLevel, msg, e);
+        //logger.log(logLevel, msg, e);
     }
 
     @Override
     public void sendNotif(String source, String msg, String userData, Level logLevel) {
 
-        this.doSendNotif(source, msg, userData);
+        //this.doSendNotif(source, msg, userData);
 
-        logger.log(Level.INFO, msg + "\n" + userData);
+        //logger.log(Level.INFO, msg + "\n" + userData);
     }
 
     private synchronized void doSendNotif(String source, String msg, String userData) {
