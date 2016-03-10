@@ -959,7 +959,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 34;
+        int numberOfAvailableMessages = 32;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
@@ -1080,22 +1080,14 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performUnstructuredSSNotify();
                 break;
             case 29:
-                printSentMessage("SendRoutingInfoForSM", true);
-                this.performSendRoutingInfoForSM();
-                break;
-            case 30:
-                printSentMessage("ReportSMDeliveryStatus", true);
-                this.performReportSMDeliveryStatus();
-                break;
-            case 31:
                 printSentMessage("ShortMessageAlertProcedure", true);
                 this.performShortMessageAlertProcedure();
                 break;
-            case 32:
+            case 30:
                 printSentMessage("InformServiceCentre", true);
                 this.performInformServiceCentre();
                 break;
-            case 33:
+            case 31:
                 printSentMessage("SendRoutingInfoForGPRS", true);
                 this.performSendRoutingInfoForGPRS();
                 break;
@@ -1609,17 +1601,6 @@ public class AttackSimulationOrganizer implements Stoppable {
         //this.hlrAvlrA.getTestAttackClient().performUnstructuredSSRequest();
         //this.gsmscfAvlrA.getTestAttackClient().performUnstructuredSSRequest();
         //this.vlrAmscA.getTestAttackClient().performUnstructuredSSRequest();
-    }
-
-    private void performSendRoutingInfoForSM() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-        //this.mscAhlrA.getTestAttackClient().performSendRoutingInfoForSM("", "");
-        this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.smscAhlrA.getTestAttackClient().getServiceCenterAddress());
-    }
-
-    private void performReportSMDeliveryStatus() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-        this.smscAhlrA.getTestAttackClient().performReportSMDeliveryStatus(subscriber.getMsisdn());
     }
 
     private void performInformServiceCentre() {
