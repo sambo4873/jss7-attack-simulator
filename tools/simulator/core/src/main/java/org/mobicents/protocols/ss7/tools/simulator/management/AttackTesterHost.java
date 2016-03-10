@@ -3424,6 +3424,10 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         return this.getTestAttackClient().getLastSRIForSMResponse() != null;
     }
 
+    public boolean gotMtForwardSMResponse() {
+        return this.getTestAttackServer().getLastMtForwardSMResponse() != null;
+    }
+
     public boolean gotAtiResponse() {
         return this.getTestAttackClient().getLastAtiResponse() != null;
     }

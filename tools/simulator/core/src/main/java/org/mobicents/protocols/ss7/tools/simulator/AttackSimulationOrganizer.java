@@ -285,6 +285,182 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
+    public AttackTesterHost getMscAmscB() {
+        return mscAmscB;
+    }
+
+    public AttackTesterHost getMscBmscA() {
+        return mscBmscA;
+    }
+
+    public AttackTesterHost getMscAhlrA() {
+        return mscAhlrA;
+    }
+
+    public AttackTesterHost getHlrAmscA() {
+        return hlrAmscA;
+    }
+
+    public AttackTesterHost getMscAsmscA() {
+        return mscAsmscA;
+    }
+
+    public AttackTesterHost getSmscAmscA() {
+        return smscAmscA;
+    }
+
+    public AttackTesterHost getMscAvlrA() {
+        return mscAvlrA;
+    }
+
+    public AttackTesterHost getVlrAmscA() {
+        return vlrAmscA;
+    }
+
+    public AttackTesterHost getSmscAhlrA() {
+        return smscAhlrA;
+    }
+
+    public AttackTesterHost getHlrAsmscA() {
+        return hlrAsmscA;
+    }
+
+    public AttackTesterHost getHlrAvlrA() {
+        return hlrAvlrA;
+    }
+
+    public AttackTesterHost getVlrAhlrA() {
+        return vlrAhlrA;
+    }
+
+    public AttackTesterHost getSgsnAhlrA() {
+        return sgsnAhlrA;
+    }
+
+    public AttackTesterHost getHlrAsgsnA() {
+        return hlrAsgsnA;
+    }
+
+    public AttackTesterHost getGsmscfAhlrA() {
+        return gsmscfAhlrA;
+    }
+
+    public AttackTesterHost getHlrAgsmscfA() {
+        return hlrAgsmscfA;
+    }
+
+    public AttackTesterHost getGsmscfAvlrA() {
+        return gsmscfAvlrA;
+    }
+
+    public AttackTesterHost getVlrAgsmscfA() {
+        return vlrAgsmscfA;
+    }
+
+    public AttackTesterHost getMscBhlrA() {
+        return mscBhlrA;
+    }
+
+    public AttackTesterHost getHlrAmscB() {
+        return hlrAmscB;
+    }
+
+    public AttackTesterHost getMscBsmscA() {
+        return mscBsmscA;
+    }
+
+    public AttackTesterHost getSmscAmscB() {
+        return smscAmscB;
+    }
+
+    public AttackTesterHost getMscBvlrA() {
+        return mscBvlrA;
+    }
+
+    public AttackTesterHost getVlrAmscB() {
+        return vlrAmscB;
+    }
+
+    public AttackTesterHost getHlrBsmscA() {
+        return hlrBsmscA;
+    }
+
+    public AttackTesterHost getSmscAhlrB() {
+        return smscAhlrB;
+    }
+
+    public AttackTesterHost getHlrBvlrA() {
+        return hlrBvlrA;
+    }
+
+    public AttackTesterHost getVlrAhlrB() {
+        return vlrAhlrB;
+    }
+
+    public AttackTesterHost getVlrBvlrA() {
+        return vlrBvlrA;
+    }
+
+    public AttackTesterHost getVlrAvlrB() {
+        return vlrAvlrB;
+    }
+
+    public AttackTesterHost getSmscBsmscA() {
+        return smscBsmscA;
+    }
+
+    public AttackTesterHost getSmscAsmscB() {
+        return smscAsmscB;
+    }
+
+    public AttackTesterHost getSmscBhlrA() {
+        return smscBhlrA;
+    }
+
+    public AttackTesterHost getHlrAsmscB() {
+        return hlrAsmscB;
+    }
+
+    public AttackTesterHost getVlrBhlrA() {
+        return vlrBhlrA;
+    }
+
+    public AttackTesterHost getHlrAvlrB() {
+        return hlrAvlrB;
+    }
+
+    public AttackTesterHost getAttackerBmscA() {
+        return attackerBmscA;
+    }
+
+    public AttackTesterHost getMscAattackerB() {
+        return mscAattackerB;
+    }
+
+    public AttackTesterHost getAttackerBhlrA() {
+        return attackerBhlrA;
+    }
+
+    public AttackTesterHost getHlrAattackerB() {
+        return hlrAattackerB;
+    }
+
+    public AttackTesterHost getAttackerBsmscA() {
+        return attackerBsmscA;
+    }
+
+    public AttackTesterHost getSmscAattackerB() {
+        return smscAattackerB;
+    }
+
+    public AttackTesterHost getAttackerBvlrA() {
+        return attackerBvlrA;
+    }
+
+    public AttackTesterHost getVlrAattackerB() {
+        return vlrAattackerB;
+    }
+
     private void initateAllNodes(String simulatorHome) {
         this.mscAmscB = new AttackTesterHost("MSC_A_MSC_B", simulatorHome, AttackTesterHost.AttackNode.MSC_A_MSC_B, this);
         this.mscBmscA = new AttackTesterHost("MSC_B_MSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_B_MSC_A, this);
@@ -1055,12 +1231,22 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.defaultSmscAddress.getAddress());
     }
 
-    private void waitForSRIResponse(AttackTesterHost node) {
+    public void waitForSRIResponse(AttackTesterHost node) {
         while(!node.gotSRIForSMResponse()) {
             try {
                 Thread.sleep(50);
             } catch(InterruptedException e) {
                 System.exit(50);
+            }
+        }
+    }
+
+    public void waitForMtForwardSMResponse(AttackTesterHost node) {
+        while(!node.gotMtForwardSMResponse()) {
+            try {
+                Thread.sleep(50);
+            } catch(InterruptedException e) {
+
             }
         }
     }
@@ -1084,24 +1270,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         String destIsdnNumber = destination.getMsisdn().getAddress();
         String scAddr = this.getDefaultSmscAddress().getAddress();
 
-        DialogInfo moInfo, mtInfo;
-
-        moInfo = this.mscAsmscA.getTestAttackClient().performMoForwardSM(DEFAULT_SMS_MESSAGE, destIsdnNumber, origIsdnNumber, scAddr);
-        this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(destIsdnNumber, scAddr);
-
-        this.waitForSRIResponse(this.smscAhlrA);
-        SendRoutingInfoForSMResponse sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
-        this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
-
-        if(destinationOperatorA) {
-            mtInfo = this.smscAmscA.getTestAttackServer().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
-                    sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), origIsdnNumber,
-                    this.defaultSmscAddress.getAddress());
-            this.mscAsmscA.getTestAttackClient().performMtForwardSmResp(mtInfo);
-            this.smscAmscA.getTestAttackServer().performMoForwardShortMessageResponse(moInfo);
-        } else {
-
-        }
+        this.mscAsmscA.getTestAttackClient().performMoForwardSM(DEFAULT_SMS_MESSAGE, destIsdnNumber, origIsdnNumber, scAddr);
     }
 
     private void performShortMessageMobileTerminated() {

@@ -40,6 +40,7 @@ import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.PD
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.api.MessageType;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
+import org.mobicents.protocols.ss7.tools.simulator.AttackSimulationOrganizer;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 import org.mobicents.protocols.ss7.tools.simulator.common.AddressNatureType;
 import org.mobicents.protocols.ss7.tools.simulator.common.AttackTesterBase;
@@ -87,6 +88,8 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     private boolean needSendClose = false;
 
     private static Charset isoCharset = Charset.forName("ISO-8859-1");
+
+    private MtForwardShortMessageResponse lastMtForwardShortMessageResponse;
 
     public TestAttackServer() {
         super(SOURCE_NAME);
@@ -474,10 +477,9 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         return doSendSri(destIsdnNumber, this.getServiceCenterAddress(), mmd);
     }
 
-    public DialogInfo performMtForwardSM(String msg, IMSI destImsi, String vlrNumber, String origIsdnNumber, String serviceCentreAddr) {
+    public void performMtForwardSM(String msg, IMSI destImsi, String vlrNumber, String origIsdnNumber, String serviceCentreAddr) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
-
 
         AddressField originatingAddress = new AddressFieldImpl(
                 this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getTypeOfNumber(), this.testerHost.getConfigurationData()
@@ -525,15 +527,11 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     null);
             SmsSignalInfo si = mapProvider.getMAPParameterFactory().createSmsSignalInfo(tpdu, null);
 
-            long invokeId = curDialog.addMtForwardShortMessageRequest(da, oa, si, false, null);
+            curDialog.addMtForwardShortMessageRequest(da, oa, si, false, null);
             curDialog.send();
-            long remoteDialogId = curDialog.getLocalDialogId();
-            return new DialogInfo(invokeId, remoteDialogId);
         } catch (MAPException e) {
             System.out.println("Error when sending MtForwardSMReq: " + e.toString());
         }
-
-        return null;
     }
 
     private String doMtForwardSM(String msg, String destImsi, String vlrNumber, String origIsdnNumber, String serviceCentreAddr) {
@@ -707,7 +705,31 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onMoForwardShortMessageRequest(MoForwardShortMessageRequest ind) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        AttackSimulationOrganizer organizer = this.testerHost.getAttackSimulationOrganizer();
 
+        try {
+            SmsSubmitTpdu data = (SmsSubmitTpdu) ind.getSM_RP_UI().decodeTpdu(true);
+            organizer.getSmscAhlrA().getTestAttackClient().performSendRoutingInfoForSM(data.getDestinationAddress().getAddressValue(),
+                    ind.getSM_RP_DA().getServiceCentreAddressDA().getAddress());
+
+            organizer.waitForSRIResponse(organizer.getSmscAhlrA());
+            SendRoutingInfoForSMResponse sriResponse = organizer.getSmscAhlrA().getTestAttackClient().getLastSRIForSMResponse();
+            organizer.getSmscAhlrA().getTestAttackClient().clearLastSRIForSMResponse();
+
+            organizer.getSmscAmscA().getTestAttackServer().performMtForwardSM(data.getUserData().getDecodedMessage(), sriResponse.getIMSI(),
+                    sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),ind.getSM_RP_OA().getMsisdn().getAddress(),
+                    ind.getSM_RP_DA().getServiceCentreAddressDA().getAddress());
+            organizer.waitForMtForwardSMResponse(organizer.getSmscAmscA());
+            MtForwardShortMessageResponse mtForwardShortMessageResponse = organizer.getSmscAmscA().getTestAttackServer().getLastMtForwardSMResponse();
+
+            long invokeId = ind.getInvokeId();
+            MAPDialogSms curDialog = ind.getMAPDialog();
+            curDialog.addMoForwardShortMessageResponse(invokeId, null, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error in onMoForwardShortMessageRequest: " + e.toString());
+        }
     }
 
     public void performMoForwardShortMessageResponse(DialogInfo dialogInfo) {
@@ -810,19 +832,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onMtForwardShortMessageResponse(MtForwardShortMessageResponse ind) {
-        if (!isStarted)
-            return;
+        this.lastMtForwardShortMessageResponse = ind;
+    }
 
-        this.countMtFsmResp++;
+    public MtForwardShortMessageResponse getLastMtForwardSMResponse() {
+        return this.lastMtForwardShortMessageResponse;
+    }
 
-        MAPDialogSms curDialog = ind.getMAPDialog();
-        long invokeId = curDialog.getLocalDialogId();
-        currentRequestDef += "Rsvd mtResp;";
-        this.testerHost.sendNotif(SOURCE_NAME, "Rcvd: mtResp", "", Level.DEBUG);
-
-        if (ind.getMAPDialog().getTCAPMessageType() == MessageType.Continue) {
-            needSendClose = true;
-        }
+    public void clearLastMtForwardSMResponse() {
+        this.lastMtForwardShortMessageResponse = null;
     }
 
     @Override

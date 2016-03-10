@@ -985,12 +985,20 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onMtForwardShortMessageRequest(MtForwardShortMessageRequest ind) {
+        MAPDialogSms curDialog = ind.getMAPDialog();
+        long invokeId = ind.getInvokeId();
+
+        try {
+            curDialog.addMtForwardShortMessageResponse(invokeId, null, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error in onMtForwardShortMessageRequest: " + e.toString());
+        }
     }
 
     public void performMtForwardSmResp(DialogInfo dialogInfo) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPDialogSms curDialog = (MAPDialogSms) mapProvider.getMAPDialog(dialogInfo.remoteDialogId);
-
         try {
             curDialog.addMtForwardShortMessageResponse(dialogInfo.invokeId, null, null);
             this.needSendClose = true;
