@@ -40,8 +40,6 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClient
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClientConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServer;
 import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServerConfigurationData;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientConfigurationData;
-import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.tests.checkimei.TestCheckImeiClientConfigurationData;

@@ -19,8 +19,6 @@ import org.mobicents.protocols.ss7.tools.simulator.level2.SccpConfigurationData;
         import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackClientConfigurationData;
         import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServer;
         import org.mobicents.protocols.ss7.tools.simulator.tests.attack.TestAttackServerConfigurationData;
-        import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMClientConfigurationData;
-        import org.mobicents.protocols.ss7.tools.simulator.tests.attack.location.TestSRIForSMServerConfigurationData;
         import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapScfConfigurationData;
         import org.mobicents.protocols.ss7.tools.simulator.tests.cap.TestCapSsfConfigurationData;
         import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TestSmsClientConfigurationData;
@@ -82,8 +80,6 @@ public class AttackConfigurationData extends ConfigurationData {
     private TestCapSsfConfigurationData testCapSsfConfigurationData = new TestCapSsfConfigurationData();
     private TestAtiClientConfigurationData testAtiClientConfigurationData = new TestAtiClientConfigurationData();
     private TestAtiServerConfigurationData testAtiServerConfigurationData = new TestAtiServerConfigurationData();
-    private TestSRIForSMClientConfigurationData testSRIForSMClientConfigurationData = new TestSRIForSMClientConfigurationData();
-    private TestSRIForSMServerConfigurationData testSRIForSMServerConfigurationData = new TestSRIForSMServerConfigurationData();
     private TestAttackClientConfigurationData testAttackClientConfigurationData = new TestAttackClientConfigurationData();
     private TestAttackServerConfigurationData testAttackServerConfigurationData = new TestAttackServerConfigurationData();
 
@@ -223,22 +219,6 @@ public class AttackConfigurationData extends ConfigurationData {
         this.testAtiServerConfigurationData = testAtiServerConfigurationData;
     }
 
-    public TestSRIForSMClientConfigurationData getTestSRIForSMClientConfigurationData() {
-        return testSRIForSMClientConfigurationData;
-    }
-
-    public void setTestSRIForSMClientConfigurationData(TestSRIForSMClientConfigurationData testSRIForSMClientConfigurationData) {
-        this.testSRIForSMClientConfigurationData = testSRIForSMClientConfigurationData;
-    }
-
-    public TestSRIForSMServerConfigurationData getTestSRIForSMServerConfigurationData() {
-        return testSRIForSMServerConfigurationData;
-    }
-
-    public void setTestSRIForSMServerConfigurationData(TestSRIForSMServerConfigurationData testSRIForSMServerConfigurationData) {
-        this.testSRIForSMServerConfigurationData = testSRIForSMServerConfigurationData;
-    }
-
     public TestAttackClientConfigurationData getTestAttackClientConfigurationData() {
         return testAttackClientConfigurationData;
     }
@@ -320,14 +300,6 @@ public class AttackConfigurationData extends ConfigurationData {
             if (capSsf != null)
                 data.setTestCapSsfConfigurationData(capSsf);
 
-            TestSRIForSMClientConfigurationData sriForSMClient = xml.get(TEST_SRIFORSM_CLIENT, TestSRIForSMClientConfigurationData.class);
-            if (sriForSMClient != null)
-                data.setTestSRIForSMClientConfigurationData(sriForSMClient);
-
-            TestSRIForSMServerConfigurationData sriForSMServer = xml.get(TEST_SRIFORSM_SERVER, TestSRIForSMServerConfigurationData.class);
-            if (sriForSMServer != null)
-                data.setTestSRIForSMServerConfigurationData(sriForSMServer);
-
             TestAttackClientConfigurationData attackClient = xml.get(TEST_ATTACK_CLIENT, TestAttackClientConfigurationData.class);
             if (attackClient != null)
                 data.setTestAttackClientConfigurationData(attackClient);
@@ -362,8 +334,6 @@ public class AttackConfigurationData extends ConfigurationData {
             xml.add(data.getTestAtiServerConfigurationData(), TEST_ATI_SERVER, TestAtiServerConfigurationData.class);
             xml.add(data.getTestCapScfConfigurationData(), TEST_CAP_SCF, TestCapScfConfigurationData.class);
             xml.add(data.getTestCapSsfConfigurationData(), TEST_CAP_SSF, TestCapSsfConfigurationData.class);
-            xml.add(data.getTestSRIForSMClientConfigurationData(), TEST_SRIFORSM_CLIENT, TestSRIForSMClientConfigurationData.class);
-            xml.add(data.getTestSRIForSMServerConfigurationData(), TEST_SRIFORSM_SERVER, TestSRIForSMServerConfigurationData.class);
             xml.add(data.getTestAttackClientConfigurationData(), TEST_ATTACK_CLIENT, TestAttackClientConfigurationData.class);
             xml.add(data.getTestAttackServerConfigurationData(), TEST_ATTACK_SERVER, TestAttackServerConfigurationData.class);
         }
