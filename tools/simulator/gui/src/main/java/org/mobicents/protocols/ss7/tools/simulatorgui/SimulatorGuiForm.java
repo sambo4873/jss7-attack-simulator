@@ -480,8 +480,10 @@ public class SimulatorGuiForm extends JFrame implements NotificationListener {
     }
 
     protected void startHost(String appName, boolean isRemote, final TesterHost hostImpl, TesterHostMBean host, M3uaManMBean m3ua, DialogicManMBean dialogic,
-            SccpManMBean sccp, MapManMBean map, CapManMBean cap, TestUssdClientManMBean ussdClient, TestUssdServerManMBean ussdServer,
-            TestSmsClientManMBean smsClient, TestSmsServerManMBean smsServer, TestCapScfManMBean capScf, TestCapSsfManMBean capSsf,
+                             SccpManMBean sccp, MapManMBean map, CapManMBean cap, TestUssdClientManMBean ussdClient, TestUssdServerManMBean ussdServer,
+                             TestSmsClientManMBean smsClient, TestSmsServerManMBean smsServer, TestCapScfManMBean capScf, TestCapSsfManMBean capSsf,
+                             TestAtiClientManMBean atiClient, TestAtiServerManMBean atiServer,
+                             TestCheckImeiClientManMBean checkImeiClient, TestCheckImeiServerManMBean checkImeiServer) {
         setTitle(getTitle() + appName);
 
         this.hostImpl = hostImpl;
