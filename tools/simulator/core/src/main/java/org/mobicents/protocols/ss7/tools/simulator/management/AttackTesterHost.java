@@ -334,8 +334,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.VLR_B_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
 
         ////////////////////////////////////////
@@ -389,8 +389,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.VLR_B_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
@@ -554,8 +554,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.VLR_B_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
 
         ////////////////////////////////////////
@@ -609,8 +609,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.VLR_B_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
@@ -664,8 +664,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.HLR_B_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.HLR_B_GT;
 
         ////////////////////////////////////////
@@ -719,8 +719,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.HLR_B_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
@@ -774,8 +774,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
 
         ////////////////////////////////////////
@@ -829,8 +829,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
@@ -994,8 +994,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
 
         ////////////////////////////////////////
@@ -1049,8 +1049,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
@@ -1434,8 +1434,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
@@ -1489,8 +1489,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
@@ -1654,8 +1654,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
@@ -1709,8 +1709,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
@@ -1764,8 +1764,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
 
         ////////////////////////////////////////
@@ -1819,8 +1819,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
@@ -1875,8 +1875,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
 
         ////////////////////////////////////////
@@ -1931,8 +1931,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
@@ -1987,8 +1987,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////
@@ -2043,8 +2043,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
@@ -2212,8 +2212,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
@@ -2268,8 +2268,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
 
         ////////////////////////////////////////
@@ -2324,8 +2324,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
 
         ////////////////////////////////////////
@@ -2379,8 +2379,8 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         //////// L3 Configuration Data //////////
 
-        String destReferenceDigits = "",
-                origReferenceDigits = "",
+        String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
+                origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
 
         ////////////////////////////////////////

@@ -158,6 +158,14 @@ public class AttackSimulationOrganizer implements Stoppable {
     public static final String VLR_B_GT = "2224";
     public static final String ATTACKER_GT = "2221";
 
+    public static final String MSC_A_MAP_REFERENCE = MSC_A_GT;
+    public static final String HLR_A_MAP_REFERENCE = HLR_A_GT;
+    public static final String VLR_A_MAP_REFERENCE = VLR_A_GT;
+    public static final String MSC_B_MAP_REFERENCE = MSC_B_GT;
+    public static final String HLR_B_MAP_REFERENCE = HLR_B_GT;
+    public static final String VLR_B_MAP_REFERENCE = VLR_B_GT;
+    public static final String ATTACKER_MAP_REFERENCE = MSC_B_GT;
+
     public static final int MSC_A_MSC_B_PORT = 8011;
     public static final int MSC_B_MSC_A_PORT = 8012;
 
