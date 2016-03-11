@@ -266,7 +266,9 @@ public class AttackSimulationOrganizer implements Stoppable {
                 NumberingPlan.ISDN,
                 VLR_B_GT);
 
-        this.subscriberManager = new SubscriberManager(defaultMscAddress, defaultVlrAddress, defaultHlrAddress);
+        this.subscriberManager = new SubscriberManager(defaultMscAddress, defaultMscBAddress,
+                defaultVlrAddress, defaultVlrBAddress,
+                defaultHlrAddress, defaultHlrBAddress);
         this.subscriberManager.createRandomSubscribers(numberOfSubscribers);
 
         if (this.simpleSimulation) {
