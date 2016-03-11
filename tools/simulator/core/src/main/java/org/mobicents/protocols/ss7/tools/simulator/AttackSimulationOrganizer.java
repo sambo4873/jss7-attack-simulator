@@ -235,8 +235,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers, int chanceOfAttack) {
         this.random = new Random(System.currentTimeMillis());
         this.simpleSimulation = simpleSimulation;
-        numberOfSubscribers = numberOfSubscribers;
-        chanceOfAttack = chanceOfAttack;
+        AttackSimulationOrganizer.numberOfSubscribers = numberOfSubscribers;
+        AttackSimulationOrganizer.chanceOfAttack = chanceOfAttack;
 
         MAPParameterFactory mapParameterFactory = new MAPParameterFactoryImpl();
 
@@ -889,9 +889,9 @@ public class AttackSimulationOrganizer implements Stoppable {
             public void run() {
                 System.out.println();
                 System.out.println("Exiting..");
-                System.out.println("Chance of attack used: " + chanceOfAttack);
-                System.out.println("Number of genuine messages generated: " + countGenuine);
-                System.out.println("Number of attacks generated: " + countAttack);
+                System.out.println("Chance of attack used: " + AttackSimulationOrganizer.chanceOfAttack);
+                System.out.println("Number of genuine messages generated: " + AttackSimulationOrganizer.countGenuine);
+                System.out.println("Number of attacks generated: " + AttackSimulationOrganizer.countAttack);
 
                 //Sleep for some seconds, so nodes can shutdown.
                 try{
