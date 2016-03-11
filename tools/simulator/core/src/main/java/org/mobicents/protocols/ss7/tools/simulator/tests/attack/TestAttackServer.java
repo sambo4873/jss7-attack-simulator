@@ -924,8 +924,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onReportSMDeliveryStatusRequest(ReportSMDeliveryStatusRequest reportSMDeliveryStatusInd) {
-        // TODO Auto-generated method stub
+        long invokeId = reportSMDeliveryStatusInd.getInvokeId();
+        MAPDialogSms curDialog = reportSMDeliveryStatusInd.getMAPDialog();
 
+        try {
+            curDialog.addReportSMDeliveryStatusResponse(invokeId, reportSMDeliveryStatusInd.getMsisdn(), null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending ReportSMDeliveryStatusRequest: " + e.toString());
+        }
     }
 
     @Override
