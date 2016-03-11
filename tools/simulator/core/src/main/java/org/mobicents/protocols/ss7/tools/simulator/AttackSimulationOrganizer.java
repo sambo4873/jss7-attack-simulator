@@ -35,6 +35,10 @@ public class AttackSimulationOrganizer implements Stoppable {
     private ISDNAddressString defaultHlrAddress;
     private ISDNAddressString defaultSmscAddress;
     private ISDNAddressString defaultVlrAddress;
+    private ISDNAddressString defaultMscBAddress;
+    private ISDNAddressString defaultHlrBAddress;
+    private ISDNAddressString defaultSmscBAddress;
+    private ISDNAddressString defaultVlrBAddress;
 
     private SubscriberManager subscriberManager;
 
@@ -244,6 +248,23 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
                 AttackConfigurationData.VLR_A_NUMBER);
+
+        this.defaultMscBAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                MSC_B_GT);
+        this.defaultSmscBAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                SMSC_B_GT);
+        this.defaultHlrBAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                HLR_B_GT);
+        this.defaultVlrBAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                VLR_B_GT);
 
         this.subscriberManager = new SubscriberManager(defaultMscAddress, defaultVlrAddress, defaultHlrAddress);
         this.subscriberManager.createRandomSubscribers(numberOfSubscribers);
@@ -877,7 +898,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         while (true) {
             try {
                 sleepTime = this.random.nextInt((1000 - 100) + 1) + 100;
-                sleepTime = 100;
+                sleepTime = 500;
                 Thread.sleep(sleepTime);
 
                 if (this.testerHostsNeedQuit())
@@ -959,7 +980,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 34;
+        int numberOfAvailableMessages = 32;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
@@ -1080,22 +1101,14 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performUnstructuredSSNotify();
                 break;
             case 29:
-                printSentMessage("SendRoutingInfoForSM", true);
-                this.performSendRoutingInfoForSM();
-                break;
-            case 30:
-                printSentMessage("ReportSMDeliveryStatus", true);
-                this.performReportSMDeliveryStatus();
-                break;
-            case 31:
                 printSentMessage("ShortMessageAlertProcedure", true);
                 this.performShortMessageAlertProcedure();
                 break;
-            case 32:
+            case 30:
                 printSentMessage("InformServiceCentre", true);
                 this.performInformServiceCentre();
                 break;
-            case 33:
+            case 31:
                 printSentMessage("SendRoutingInfoForGPRS", true);
                 this.performSendRoutingInfoForGPRS();
                 break;
@@ -1232,11 +1245,17 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     public void waitForMtForwardSMResponse(AttackTesterHost node) {
+        int tries = 0;
         while(!node.gotMtForwardSMResponse()) {
             try {
-                Thread.sleep(50);
+                if(tries < 100) {
+                    Thread.sleep(50);
+                    tries++;
+                } else {
+                    break;
+                }
             } catch(InterruptedException e) {
-
+                System.exit(50);
             }
         }
     }
@@ -1281,6 +1300,17 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(destIsdnNumber,
                 hlrAsmscA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+        this.waitForSRIResponse(this.smscAhlrA);
+        SendRoutingInfoForSMResponse sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+
+        this.smscAmscA.getTestAttackServer().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
+                sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), originator.getMsisdn().getAddress(),
+                this.getDefaultSmscAddress().getAddress());
+        this.waitForMtForwardSMResponse(this.smscAmscA);
+        this.smscAmscA.getTestAttackServer().clearLastMtForwardSMResponse();
+
+        this.smscAhlrA.getTestAttackClient().performReportSMDeliveryStatus(destination.getMsisdn());
     }
 
     private void performShortMessageAlertProcedure() {
@@ -1301,6 +1331,27 @@ public class AttackSimulationOrganizer implements Stoppable {
          *
          */
 
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+
+        int origin = this.random.nextInt(3);
+
+        switch(origin) {
+            //Operator A internal procedure.
+            case 0:
+                this.vlrAhlrA.getTestAttackServer().performReadyForSM(subscriber.getImsi());
+                this.hlrAsmscA.getTestAttackServer().performAlertServiceCentre(subscriber.getMsisdn(), this.defaultSmscAddress.getAddress());
+                break;
+            //Subscriber from B is located in A.
+            case 1:
+                this.vlrAhlrB.getTestAttackServer().performReadyForSM(subscriber.getImsi());
+                this.hlrBsmscA.getTestAttackClient().performAlertServiceCentre(subscriber.getMsisdn(), this.defaultSmscAddress.getAddress());
+                break;
+            //Subscriber from A is located in B.
+            case 2:
+                this.vlrBhlrA.getTestAttackClient().performReadyForSM(subscriber.getImsi());
+                this.hlrAsmscB.getTestAttackServer().performAlertServiceCentre(subscriber.getMsisdn(), this.defaultSmscBAddress.getAddress());
+                break;
+        }
     }
 
     private void performUpdateLocation() {
@@ -1582,17 +1633,6 @@ public class AttackSimulationOrganizer implements Stoppable {
         //this.hlrAvlrA.getTestAttackClient().performUnstructuredSSRequest();
         //this.gsmscfAvlrA.getTestAttackClient().performUnstructuredSSRequest();
         //this.vlrAmscA.getTestAttackClient().performUnstructuredSSRequest();
-    }
-
-    private void performSendRoutingInfoForSM() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-        //this.mscAhlrA.getTestAttackClient().performSendRoutingInfoForSM("", "");
-        this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.smscAhlrA.getTestAttackClient().getServiceCenterAddress());
-    }
-
-    private void performReportSMDeliveryStatus() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-        this.smscAhlrA.getTestAttackClient().performReportSMDeliveryStatus(subscriber.getMsisdn());
     }
 
     private void performInformServiceCentre() {

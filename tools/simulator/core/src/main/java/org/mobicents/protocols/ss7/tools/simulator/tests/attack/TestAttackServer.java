@@ -718,11 +718,11 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             SendRoutingInfoForSMResponse sriResponse = organizer.getSmscAhlrA().getTestAttackClient().getLastSRIForSMResponse();
             organizer.getSmscAhlrA().getTestAttackClient().clearLastSRIForSMResponse();
 
-            organizer.getSmscAmscA().getTestAttackServer().performMtForwardSM(data.getUserData().getDecodedMessage(), sriResponse.getIMSI(),
-                    sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),ind.getSM_RP_OA().getMsisdn().getAddress(),
+            organizer.getSmscAmscA().getTestAttackServer().performMtForwardSM(AttackSimulationOrganizer.DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),ind.getSM_RP_OA().getMsisdn().getAddress(),
                     ind.getSM_RP_DA().getServiceCentreAddressDA().getAddress());
             organizer.waitForMtForwardSMResponse(organizer.getSmscAmscA());
             MtForwardShortMessageResponse mtForwardShortMessageResponse = organizer.getSmscAmscA().getTestAttackServer().getLastMtForwardSMResponse();
+            organizer.getSmscAmscA().getTestAttackServer().clearLastMtForwardSMResponse();
 
             long invokeId = ind.getInvokeId();
             MAPDialogSms curDialog = ind.getMAPDialog();
@@ -989,7 +989,31 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onAlertServiceCentreResponse(AlertServiceCentreResponse alertServiceCentreInd) {
         // TODO Auto-generated method stub
+    }
 
+    public void performAlertServiceCentre(ISDNAddressString msisdn, String serviceCentreAddress) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(
+                MAPApplicationContextName.shortMsgAlertContext,
+                MAPApplicationContextVersion.version2);
+
+        AddressString scAddress = mapProvider.getMAPParameterFactory().createAddressString(
+                this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getAddressNature(),
+                this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getNumberingPlan(),
+                serviceCentreAddress);
+
+        try {
+            MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addAlertServiceCentreRequest(msisdn, scAddress);
+            curDialog.send();
+        } catch (MAPException e) {
+            System.out.println("Error when sending AlertServiceCentre: " + e.toString());
+        }
     }
 
     @Override
@@ -1822,7 +1846,6 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     public void performReadyForSM(IMSI imsi) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
-        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
         MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.mwdMngtContext, MAPApplicationContextVersion.version3);
         try {
