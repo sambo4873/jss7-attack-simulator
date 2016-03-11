@@ -14,6 +14,8 @@ import org.mobicents.protocols.ss7.tools.simulator.management.DialogInfo;
 import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
 import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -967,7 +969,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void generateAttack() {
-        int numberOfAttacks = 3;
+        int numberOfAttacks = 4;
         int randomAttack = this.random.nextInt(numberOfAttacks);
 
         switch(randomAttack) {
@@ -982,6 +984,10 @@ public class AttackSimulationOrganizer implements Stoppable {
             case 2:
                 printSentMessage("Intercept:SMS", false);
                 this.attackInterceptSms();
+                break;
+            case 3:
+                printSentMessage("Scan:SRIForSM", false);
+                this.attackScanSRIForSM();
                 break;
         }
     }
@@ -1238,6 +1244,23 @@ public class AttackSimulationOrganizer implements Stoppable {
                 sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),
                 this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress(),
                 this.defaultSmscAddress.getAddress());
+    }
+
+    public void attackScanSRIForSM() {
+        int numberOfScans;
+        ArrayList<Subscriber> scanTargets = new ArrayList<Subscriber>();
+
+        if(this.getSubscriberManager().getNumberOfSubscribers() > 10)
+            numberOfScans = this.random.nextInt(10);
+        else
+            numberOfScans = this.random.nextInt(this.getSubscriberManager().getNumberOfSubscribers());
+
+        for(int i = 0; i < numberOfScans; i++)
+            scanTargets.add(this.getSubscriberManager().getRandomSubscriber());
+
+        for(Subscriber scanTarget : scanTargets)
+            this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(
+                    scanTarget.getMsisdn().getAddress(), this.getDefaultSmscAddress().getAddress());
     }
 
     public void waitForSRIResponse(AttackTesterHost node) {
