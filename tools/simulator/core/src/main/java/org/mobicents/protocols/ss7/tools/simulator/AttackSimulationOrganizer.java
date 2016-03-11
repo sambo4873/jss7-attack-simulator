@@ -10,12 +10,10 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformatio
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
 import org.mobicents.protocols.ss7.tools.simulator.common.AttackConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
-import org.mobicents.protocols.ss7.tools.simulator.management.DialogInfo;
 import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
 import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 /**
@@ -229,8 +227,8 @@ public class AttackSimulationOrganizer implements Stoppable {
     public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers, int chanceOfAttack) {
         this.random = new Random(System.currentTimeMillis());
         this.simpleSimulation = simpleSimulation;
-        this.numberOfSubscribers = numberOfSubscribers;
-        this.chanceOfAttack = chanceOfAttack;
+        numberOfSubscribers = numberOfSubscribers;
+        chanceOfAttack = chanceOfAttack;
 
         MAPParameterFactory mapParameterFactory = new MAPParameterFactoryImpl();
 
@@ -953,13 +951,13 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void generateTraffic() {
-        boolean generateNoise = this.random.nextInt(100) >= this.chanceOfAttack;
+        boolean generateNoise = this.random.nextInt(100) >= chanceOfAttack;
 
         if(generateNoise) {
-            this.countGenuine++;
+            countGenuine++;
             this.generateNoise();
         } else {
-            this.countAttack++;
+            countAttack++;
             this.generateAttack();
         }
     }
@@ -1138,17 +1136,9 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void attackLocationPsi() {
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
 
-        //Get necessary information from request, use in next message.
         this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(),
                 this.hlrAattackerB.getTestAttackServer().getServiceCenterAddress());
-
-        while(!this.attackerBhlrA.gotSRIForSMResponse()) {
-            try{
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                System.exit(50);
-            }
-        }
+        this.waitForSRIForSMResponse(this.attackerBhlrA);
 
         SendRoutingInfoForSMResponse sriResponse = this.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
         this.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
@@ -1159,13 +1149,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         this.attackerBvlrA.getConfigurationData().getMapConfigurationData().setRemoteAddressDigits(victimVlrAddress);
         this.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(victimImsi);
 
-        while(!this.attackerBvlrA.gotPSIResponse()) {
-            try{
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                System.exit(50);
-            }
-        }
+        this.waitForPSIResponse(this.attackerBvlrA, true);
 
         ProvideSubscriberInfoResponse psiResponse = this.attackerBvlrA.getTestAttackClient().getLastPsiResponse();
         this.attackerBvlrA.getTestAttackClient().clearLastPsiResponse();
@@ -1176,14 +1160,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
 
         this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
-
-        while(!this.smscAhlrA.gotSRIForSMResponse()) {
-            try {
-                Thread.sleep(50);
-            } catch(InterruptedException e) {
-                System.exit(50);
-            }
-        }
+        this.waitForSRIForSMResponse(this.smscAhlrA);
 
         SendRoutingInfoForSMResponse sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
         this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
@@ -1199,14 +1176,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
 
         this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
-
-        while(!this.attackerBhlrA.gotSRIForSMResponse()) {
-            try {
-                Thread.sleep(50);
-            } catch(InterruptedException e) {
-                System.exit(50);
-            }
-        }
+        this.waitForSRIForSMResponse(this.attackerBhlrA);
 
         sriResponse = this.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
         this.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
@@ -1229,14 +1199,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
 
         this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), this.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
-
-        while(!this.smscAhlrA.gotSRIForSMResponse()) {
-            try {
-                Thread.sleep(50);
-            } catch(InterruptedException e) {
-                System.exit(50);
-            }
-        }
+        this.waitForSRIForSMResponse(this.smscAhlrA);
 
         sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
         this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
@@ -1263,7 +1226,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                     scanTarget.getMsisdn().getAddress(), this.getDefaultSmscAddress().getAddress());
     }
 
-    public void waitForSRIResponse(AttackTesterHost node) {
+    public void waitForSRIForSMResponse(AttackTesterHost node) {
         while(!node.gotSRIForSMResponse()) {
             try {
                 Thread.sleep(50);
@@ -1273,9 +1236,9 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    public void waitForMtForwardSMResponse(AttackTesterHost node) {
+    public void waitForMtForwardSMResponse(AttackTesterHost node, boolean client) {
         int tries = 0;
-        while(!node.gotMtForwardSMResponse()) {
+        while(!node.gotMtForwardSMResponse(client)) {
             try {
                 if(tries < 100) {
                     Thread.sleep(50);
@@ -1292,6 +1255,22 @@ public class AttackSimulationOrganizer implements Stoppable {
     public void waitForProvideRoamingNumberResponse(AttackTesterHost node, boolean client) {
         int tries = 0;
         while(!node.gotProvideRoamingNumberResponse(client)) {
+            try {
+                if(tries < 100) {
+                    Thread.sleep(50);
+                    tries++;
+                } else {
+                    break;
+                }
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
+    }
+
+    public void waitForPSIResponse(AttackTesterHost node, boolean client) {
+        int tries = 0;
+        while(!node.gotPSIResponse(client)) {
             try {
                 if(tries < 100) {
                     Thread.sleep(50);
@@ -1343,19 +1322,51 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         String destIsdnNumber = destination.getMsisdn().getAddress();
 
-        this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(destIsdnNumber,
-                hlrAsmscA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
-        this.waitForSRIResponse(this.smscAhlrA);
-        SendRoutingInfoForSMResponse sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
-        this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+        if(originator.getCurrentMscNumber().equals(this.defaultMscAddress)) { //Message originates from A
+            this.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(destIsdnNumber,
+                    hlrAsmscA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+            this.waitForSRIForSMResponse(this.smscAhlrA);
+            SendRoutingInfoForSMResponse sriResponse = this.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
+            this.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
 
-        this.smscAmscA.getTestAttackServer().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
-                sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), originator.getMsisdn().getAddress(),
-                this.getDefaultSmscAddress().getAddress());
-        this.waitForMtForwardSMResponse(this.smscAmscA);
-        this.smscAmscA.getTestAttackServer().clearLastMtForwardSMResponse();
+            if(destination.getCurrentMscNumber().equals(this.defaultMscAddress)) { //Destination is A
+                this.smscAmscA.getTestAttackServer().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
+                        sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), originator.getMsisdn().getAddress(),
+                        this.getDefaultSmscAddress().getAddress());
+                this.waitForMtForwardSMResponse(this.smscAmscA, false);
+                this.smscAmscA.getTestAttackServer().clearLastMtForwardSMResponse();
 
-        this.smscAhlrA.getTestAttackClient().performReportSMDeliveryStatus(destination.getMsisdn());
+                this.smscAhlrA.getTestAttackClient().performReportSMDeliveryStatus(destination.getMsisdn());
+
+            } else { //Destination is B
+                this.smscAsmscB.getTestAttackServer().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
+                        sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), originator.getMsisdn().getAddress(),
+                        this.getDefaultSmscAddress().getAddress());
+                this.waitForMtForwardSMResponse(this.smscAsmscB, false);
+                this.smscAsmscB.getTestAttackServer().clearLastMtForwardSMResponse();
+
+                this.smscBhlrA.getTestAttackClient().performReportSMDeliveryStatus(destination.getMsisdn());
+            }
+        } else { //Message originates from B
+            if(destination.getCurrentMscNumber().equals(this.defaultMscAddress)) { //Destination is A
+                this.smscBhlrA.getTestAttackClient().performSendRoutingInfoForSM(destIsdnNumber,
+                        hlrAsmscB.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+                this.waitForSRIForSMResponse(this.smscBhlrA);
+                SendRoutingInfoForSMResponse sriResponse = this.smscBhlrA.getTestAttackClient().getLastSRIForSMResponse();
+                this.smscBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+
+                this.smscBsmscA.getTestAttackClient().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
+                        sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), originator.getMsisdn().getAddress(),
+                        this.getDefaultSmscBAddress().getAddress());
+                this.waitForMtForwardSMResponse(this.smscBsmscA, true);
+                this.smscBsmscA.getTestAttackClient().clearLastMtForwardSMResponse();
+
+                this.smscBhlrA.getTestAttackClient().performReportSMDeliveryStatus(destination.getMsisdn());
+
+            }
+        }
+
+
     }
 
     private void performShortMessageAlertProcedure() {

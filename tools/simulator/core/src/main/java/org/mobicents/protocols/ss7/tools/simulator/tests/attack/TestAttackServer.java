@@ -1,14 +1,10 @@
 package org.mobicents.protocols.ss7.tools.simulator.tests.attack;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.spi.LocationInfo;
 import org.mobicents.protocols.ss7.isup.ISUPEvent;
 import org.mobicents.protocols.ss7.isup.ISUPListener;
 import org.mobicents.protocols.ss7.isup.ISUPProvider;
 import org.mobicents.protocols.ss7.isup.ISUPTimeoutEvent;
-import org.mobicents.protocols.ss7.isup.impl.message.parameter.LocationNumberImpl;
-import org.mobicents.protocols.ss7.isup.message.parameter.LocationNumber;
-import org.mobicents.protocols.ss7.isup.message.parameter.Number;
 import org.mobicents.protocols.ss7.map.api.*;
 import org.mobicents.protocols.ss7.map.api.errors.MAPErrorMessage;
 import org.mobicents.protocols.ss7.map.api.errors.SMEnumeratedDeliveryFailureCause;
@@ -34,9 +30,6 @@ import org.mobicents.protocols.ss7.map.api.service.oam.*;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
 import org.mobicents.protocols.ss7.map.api.service.supplementary.*;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
-import org.mobicents.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
-import org.mobicents.protocols.ss7.map.primitives.LAIFixedLengthImpl;
-import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextInfoImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.api.MessageType;
@@ -54,9 +47,7 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.sms.SmsCodingType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TypeOfNumberType;
 
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.GregorianCalendar;
 
 /**
@@ -92,6 +83,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     private MtForwardShortMessageResponse lastMtForwardShortMessageResponse;
     private ProvideRoamingNumberResponse lastProvideRoamingNumberResponse;
+    private ProvideSubscriberInfoResponse lastPsiResponse;
 
     public TestAttackServer() {
         super(SOURCE_NAME);
@@ -715,13 +707,13 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             organizer.getSmscAhlrA().getTestAttackClient().performSendRoutingInfoForSM(data.getDestinationAddress().getAddressValue(),
                     ind.getSM_RP_DA().getServiceCentreAddressDA().getAddress());
 
-            organizer.waitForSRIResponse(organizer.getSmscAhlrA());
+            organizer.waitForSRIForSMResponse(organizer.getSmscAhlrA());
             SendRoutingInfoForSMResponse sriResponse = organizer.getSmscAhlrA().getTestAttackClient().getLastSRIForSMResponse();
             organizer.getSmscAhlrA().getTestAttackClient().clearLastSRIForSMResponse();
 
             organizer.getSmscAmscA().getTestAttackServer().performMtForwardSM(AttackSimulationOrganizer.DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(), sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),ind.getSM_RP_OA().getMsisdn().getAddress(),
                     ind.getSM_RP_DA().getServiceCentreAddressDA().getAddress());
-            organizer.waitForMtForwardSMResponse(organizer.getSmscAmscA());
+            organizer.waitForMtForwardSMResponse(organizer.getSmscAmscA(), false);
             MtForwardShortMessageResponse mtForwardShortMessageResponse = organizer.getSmscAmscA().getTestAttackServer().getLastMtForwardSMResponse();
             organizer.getSmscAmscA().getTestAttackServer().clearLastMtForwardSMResponse();
 
@@ -827,10 +819,19 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     }
 
     @Override
-    public void onMtForwardShortMessageRequest(MtForwardShortMessageRequest mtForwSmInd) {
-        // TODO Auto-generated method stub
+    public void onMtForwardShortMessageRequest(MtForwardShortMessageRequest ind) {
+        MAPDialogSms curDialog = ind.getMAPDialog();
+        long invokeId = ind.getInvokeId();
 
+        try {
+            curDialog.addMtForwardShortMessageResponse(invokeId, null, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error in onMtForwardShortMessageRequest: " + e.toString());
+        }
     }
+
+
 
     @Override
     public void onMtForwardShortMessageResponse(MtForwardShortMessageResponse ind) {
@@ -1361,10 +1362,13 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         if(subscriber != null) {
             try {
                 subscriber.getCurrentVlrNumber();
-                if(subscriber.getCurrentVlrNumber().getAddress().equals(AttackSimulationOrganizer.VLR_A_GT))
+                if(subscriber.getCurrentVlrNumber().equals(this.testerHost.getAttackSimulationOrganizer().getDefaultVlrAddress())) {
                     this.testerHost.getAttackSimulationOrganizer().getHlrAvlrA().getTestAttackClient().performProvideSubscriberInfoRequest(subscriber.getImsi());
-                else
+                    this.testerHost.getAttackSimulationOrganizer().waitForPSIResponse(this.testerHost.getAttackSimulationOrganizer().getHlrAvlrA(), true);
+                } else {
                     this.testerHost.getAttackSimulationOrganizer().getHlrAvlrB().getTestAttackServer().performProvideSubscriberInfoRequest(subscriber.getImsi());
+                    this.testerHost.getAttackSimulationOrganizer().waitForPSIResponse(this.testerHost.getAttackSimulationOrganizer().getHlrAvlrB(), false);
+                }
 
                 curDialog.addAnyTimeInterrogationResponse(invokeId, subscriber.getSubscriberInfo(), null);
                 this.needSendClose = true;
@@ -1408,7 +1412,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onProvideSubscriberInfoResponse(ProvideSubscriberInfoResponse response) {
+        this.lastPsiResponse = response;
+    }
 
+    public ProvideSubscriberInfoResponse getLastPsiResponse() {
+        return this.lastPsiResponse;
+    }
+
+    public void clearLastPsiResponse() {
+        this.lastPsiResponse = null;
     }
 
     public void performProvideSubscriberInfoRequest(IMSI imsi) {

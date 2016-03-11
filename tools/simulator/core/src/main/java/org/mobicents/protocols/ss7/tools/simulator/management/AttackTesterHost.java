@@ -3416,16 +3416,22 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         needStore = true;
     }
 
-    public boolean gotPSIResponse() {
-        return this.getTestAttackClient().getLastPsiResponse() != null;
+    public boolean gotPSIResponse(boolean client) {
+        if(client)
+            return this.getTestAttackClient().getLastPsiResponse() != null;
+        else
+            return this.getTestAttackServer().getLastPsiResponse() != null;
     }
 
     public boolean gotSRIForSMResponse() {
         return this.getTestAttackClient().getLastSRIForSMResponse() != null;
     }
 
-    public boolean gotMtForwardSMResponse() {
-        return this.getTestAttackServer().getLastMtForwardSMResponse() != null;
+    public boolean gotMtForwardSMResponse(boolean client) {
+        if(client)
+            return this.getTestAttackClient().getLastMtForwardSMResponse() != null;
+        else
+            return this.getTestAttackServer().getLastMtForwardSMResponse() != null;
     }
 
     public boolean gotAtiResponse() {

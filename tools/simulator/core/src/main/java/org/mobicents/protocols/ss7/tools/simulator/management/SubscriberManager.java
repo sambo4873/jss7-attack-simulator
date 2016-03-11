@@ -70,12 +70,21 @@ public class SubscriberManager {
         ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, generateRandomNumericalString(10));
 
         try {
-            boolean operatorAHome = this.random.nextBoolean();
+            boolean operatorAHome = this.random.nextBoolean(),
+                subscriberLocatedInA = this.random.nextBoolean();
+
             Subscriber subscriber;
-            if(operatorAHome)
-                subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.getRandomCurrentMscNumber(), this.getRandomCurrentVlrNumber(), this.defaultHlrNumber, true);
-            else
-                subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.getRandomCurrentMscNumber(), this.getRandomCurrentVlrNumber(), this.defaultHlrBNumber, false);
+            if(operatorAHome) {
+                if(subscriberLocatedInA)
+                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrNumber, true);
+                else
+                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscBNumber, this.defaultVlrBNumber, this.defaultHlrNumber, true);
+            } else {
+                if(subscriberLocatedInA)
+                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrBNumber, false);
+                else
+                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscBNumber, this.defaultVlrBNumber, this.defaultHlrBNumber, false);
+            }
 
             return subscriber;
         } catch(MAPException ex) {
