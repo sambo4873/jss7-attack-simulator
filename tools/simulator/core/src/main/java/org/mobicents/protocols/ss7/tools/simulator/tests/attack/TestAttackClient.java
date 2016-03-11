@@ -2101,9 +2101,9 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         try {
             MAPDialogSupplementary curDialog = mapProvider.getMAPServiceSupplementary().createNewDialog(applicationContext,
                     this.mapMan.createOrigAddress(),
-                    null,
+                    this.mapMan.createOrigReference(),
                     this.mapMan.createDestAddress(),
-                    null);
+                    this.mapMan.createDestReference());
 
             SSForBSCode ssForBSCode = parameterFactory.createSSForBSCode(parameterFactory.createSSCode(SupplementaryCodeValue.universal),
                     parameterFactory.createBasicServiceCode(parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices)),
