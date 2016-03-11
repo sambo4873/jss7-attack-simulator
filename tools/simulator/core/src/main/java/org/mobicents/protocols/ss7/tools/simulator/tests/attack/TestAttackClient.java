@@ -1370,53 +1370,14 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onReportSMDeliveryStatusRequest(ReportSMDeliveryStatusRequest ind) {
-        if (!isStarted)
-            return;
-
-        this.countRsmdsReq++;
-
-        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
-        MAPDialogSms curDialog = ind.getMAPDialog();
         long invokeId = ind.getInvokeId();
-
-        ReportSMDeliveryStatusReaction reportSMDeliveryStatusReaction = this.testerHost.getConfigurationData().getTestAttackClientConfigurationData()
-                .getReportSMDeliveryStatusReaction();
-
-        Random rnd = new Random();
-        if (this.testerHost.getConfigurationData().getTestAttackClientConfigurationData().isReturn20PersDeliveryErrors()) {
-            int n = rnd.nextInt(5);
-            if (n == 0) {
-//                n = rnd.nextInt(1);
-//                reportSMDeliveryStatusReaction = new ReportSMDeliveryStatusReaction(n + 2);
-                reportSMDeliveryStatusReaction = new ReportSMDeliveryStatusReaction(ReportSMDeliveryStatusReaction.VAL_ERROR_UNKNOWN_SUBSCRIBER);
-            } else {
-                reportSMDeliveryStatusReaction = new ReportSMDeliveryStatusReaction(ReportSMDeliveryStatusReaction.VAL_RETURN_SUCCESS);
-            }
-        }
+        MAPDialogSms curDialog = ind.getMAPDialog();
 
         try {
-            if (reportSMDeliveryStatusReaction.intValue() == ReportSMDeliveryStatusReaction.VAL_RETURN_SUCCESS) {
-                curDialog.addReportSMDeliveryStatusResponse(invokeId, null, null);
-
-                this.countRsmdsResp++;
-                this.testerHost.sendNotif(SOURCE_NAME, "Sent: rsmdsResp", "", Level.DEBUG);
-
-                this.needSendClose = true;
-            } else {
-                MAPErrorMessage mapErrorMessage = mapProvider.getMAPErrorMessageFactory().createMAPErrorMessageUnknownSubscriber(null, null);
-                curDialog.sendErrorComponent(invokeId, mapErrorMessage);
-
-                this.countErrSent++;
-                String uData = this.createErrorData(curDialog.getLocalDialogId(), (int) invokeId, mapErrorMessage);
-                this.testerHost.sendNotif(SOURCE_NAME, "Sent: errUnknSubscr", uData, Level.DEBUG);
-
-                this.needSendClose = true;
-            }
-
-            this.testerHost.sendNotif(SOURCE_NAME, "Rcvd: rsmdsReq", ind.toString(), Level.DEBUG);
-
+            curDialog.addReportSMDeliveryStatusResponse(invokeId, ind.getMsisdn(), null);
+            this.needSendClose = true;
         } catch (MAPException e) {
-            this.testerHost.sendNotif(SOURCE_NAME, "Exception when invoking ReportSMDeliveryStatusResponse : " + e.getMessage(), e, Level.ERROR);
+            System.out.println("Error when sending ReportSMDeliveryStatusRequest: " + e.toString());
         }
     }
 

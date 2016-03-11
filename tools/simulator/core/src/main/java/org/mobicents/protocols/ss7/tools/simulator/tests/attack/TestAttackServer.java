@@ -950,6 +950,31 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         this.testerHost.sendNotif(SOURCE_NAME, "Rcvd: rsmdsResp", ind.toString(), Level.DEBUG);
     }
 
+    public void performReportSMDeliveryStatus(ISDNAddressString msisdn) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.shortMsgGatewayContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogSms curDialog = mapProvider.getMAPServiceSms().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            AddressString serviceCentreAddress = parameterFactory.createAddressString(
+                    this.testerHost.getAttackSimulationOrganizer().getDefaultHlrAddress().getAddressNature(),
+                    this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getNumberingPlan(),
+                    this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getAddress());
+            SMDeliveryOutcome smDeliveryOutcome = SMDeliveryOutcome.successfulTransfer;
+
+            curDialog.addReportSMDeliveryStatusRequest(msisdn, serviceCentreAddress, smDeliveryOutcome, 0, null, false, true, null, 0);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending RegisterSS Req: " + ex.toString());
+        }
+    }
+
     @Override
     public void onInformServiceCentreRequest(InformServiceCentreRequest ind) {
         if (!isStarted)
