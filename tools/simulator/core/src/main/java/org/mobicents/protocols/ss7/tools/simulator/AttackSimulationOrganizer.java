@@ -1229,9 +1229,12 @@ public class AttackSimulationOrganizer implements Stoppable {
         for(int i = 0; i < numberOfScans; i++)
             scanTargets.add(this.getSubscriberManager().getRandomSubscriber());
 
-        for(Subscriber scanTarget : scanTargets)
+        for(Subscriber scanTarget : scanTargets) {
             this.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(
                     scanTarget.getMsisdn().getAddress(), this.getDefaultSmscAddress().getAddress());
+            this.waitForSRIForSMResponse(this.attackerBhlrA);
+            this.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+        }
     }
 
     public void waitForSRIForSMResponse(AttackTesterHost node) {

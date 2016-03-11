@@ -1390,9 +1390,11 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                 if(subscriber.getCurrentVlrNumber().equals(this.testerHost.getAttackSimulationOrganizer().getDefaultVlrAddress())) {
                     this.testerHost.getAttackSimulationOrganizer().getHlrAvlrA().getTestAttackClient().performProvideSubscriberInfoRequest(subscriber.getImsi());
                     this.testerHost.getAttackSimulationOrganizer().waitForPSIResponse(this.testerHost.getAttackSimulationOrganizer().getHlrAvlrA(), true);
+                    this.testerHost.getAttackSimulationOrganizer().getHlrAvlrA().getTestAttackClient().clearLastPsiResponse();
                 } else {
                     this.testerHost.getAttackSimulationOrganizer().getHlrAvlrB().getTestAttackServer().performProvideSubscriberInfoRequest(subscriber.getImsi());
                     this.testerHost.getAttackSimulationOrganizer().waitForPSIResponse(this.testerHost.getAttackSimulationOrganizer().getHlrAvlrB(), false);
+                    this.testerHost.getAttackSimulationOrganizer().getHlrAvlrB().getTestAttackServer().clearLastPsiResponse();
                 }
 
                 curDialog.addAnyTimeInterrogationResponse(invokeId, subscriber.getSubscriberInfo(), null);
@@ -1497,7 +1499,21 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     }
 
     public void performInsertSubscriberData() {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
 
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.subscriberDataMngtContext, MAPApplicationContextVersion.version3);
+
+        try {
+            MAPDialogMobility curDialog =  mapProvider.getMAPServiceMobility().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+            curDialog.addInsertSubscriberDataRequest(null, null, null, null, null, null, null, null, false, null, null, null, null);
+            curDialog.send();
+        } catch (MAPException e) {
+            System.out.println("Error when sending InsertSubscriberData Req: " + e.toString());
+        }
     }
 
     @Override
