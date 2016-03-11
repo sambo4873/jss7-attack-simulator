@@ -109,6 +109,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     private ProvideSubscriberInfoResponse psiResponse;
     private SendRoutingInfoForSMResponse sriResponse;
     private AnyTimeInterrogationResponse atiResponse;
+    private ProvideRoamingNumberResponse lastProvideRoamingNumberResponse;
 
     public TestAttackClient() {
         super(SOURCE_NAME);
@@ -1904,7 +1905,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onProvideRoamingNumberResponse(ProvideRoamingNumberResponse response) {
+        this.lastProvideRoamingNumberResponse = response;
+    }
 
+    public ProvideRoamingNumberResponse getLastProvideRoamingNumberResponse() {
+        return this.lastProvideRoamingNumberResponse;
+    }
+
+    public void clearLastProvideRoamingNumberResponse() {
+        this.lastProvideRoamingNumberResponse = null;
     }
 
     public void performProvideRoamingNumber(IMSI imsi, ISDNAddressString mscNumber) {

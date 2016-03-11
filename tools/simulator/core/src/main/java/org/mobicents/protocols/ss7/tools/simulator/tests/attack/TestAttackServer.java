@@ -91,6 +91,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     private static Charset isoCharset = Charset.forName("ISO-8859-1");
 
     private MtForwardShortMessageResponse lastMtForwardShortMessageResponse;
+    private ProvideRoamingNumberResponse lastProvideRoamingNumberResponse;
 
     public TestAttackServer() {
         super(SOURCE_NAME);
@@ -1519,11 +1520,45 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         long invokeId = request.getInvokeId();
         MAPDialogCallHandling curDialog = request.getMAPDialog();
 
-        try {
-            curDialog.addSendRoutingInformationResponse(invokeId, null, null, null);
-            this.needSendClose = true;
-        } catch (MAPException e) {
-            System.out.println("Error when sending SendRoutingInformation Resp: " + e.toString());
+        AttackSimulationOrganizer organizer = this.testerHost.getAttackSimulationOrganizer();
+        Subscriber subscriber = organizer.getSubscriberManager().getSubscriber(request.getMsisdn());
+
+        if(subscriber != null) {
+            try {
+                //Subscriber belongs to operator A
+                if(subscriber.isOperatorAHome()) {
+                    //Subscriber is currently located in A
+                    if(subscriber.getCurrentMscNumber().equals(organizer.getDefaultMscAddress())) {
+                        organizer.getHlrAvlrA().getTestAttackClient().performProvideRoamingNumber(
+                                subscriber.getImsi(),
+                                subscriber.getCurrentMscNumber());
+                        organizer.waitForProvideRoamingNumberResponse(this.testerHost, true);
+                        organizer.getHlrAvlrA().getTestAttackClient().clearLastProvideRoamingNumberResponse();
+                    //Subscriber is currently located in B
+                    } else if (subscriber.getCurrentMscNumber().equals(organizer.getDefaultMscBAddress())) {
+                        organizer.getHlrAvlrB().getTestAttackServer().performProvideRoamingNumber(
+                                subscriber.getImsi(),
+                                subscriber.getCurrentMscNumber());
+                        organizer.waitForProvideRoamingNumberResponse(this.testerHost, false);
+                        organizer.getHlrAvlrB().getTestAttackServer().clearLastProvideRoamingNumberResponse();
+                    }
+                //Subscriber belongs to operator B
+                } else {
+                    //Subscriber is currently located in A
+                    if(subscriber.getCurrentMscNumber().equals(organizer.getDefaultMscAddress())) {
+                        organizer.getHlrBvlrA().getTestAttackClient().performProvideRoamingNumber(
+                                subscriber.getImsi(),
+                                subscriber.getCurrentMscNumber());
+                        organizer.waitForProvideRoamingNumberResponse(this.testerHost, true);
+                        organizer.getHlrBvlrA().getTestAttackClient().clearLastProvideRoamingNumberResponse();
+                    }
+                }
+
+                curDialog.addSendRoutingInformationResponse(invokeId, null, null, null);
+                this.needSendClose = true;
+            } catch (MAPException e) {
+                System.out.println("Error when sending SendRoutingInformation Resp: " + e.toString());
+            }
         }
     }
 
@@ -1552,7 +1587,35 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onProvideRoamingNumberResponse(ProvideRoamingNumberResponse response) {
+        this.lastProvideRoamingNumberResponse = response;
+    }
 
+    public ProvideRoamingNumberResponse getLastProvideRoamingNumberResponse() {
+        return this.lastProvideRoamingNumberResponse;
+    }
+
+    public void clearLastProvideRoamingNumberResponse() {
+        this.lastProvideRoamingNumberResponse = null;
+    }
+
+    public void performProvideRoamingNumber(IMSI imsi, ISDNAddressString mscNumber) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.roamingNumberEnquiryContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogCallHandling curDialog = mapProvider.getMAPServiceCallHandling().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addProvideRoamingNumberRequest(imsi, mscNumber, null, null, null, null, false, null, null, false,
+                    null, null, false, null, null, false, false, false, false, null, false, null, null, false, null);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending ProvideRoamingNumber Req: " + ex.toString());
+        }
     }
 
     @Override

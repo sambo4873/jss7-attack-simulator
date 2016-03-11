@@ -51,6 +51,14 @@ public class SubscriberManager {
         System.out.println("SubscriberManager: added " + number + " number of random subscribers");
     }
 
+    public ISDNAddressString getRandomCurrentMscNumber() {
+        return this.random.nextBoolean() ? this.defaultMscNumber : this.defaultMscBNumber;
+    }
+
+    public ISDNAddressString getRandomCurrentVlrNumber() {
+        return this.random.nextBoolean() ? this.defaultVlrNumber : this.defaultVlrBNumber;
+    }
+
     private Subscriber createRandomSubscriber() {
         int subscriberId;
         if(this.subscribers.size() > 0)
@@ -65,9 +73,9 @@ public class SubscriberManager {
             boolean operatorAHome = this.random.nextBoolean();
             Subscriber subscriber;
             if(operatorAHome)
-                subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrNumber, true);
+                subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.getRandomCurrentMscNumber(), this.getRandomCurrentVlrNumber(), this.defaultHlrNumber, true);
             else
-                subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscBNumber, this.defaultVlrBNumber, this.defaultHlrBNumber, false);
+                subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.getRandomCurrentMscNumber(), this.getRandomCurrentVlrNumber(), this.defaultHlrBNumber, false);
 
             return subscriber;
         } catch(MAPException ex) {

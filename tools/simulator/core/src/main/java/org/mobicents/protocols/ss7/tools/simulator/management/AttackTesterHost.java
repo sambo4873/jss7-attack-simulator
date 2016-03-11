@@ -3432,6 +3432,13 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         return this.getTestAttackClient().getLastAtiResponse() != null;
     }
 
+    public boolean gotProvideRoamingNumberResponse(boolean client) {
+        if(client)
+            return this.getTestAttackClient().getLastProvideRoamingNumberResponse() != null;
+        else
+            return this.getTestAttackServer().getLastProvideRoamingNumberResponse() != null;
+    }
+
     public IsupMan getIsupMan() {
         return this.isup;
     }
