@@ -1453,14 +1453,20 @@ public class AttackSimulationOrganizer implements Stoppable {
          */
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
 
-        //Subscriber is in A
-        if(subscriber.getCurrentMscNumber().equals(this.defaultMscAddress)) {
-            this.mscAhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
-
-        //Subscriber is in B
+        if(subscriber.isOperatorAHome()) {
+            //Subscriber is in A
+            if(subscriber.getCurrentMscNumber().equals(this.defaultMscAddress)) {
+                this.mscAhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
+                //Subscriber is in B
+            } else {
+                this.mscBhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
+            }
         } else {
-            this.mscBhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
+            if(subscriber.getCurrentMscNumber().equals(this.defaultMscAddress)) {
+                this.vlrBhlrA.getTestAttackClient().performProvideRoamingNumber(subscriber.getImsi(), subscriber.getCurrentMscNumber());
+            }
         }
+
     }
 
     private void performRegistrationProcedure() {
