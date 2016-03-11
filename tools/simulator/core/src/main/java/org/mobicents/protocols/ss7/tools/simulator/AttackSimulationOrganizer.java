@@ -915,8 +915,8 @@ public class AttackSimulationOrganizer implements Stoppable {
             System.out.println("    -c: " + AttackSimulationOrganizer.chanceOfAttack + "%");
             System.out.println("    -s: " + AttackSimulationOrganizer.numberOfSubscribers);
         }
-        System.out.println("--------------------------------------------------");
-        System.out.println("--------------------------------------------------");
+        System.out.println("-----------------------------------------------");
+        System.out.println("-----------------------------------------------");
     }
 
     private void printSentMessage(String messageSent, boolean genuineMessage) {
