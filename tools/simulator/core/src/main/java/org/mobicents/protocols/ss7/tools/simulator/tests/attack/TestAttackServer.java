@@ -1532,14 +1532,14 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                         organizer.getHlrAvlrA().getTestAttackClient().performProvideRoamingNumber(
                                 subscriber.getImsi(),
                                 subscriber.getCurrentMscNumber());
-                        organizer.waitForProvideRoamingNumberResponse(this.testerHost, true);
+                        organizer.waitForProvideRoamingNumberResponse(organizer.getHlrAvlrA(), true);
                         organizer.getHlrAvlrA().getTestAttackClient().clearLastProvideRoamingNumberResponse();
                     //Subscriber is currently located in B
                     } else if (subscriber.getCurrentMscNumber().equals(organizer.getDefaultMscBAddress())) {
                         organizer.getHlrAvlrB().getTestAttackServer().performProvideRoamingNumber(
                                 subscriber.getImsi(),
                                 subscriber.getCurrentMscNumber());
-                        organizer.waitForProvideRoamingNumberResponse(this.testerHost, false);
+                        organizer.waitForProvideRoamingNumberResponse(organizer.getHlrAvlrB(), false);
                         organizer.getHlrAvlrB().getTestAttackServer().clearLastProvideRoamingNumberResponse();
                     }
                 //Subscriber belongs to operator B
@@ -1549,12 +1549,12 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                         organizer.getHlrBvlrA().getTestAttackClient().performProvideRoamingNumber(
                                 subscriber.getImsi(),
                                 subscriber.getCurrentMscNumber());
-                        organizer.waitForProvideRoamingNumberResponse(this.testerHost, true);
+                        organizer.waitForProvideRoamingNumberResponse(organizer.getHlrBvlrA(), true);
                         organizer.getHlrBvlrA().getTestAttackClient().clearLastProvideRoamingNumberResponse();
                     }
                 }
 
-                curDialog.addSendRoutingInformationResponse(invokeId, null, null, null);
+                curDialog.addSendRoutingInformationResponse(invokeId, subscriber.getImsi(), null, null);
                 this.needSendClose = true;
             } catch (MAPException e) {
                 System.out.println("Error when sending SendRoutingInformation Resp: " + e.toString());
