@@ -903,6 +903,22 @@ public class AttackSimulationOrganizer implements Stoppable {
         });
     }
 
+    private void printAttackSimulationStart() {
+        System.out.println("-----------------------------------------------");
+        System.out.println("-----------Attack Simulation Started-----------");
+        System.out.println("-----------------------------------------------");
+        System.out.println("Simulation Type: " + (this.simpleSimulation ? "Simple" : "Complex"));
+        System.out.println("Parameters:");
+        if(this.simpleSimulation) {
+            System.out.println("    -m: " + this.simpleAttackGoal.name());
+        } else {
+            System.out.println("    -c: " + AttackSimulationOrganizer.chanceOfAttack + "%");
+            System.out.println("    -s: " + AttackSimulationOrganizer.numberOfSubscribers);
+        }
+        System.out.println("--------------------------------------------------");
+        System.out.println("--------------------------------------------------");
+    }
+
     private void printSentMessage(String messageSent, boolean genuineMessage) {
         //if(genuineMessage)
         //    System.out.print("Generating noise: ");
@@ -918,6 +934,8 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         if (!waitForM3UALinks())
             return;
+
+        this.printAttackSimulationStart();
 
         int sleepTime = 50;
 
