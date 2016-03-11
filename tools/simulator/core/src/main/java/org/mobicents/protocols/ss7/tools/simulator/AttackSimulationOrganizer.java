@@ -1108,16 +1108,6 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void attackLocationAti() {
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
         this.attackerBhlrA.getTestAttackClient().performATI(subscriber.getMsisdn().getAddress());
-
-        //while(!this.attackerBhlrA.gotAtiResponse()) {
-        //    try {
-        //        Thread.sleep(50);
-        //    } catch (InterruptedException e) {
-        //        return;
-        //    }
-        //}
-
-        //AnyTimeInterrogationResponse atiResponse = this.attackerBhlrA.getTestAttackClient().getLastAtiResponse();
     }
 
     private void attackLocationPsi() {

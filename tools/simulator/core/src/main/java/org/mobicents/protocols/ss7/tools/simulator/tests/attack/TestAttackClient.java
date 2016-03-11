@@ -1692,11 +1692,6 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     }
 
     public void performProvideSubscriberInfoRequest(IMSI imsi) {
-        this.doPerformProvideSubscriberInfoRequest(imsi);
-    }
-
-    public void doPerformProvideSubscriberInfoRequest(IMSI imsi) {
-
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPApplicationContextVersion acv = MAPApplicationContextVersion.version3;
         MAPApplicationContextName acn = MAPApplicationContextName.subscriberInfoEnquiryContext;
@@ -1712,7 +1707,6 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
             LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[] { 11, 12, 13, 14 });
             RequestedInfo requestedInfo = new RequestedInfoImpl(true, true, null, true, null, true, true, true);
-            //MAPExtensionContainer mapExtensionContainer = mapProvider.getMAPParameterFactory().createMAPExtensionContainer(null, null);
             MAPExtensionContainer mapExtensionContainer = null;
             EMLPPPriority emlppPriority = EMLPPPriority.priorityLevel0;
 

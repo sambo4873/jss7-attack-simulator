@@ -9,6 +9,7 @@ import org.mobicents.protocols.ss7.map.api.primitives.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.LSAIdentity;
 import org.mobicents.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
+import org.mobicents.protocols.ss7.tools.simulator.AttackSimulationOrganizer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,16 +24,24 @@ public class SubscriberManager {
     private Random random;
     private List<Subscriber> subscribers;
     private ISDNAddressString defaultMscNumber;
+    private ISDNAddressString defaultMscBNumber;
     private ISDNAddressString defaultVlrNumber;
+    private ISDNAddressString defaultVlrBNumber;
     private ISDNAddressString defaultHlrNumber;
+    private ISDNAddressString defaultHlrBNumber;
 
-    public SubscriberManager(ISDNAddressString defaultMscNumber, ISDNAddressString defaultVlrNumber, ISDNAddressString defaultHlrNumber) {
+    public SubscriberManager(ISDNAddressString defaultMscNumber, ISDNAddressString defaultMscBNumber,
+                             ISDNAddressString defaultVlrNumber, ISDNAddressString defaultVlrBNumber,
+                             ISDNAddressString defaultHlrNumber, ISDNAddressString defaultHlrBNumber) {
         this.random = new Random(System.currentTimeMillis());
         this.subscribers = new ArrayList<Subscriber>();
         this.mapParameterFactory = new MAPParameterFactoryImpl();
         this.defaultMscNumber = defaultMscNumber;
+        this.defaultMscBNumber = defaultMscBNumber;
         this.defaultVlrNumber = defaultVlrNumber;
+        this.defaultVlrBNumber = defaultVlrBNumber;
         this.defaultHlrNumber = defaultHlrNumber;
+        this.defaultHlrBNumber = defaultHlrBNumber;
     }
 
     public void createRandomSubscribers(int number) {
@@ -51,16 +60,24 @@ public class SubscriberManager {
 
         IMSI imsi = this.mapParameterFactory.createIMSI(generateRandomNumericalString(15));
         ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, generateRandomNumericalString(10));
+
         try {
-            return new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrNumber);
+            boolean operatorAHome = this.random.nextBoolean();
+            Subscriber subscriber;
+            if(operatorAHome)
+                subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrNumber, true);
+            else
+                subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscBNumber, this.defaultVlrBNumber, this.defaultHlrBNumber, false);
+
+            return subscriber;
         } catch(MAPException ex) {
             System.out.println("Exception when creating Subscriber data: " + ex.toString());
             return null;
         }
     }
 
-    private SubscriberInfo createRandomSubscriberInfo() throws MAPException {
-        LocationInformation locationInformation = this.createRandomLocationInformation();
+    private SubscriberInfo createRandomSubscriberInfo(boolean operatorAHome) throws MAPException {
+        LocationInformation locationInformation = this.createRandomLocationInformation(operatorAHome);
         SubscriberState subscriberState = mapParameterFactory.createSubscriberState(SubscriberStateChoice.assumedIdle, null);
         MAPExtensionContainer mapExtensionContainer = null;
         LocationInformationGPRS locationInformationGPRS = null;
@@ -84,21 +101,48 @@ public class SubscriberManager {
     }
 
 
-    private LocationInformation createRandomLocationInformation() throws MAPException {
+    private LocationInformation createRandomLocationInformation(boolean operatorAHome) throws MAPException {
         int ageOfLocationInformation = 0;
         GeographicalInformation geographicalInformation = null;
-        ISDNAddressString vlrNumber = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, "22222222");
-        LocationNumberMap locationNumber = this.mapParameterFactory.createLocationNumberMap(new LocationNumberImpl(4,
-                "88888888",
+
+        ISDNAddressString vlrNumber;
+        if (operatorAHome)
+            vlrNumber = this.defaultVlrNumber;
+        else
+            vlrNumber = this.defaultVlrBNumber;
+
+        String address;
+        if (operatorAHome)
+            address = this.defaultHlrNumber.getAddress();
+        else
+            address = this.defaultHlrBNumber.getAddress();
+
+        //Defined in ITU-T Rec Q.763
+        LocationNumberMap locationNumber = this.mapParameterFactory.createLocationNumberMap(new LocationNumberImpl(
+                LocationNumber._NAI_INTERNATIONAL_NUMBER,
+                address,
                 LocationNumber._NPI_ISDN,
                 LocationNumber._INN_ROUTING_ALLOWED,
                 LocationNumber._APRI_ALLOWED,
                 LocationNumber._SI_USER_PROVIDED_VERIFIED_PASSED));
-        CellGlobalIdOrServiceAreaIdOrLAI cgiosaiol = mapParameterFactory.createCellGlobalIdOrServiceAreaIdOrLAI(
-                new CellGlobalIdOrServiceAreaIdFixedLengthImpl(242, 01, 115, 8462));
+
+        CellGlobalIdOrServiceAreaIdOrLAI cgiosaiol;
+        if(operatorAHome)
+            cgiosaiol = mapParameterFactory.createCellGlobalIdOrServiceAreaIdOrLAI(
+                    new CellGlobalIdOrServiceAreaIdFixedLengthImpl(242, 01, 115, 8462));
+        else
+            cgiosaiol = mapParameterFactory.createCellGlobalIdOrServiceAreaIdOrLAI(
+                    mapParameterFactory.createCellGlobalIdOrServiceAreaIdFixedLength(242, 02, 116, 8742));
+
         MAPExtensionContainer mapExtensionContainer = null;
         LSAIdentity lsaIdentity = null;
-        ISDNAddressString mscNumber = null;
+
+        ISDNAddressString mscNumber;
+        if(operatorAHome)
+            mscNumber = this.defaultMscNumber;
+        else
+            mscNumber = this.defaultMscBNumber;
+
         GeodeticInformation geodeticInformation = null;
         boolean currentLocationRetrieved = true;
         boolean saiPresent = false;

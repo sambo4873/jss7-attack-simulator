@@ -1,6 +1,5 @@
 package org.mobicents.protocols.ss7.tools.simulator.management;
 
-import org.mobicents.protocols.ss7.map.api.primitives.IMEI;
 import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
@@ -17,9 +16,10 @@ public class Subscriber {
     private ISDNAddressString currentMscNumber;
     private ISDNAddressString currentVlrNumber;
     private ISDNAddressString currentHlrNumber;
+    private boolean operatorAHome;
 
     public Subscriber(int subscriberId, IMSI imsi, ISDNAddressString msisdn, SubscriberInfo subscriberInfo,
-                      ISDNAddressString currentMscNumber, ISDNAddressString currentVlrNumber, ISDNAddressString currentHlrNumber) {
+                      ISDNAddressString currentMscNumber, ISDNAddressString currentVlrNumber, ISDNAddressString currentHlrNumber, boolean operatorAHome) {
         this.subscriberId = subscriberId;
         this.imsi = imsi;
         this.msisdn = msisdn;
@@ -27,6 +27,15 @@ public class Subscriber {
         this.currentMscNumber = currentMscNumber;
         this.currentVlrNumber = currentVlrNumber;
         this.currentHlrNumber = currentHlrNumber;
+        this.operatorAHome = operatorAHome;
+    }
+
+    public boolean isOperatorAHome() {
+        return operatorAHome;
+    }
+
+    public void setOperatorAHome(boolean operatorAHome) {
+        this.operatorAHome = operatorAHome;
     }
 
     public SubscriberInfo getSubscriberInfo() {

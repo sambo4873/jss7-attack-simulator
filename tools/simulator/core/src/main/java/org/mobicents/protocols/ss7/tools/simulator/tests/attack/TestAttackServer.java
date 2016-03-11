@@ -37,6 +37,7 @@ import org.mobicents.protocols.ss7.map.api.smstpdu.*;
 import org.mobicents.protocols.ss7.map.primitives.CellGlobalIdOrServiceAreaIdFixedLengthImpl;
 import org.mobicents.protocols.ss7.map.primitives.LAIFixedLengthImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.PDPContextInfoImpl;
+import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.api.MessageType;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
@@ -1327,6 +1328,12 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
         if(subscriber != null) {
             try {
+                subscriber.getCurrentVlrNumber();
+                if(subscriber.getCurrentVlrNumber().getAddress().equals(AttackSimulationOrganizer.VLR_A_GT))
+                    this.testerHost.getAttackSimulationOrganizer().getHlrAvlrA().getTestAttackClient().performProvideSubscriberInfoRequest(subscriber.getImsi());
+                else
+                    this.testerHost.getAttackSimulationOrganizer().getHlrAvlrB().getTestAttackServer().performProvideSubscriberInfoRequest(subscriber.getImsi());
+
                 curDialog.addAnyTimeInterrogationResponse(invokeId, subscriber.getSubscriberInfo(), null);
                 this.needSendClose = true;
             } catch (MAPException ex) {
@@ -1370,6 +1377,36 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onProvideSubscriberInfoResponse(ProvideSubscriberInfoResponse response) {
 
+    }
+
+    public void performProvideSubscriberInfoRequest(IMSI imsi) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPApplicationContextVersion acv = MAPApplicationContextVersion.version3;
+        MAPApplicationContextName acn = MAPApplicationContextName.subscriberInfoEnquiryContext;
+
+        MAPApplicationContext mapAppContext = MAPApplicationContext.getInstance(acn, acv);
+
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(mapAppContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            LMSI lmsi = mapProvider.getMAPParameterFactory().createLMSI(new byte[] { 11, 12, 13, 14 });
+            RequestedInfo requestedInfo = new RequestedInfoImpl(true, true, null, true, null, true, true, true);
+            MAPExtensionContainer mapExtensionContainer = null;
+            EMLPPPriority emlppPriority = EMLPPPriority.priorityLevel0;
+
+            if(curDialog == null)
+                System.out.println("ERROR: curDialog is null");
+            else {
+                curDialog.addProvideSubscriberInfoRequest(imsi, lmsi, requestedInfo, mapExtensionContainer, emlppPriority);
+                curDialog.send();
+            }
+        } catch (MAPException ex) {
+            System.out.println("Exception when sending ProvideSubscriberInfoRequest: " + ex.toString());
+        }
     }
 
     @Override
