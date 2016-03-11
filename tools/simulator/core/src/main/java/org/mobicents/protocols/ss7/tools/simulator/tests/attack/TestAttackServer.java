@@ -1749,9 +1749,9 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
         try {
             MAPDialogSupplementary curDialog = mapProvider.getMAPServiceSupplementary().createNewDialog(applicationContext,
                     this.mapMan.createOrigAddress(),
-                    null,
+                    this.mapMan.createOrigReference(),
                     this.mapMan.createDestAddress(),
-                    null);
+                    this.mapMan.createDestReference());
 
             SSCode ssCode = parameterFactory.createSSCode(SupplementaryCodeValue.universal);
 
@@ -1780,8 +1780,33 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     }
 
-    public void performEraseSS() {
+    private class DialogData {
+        public Long invokeId;
+        public String currentRequestDef = "";
+    }
 
+    public void performEraseSS() {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.networkFunctionalSsContext, MAPApplicationContextVersion.version2);
+        try {
+            MAPDialogSupplementary curDialog = mapProvider.getMAPServiceSupplementary().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            SSForBSCode ssForBSCode = parameterFactory.createSSForBSCode(parameterFactory.createSSCode(SupplementaryCodeValue.universal),
+                    parameterFactory.createBasicServiceCode(parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices)),
+                    false);
+
+            curDialog.setUserObject(new DialogData());
+            curDialog.addEraseSSRequest(ssForBSCode);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending EraseSS Req: " + ex.toString());
+        }
     }
 
     @Override
