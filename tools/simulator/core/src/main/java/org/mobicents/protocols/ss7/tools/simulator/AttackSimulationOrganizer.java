@@ -1313,6 +1313,22 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
+    public void waitForRegisterSSResponse(AttackTesterHost node, boolean client) {
+        int tries = 0;
+        while(!node.gotRegisterSSResponse(client)) {
+            try {
+                if(tries < 100) {
+                    Thread.sleep(50);
+                    tries++;
+                } else {
+                    break;
+                }
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
+    }
+
     private void performShortMessageMobileOriginated() {
         /**
          * Process per 3GPP TS 23.040 section 10.2:
@@ -1530,15 +1546,16 @@ public class AttackSimulationOrganizer implements Stoppable {
          *  |                             |-------------RestoreDataResp----------->|
          */
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        boolean subscriberInA = subscriber.getCurrentMscNumber().equals(this.defaultMscAddress);
 
         if(subscriber.isOperatorAHome()) {
-            if(subscriber.getCurrentMscNumber().equals(this.defaultMscAddress)) { //Subscriber is in A
+            if(subscriberInA) {
                 this.mscAhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
-            } else { //Subscriber is in B
+            } else {
                 this.mscBhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
             }
         } else {
-            if(subscriber.getCurrentMscNumber().equals(this.defaultMscAddress)) {
+            if(subscriberInA) {
                 this.vlrBhlrA.getTestAttackClient().performProvideRoamingNumber(subscriber.getImsi(), subscriber.getCurrentMscNumber());
             }
         }
@@ -1561,15 +1578,15 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         if(subscriber.isOperatorAHome()) {
             if(subscriberIsInA) {
-                this.mscAvlrA.getTestAttackClient().performRegisterSS();
+                this.mscAvlrA.getTestAttackClient().performRegisterSS(subscriber.getMsisdn());
                 this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
             } else {
-                this.vlrBhlrA.getTestAttackClient().performRegisterSS();
+                this.vlrBhlrA.getTestAttackClient().performRegisterSS(subscriber.getMsisdn());
                 this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
             }
         } else {
             if(subscriberIsInA) {
-                this.vlrAhlrB.getTestAttackServer().performRegisterSS();
+                this.vlrAhlrB.getTestAttackServer().performRegisterSS(subscriber.getMsisdn());
                 this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
             }
         }

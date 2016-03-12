@@ -113,6 +113,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     private AnyTimeInterrogationResponse atiResponse;
     private ProvideRoamingNumberResponse lastProvideRoamingNumberResponse;
     private MtForwardShortMessageResponse lastMtForwardShortMessageResponse;
+    private RegisterSSResponse lastRegisterSSResponse;
 
     public TestAttackClient() {
         super(SOURCE_NAME);
@@ -2049,7 +2050,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onRegisterSSResponse(RegisterSSResponse response) {
+        this.lastRegisterSSResponse = response;
+    }
 
+    public RegisterSSResponse getLastRegisterSSResponse() {
+        return this.lastRegisterSSResponse;
+    }
+
+    public void clearLastRegisterSSResponse() {
+        this.lastRegisterSSResponse = null;
     }
 
     private class DialogData {
@@ -2057,7 +2066,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         public String currentRequestDef = "";
     }
 
-    public void performRegisterSS() {
+    public void performRegisterSS(ISDNAddressString msisdn) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
@@ -2076,7 +2085,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             BasicServiceCode basicServiceCode = parameterFactory.createBasicServiceCode(
                     parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices));
 
-            curDialog.addRegisterSSRequest(ssCode, basicServiceCode, null, null, 0, null, null, null);
+            curDialog.addRegisterSSRequest(ssCode, basicServiceCode, msisdn, null, 0, null, null, null);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending RegisterSS Req: " + ex.toString());

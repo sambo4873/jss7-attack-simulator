@@ -84,6 +84,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     private MtForwardShortMessageResponse lastMtForwardShortMessageResponse;
     private ProvideRoamingNumberResponse lastProvideRoamingNumberResponse;
     private ProvideSubscriberInfoResponse lastPsiResponse;
+    private RegisterSSResponse lastRegisterSSResponse;
 
     public TestAttackServer() {
         super(SOURCE_NAME);
@@ -1743,21 +1744,42 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     public void onRegisterSSRequest(RegisterSSRequest request) {
         long invokeId = request.getInvokeId();
         MAPDialogSupplementary curDialog = request.getMAPDialog();
+        AttackSimulationOrganizer organizer = this.testerHost.getAttackSimulationOrganizer();
 
-        try {
-            curDialog.addRegisterSSResponse(invokeId, null);
-            this.needSendClose = true;
-        } catch (MAPException e) {
-            System.out.println("Error when sending RegisterSS Resp: " + e.toString());
+        Subscriber subscriber = organizer.getSubscriberManager().getSubscriber(request.getForwardedToNumber().getAddress());
+
+        if(subscriber != null) {
+            try {
+                if(organizer.getVlrAmscA().equals(this.testerHost)) {
+                    organizer.getVlrAhlrA().getTestAttackServer().performRegisterSS(subscriber.getMsisdn());
+                    organizer.waitForRegisterSSResponse(organizer.getVlrAhlrA(), true);
+                    organizer.getVlrAhlrA().getTestAttackServer().clearLastRegisterSSResponse();
+                }
+
+                curDialog.addRegisterSSResponse(invokeId, null);
+                this.needSendClose = true;
+            } catch (MAPException e) {
+                System.out.println("Error when sending RegisterSS Resp: " + e.toString());
+            }
+        } else {
+            System.out.println("Error in onRegisterSSRequest: Could not find subscriber with MSISDN: " + request.getForwardedToNumber());
         }
     }
 
     @Override
     public void onRegisterSSResponse(RegisterSSResponse response) {
-
+        this.lastRegisterSSResponse = response;
     }
 
-    public void performRegisterSS() {
+    public RegisterSSResponse getLastRegisterSSResponse() {
+        return this.lastRegisterSSResponse;
+    }
+
+    public void clearLastRegisterSSResponse() {
+        this.lastRegisterSSResponse = null;
+    }
+
+    public void performRegisterSS(ISDNAddressString msisdn) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
@@ -1771,7 +1793,12 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
             SSCode ssCode = parameterFactory.createSSCode(SupplementaryCodeValue.universal);
 
-            curDialog.addRegisterSSRequest(ssCode, null, null, null, 0, null, null, null);
+            curDialog.setUserObject(new DialogData());
+
+            BasicServiceCode basicServiceCode = parameterFactory.createBasicServiceCode(
+                    parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices));
+
+            curDialog.addRegisterSSRequest(ssCode, basicServiceCode, msisdn, null, 0, null, null, null);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending RegisterSS Req: " + ex.toString());

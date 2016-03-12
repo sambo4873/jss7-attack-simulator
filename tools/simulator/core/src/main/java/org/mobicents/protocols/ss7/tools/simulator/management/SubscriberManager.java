@@ -51,14 +51,6 @@ public class SubscriberManager {
         System.out.println("SubscriberManager: added " + number + " number of random subscribers");
     }
 
-    public ISDNAddressString getRandomCurrentMscNumber() {
-        return this.random.nextBoolean() ? this.defaultMscNumber : this.defaultMscBNumber;
-    }
-
-    public ISDNAddressString getRandomCurrentVlrNumber() {
-        return this.random.nextBoolean() ? this.defaultVlrNumber : this.defaultVlrBNumber;
-    }
-
     private Subscriber createRandomSubscriber() {
         int subscriberId;
         if(this.subscribers.size() > 0)
@@ -184,7 +176,7 @@ public class SubscriberManager {
         Subscriber returnSubscriber = null;
 
         for(Subscriber sub : subscribers)
-            if(sub.getImsi().getData().equals(imsi.getData()))
+            if(sub.getImsi().equals(imsi))
                 returnSubscriber = sub;
 
         return returnSubscriber;
@@ -194,7 +186,17 @@ public class SubscriberManager {
         Subscriber returnSubscriber = null;
 
         for(Subscriber sub : this.subscribers)
-            if(sub.getMsisdn().getAddress().equals(msisdn.getAddress()))
+            if(sub.getMsisdn().equals(msisdn))
+                returnSubscriber = sub;
+
+        return returnSubscriber;
+    }
+
+    public Subscriber getSubscriber(String msisdn) {
+        Subscriber returnSubscriber = null;
+
+        for(Subscriber sub : this.subscribers)
+            if(sub.getMsisdn().getAddress().equals(msisdn))
                 returnSubscriber = sub;
 
         return returnSubscriber;
