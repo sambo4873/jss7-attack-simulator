@@ -1582,11 +1582,15 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
             } else {
                 this.vlrBhlrA.getTestAttackClient().performRegisterSS(subscriber.getMsisdn());
+                this.waitForRegisterSSResponse(this.vlrBhlrA, true);
+                this.vlrBhlrA.getTestAttackClient().clearLastRegisterSSResponse();
                 this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
             }
         } else {
             if(subscriberIsInA) {
                 this.vlrAhlrB.getTestAttackServer().performRegisterSS(subscriber.getMsisdn());
+                this.waitForRegisterSSResponse(this.vlrAhlrB, false);
+                this.vlrAhlrB.getTestAttackServer().clearLastRegisterSSResponse();
                 this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
             }
         }
