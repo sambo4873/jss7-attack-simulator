@@ -1528,11 +1528,9 @@ public class AttackSimulationOrganizer implements Stoppable {
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
 
         if(subscriber.isOperatorAHome()) {
-            //Subscriber is in A
-            if(subscriber.getCurrentMscNumber().equals(this.defaultMscAddress)) {
+            if(subscriber.getCurrentMscNumber().equals(this.defaultMscAddress)) { //Subscriber is in A
                 this.mscAhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
-                //Subscriber is in B
-            } else {
+            } else { //Subscriber is in B
                 this.mscBhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
             }
         } else {
@@ -1555,21 +1553,22 @@ public class AttackSimulationOrganizer implements Stoppable {
          *  |                    |---InsertSubscriberDataResp->|
          */
 
-        int messageOrigin = this.random.nextInt(3);
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        boolean subscriberIsInA = subscriber.getCurrentMscNumber().equals(this.defaultMscAddress);
 
-        switch(messageOrigin) {
-            case 0:
+        if(subscriber.isOperatorAHome()) {
+            if(subscriberIsInA) {
                 this.mscAvlrA.getTestAttackClient().performRegisterSS();
                 this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
-                break;
-            case 1:
+            } else {
                 this.vlrBhlrA.getTestAttackClient().performRegisterSS();
                 this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
-                break;
-            case 2:
+            }
+        } else {
+            if(subscriberIsInA) {
                 this.vlrAhlrB.getTestAttackServer().performRegisterSS();
                 this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
-                break;
+            }
         }
     }
 
