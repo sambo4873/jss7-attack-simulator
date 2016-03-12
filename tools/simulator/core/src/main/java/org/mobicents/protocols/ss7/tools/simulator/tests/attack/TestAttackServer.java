@@ -1793,8 +1793,6 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
             SSCode ssCode = parameterFactory.createSSCode(SupplementaryCodeValue.universal);
 
-            curDialog.setUserObject(new DialogData());
-
             BasicServiceCode basicServiceCode = parameterFactory.createBasicServiceCode(
                     parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices));
 
@@ -1823,11 +1821,6 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     }
 
-    private class DialogData {
-        public Long invokeId;
-        public String currentRequestDef = "";
-    }
-
     public void performEraseSS() {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
@@ -1844,7 +1837,6 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     parameterFactory.createBasicServiceCode(parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices)),
                     false);
 
-            curDialog.setUserObject(new DialogData());
             curDialog.addEraseSSRequest(ssForBSCode);
             curDialog.send();
         } catch (MAPException ex) {
