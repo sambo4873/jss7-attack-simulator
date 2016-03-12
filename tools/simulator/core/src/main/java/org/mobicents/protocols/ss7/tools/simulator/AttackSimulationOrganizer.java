@@ -1450,6 +1450,10 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
+    private void performLocationUpdating() {
+
+    }
+
     private void performUpdateLocation() {
         this.vlrAhlrA.getTestAttackServer().performUpdateLocation();
     }
@@ -1531,7 +1535,7 @@ public class AttackSimulationOrganizer implements Stoppable {
             //Subscriber is in A
             if(subscriber.getCurrentMscNumber().equals(this.defaultMscAddress)) {
                 this.mscAhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
-                //Subscriber is in B
+            //Subscriber is in B
             } else {
                 this.mscBhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
             }
@@ -1540,7 +1544,6 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.vlrBhlrA.getTestAttackClient().performProvideRoamingNumber(subscriber.getImsi(), subscriber.getCurrentMscNumber());
             }
         }
-
     }
 
     private void performRegistrationProcedure() {
