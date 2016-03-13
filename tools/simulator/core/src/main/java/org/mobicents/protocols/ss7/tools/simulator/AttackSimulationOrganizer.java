@@ -1028,7 +1028,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 29;
+        int numberOfAvailableMessages = 28;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
@@ -1121,30 +1121,26 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performPasswordRegistrationProcedure();
                 break;
             case 22:
-                printSentMessage("GetPassword", true);
-                this.performGetPassword();
-                break;
-            case 23:
                 printSentMessage("ProcessUnstructuredSSRequest", true);
                 this.performProcessUnstructuredSSRequest();
                 break;
-            case 24:
+            case 23:
                 printSentMessage("UnstructuredSSRequest", true);
                 this.performUnstructuredSSRequest();
                 break;
-            case 25:
+            case 24:
                 printSentMessage("UnstructuredSSNotify", true);
                 this.performUnstructuredSSNotify();
                 break;
-            case 26:
+            case 25:
                 printSentMessage("ShortMessageAlertProcedure", true);
                 this.performShortMessageAlertProcedure();
                 break;
-            case 27:
+            case 26:
                 printSentMessage("InformServiceCentre", true);
                 this.performInformServiceCentre();
                 break;
-            case 28:
+            case 27:
                 printSentMessage("SendRoutingInfoForGPRS", true);
                 this.performSendRoutingInfoForGPRS();
                 break;
@@ -1760,11 +1756,6 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.vlrAhlrB.getTestAttackServer().performRegisterPassword();
                 break;
         }
-    }
-
-    private void performGetPassword() {
-        //this.hlrAvlrA.getTestAttackClient().performGetPassword();
-        //this.vlrAmscA.getTestAttackServer().performGetPassword();
     }
 
     private void performProcessUnstructuredSSRequest() {
