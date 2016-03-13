@@ -1329,6 +1329,22 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
+    public void waitForEraseSSResponse(AttackTesterHost node, boolean client) {
+        int tries = 0;
+        while(!node.gotEraseSSResponse(client)) {
+            try {
+                if(tries < 100) {
+                    Thread.sleep(50);
+                    tries++;
+                } else {
+                    break;
+                }
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
+    }
+
     private void performShortMessageMobileOriginated() {
         /**
          * Process per 3GPP TS 23.040 section 10.2:
@@ -1608,21 +1624,26 @@ public class AttackSimulationOrganizer implements Stoppable {
          *  |                    |---InsertSubscriberDataResp->|
          */
 
-        int messageOrigin = this.random.nextInt(3);
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        boolean subscriberIsInA = subscriber.getCurrentMscNumber().equals(this.defaultMscAddress);
 
-        switch(messageOrigin) {
-            case 0:
+        if(subscriber.isOperatorAHome()) {
+            if(subscriberIsInA) {
                 this.mscAvlrA.getTestAttackClient().performEraseSS();
                 this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
-                break;
-            case 1:
+            } else {
                 this.vlrBhlrA.getTestAttackClient().performEraseSS();
+                this.waitForRegisterSSResponse(this.vlrBhlrA, true);
+                this.vlrBhlrA.getTestAttackClient().clearLastEraseSSResponse();
                 this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
-                break;
-            case 2:
+            }
+        } else {
+            if(subscriberIsInA) {
                 this.vlrAhlrB.getTestAttackServer().performEraseSS();
+                this.waitForRegisterSSResponse(this.vlrAhlrB, false);
+                this.vlrAhlrB.getTestAttackServer().clearLastEraseSSResponse();
                 this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
-                break;
+            }
         }
     }
 

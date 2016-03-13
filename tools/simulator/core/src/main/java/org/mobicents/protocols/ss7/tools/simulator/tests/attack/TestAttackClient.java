@@ -114,6 +114,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     private ProvideRoamingNumberResponse lastProvideRoamingNumberResponse;
     private MtForwardShortMessageResponse lastMtForwardShortMessageResponse;
     private RegisterSSResponse lastRegisterSSResponse;
+    private EraseSSResponse lastEraseSSResponse;
 
     public TestAttackClient() {
         super(SOURCE_NAME);
@@ -2092,7 +2093,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onEraseSSResponse(EraseSSResponse response) {
+        this.lastEraseSSResponse = response;
+    }
 
+    public EraseSSResponse getLastEraseSSResponse() {
+        return this.lastEraseSSResponse;
+    }
+
+    public void clearLastEraseSSResponse() {
+        this.lastEraseSSResponse = null;
     }
 
     public void performEraseSS() {

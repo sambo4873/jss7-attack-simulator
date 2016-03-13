@@ -85,6 +85,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     private ProvideRoamingNumberResponse lastProvideRoamingNumberResponse;
     private ProvideSubscriberInfoResponse lastPsiResponse;
     private RegisterSSResponse lastRegisterSSResponse;
+    private EraseSSResponse lastEraseSSResponse;
 
     public TestAttackServer() {
         super(SOURCE_NAME);
@@ -1807,8 +1808,17 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     public void onEraseSSRequest(EraseSSRequest request) {
         long invokeId = request.getInvokeId();
         MAPDialogSupplementary curDialog = request.getMAPDialog();
+        AttackSimulationOrganizer organizer = this.testerHost.getAttackSimulationOrganizer();
+
+        boolean sendToHlrA = this.hashCode() == organizer.getVlrAmscA().hashCode();
 
         try {
+            if(sendToHlrA) {
+                organizer.getVlrAhlrA().getTestAttackServer().performEraseSS();
+                organizer.waitForEraseSSResponse(organizer.getVlrAhlrA(), false);
+                organizer.getVlrAhlrA().getTestAttackServer().clearLastEraseSSResponse();
+            }
+
             curDialog.addEraseSSResponse(invokeId, null);
             this.needSendClose = true;
         } catch (MAPException e) {
@@ -1818,7 +1828,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onEraseSSResponse(EraseSSResponse response) {
+        this.lastEraseSSResponse = response;
+    }
 
+    public EraseSSResponse getLastEraseSSResponse() {
+        return this.lastEraseSSResponse;
+    }
+
+    public void clearLastEraseSSResponse() {
+        this.lastEraseSSResponse = null;
     }
 
     public void performEraseSS() {
