@@ -1028,7 +1028,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 28;
+        int numberOfAvailableMessages = 27;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
@@ -1077,70 +1077,66 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performAnyTimeInterrogation();
                 break;
             case 11:
-                printSentMessage("ProvideSubscriberInfo", true);
-                this.performProvideSubscriberInfo();
-                break;
-            case 12:
                 printSentMessage("ActivateTraceMode_Oam", true);
                 this.performActivateTraceMode_Oam();
                 break;
-            case 13:
+            case 12:
                 printSentMessage("ActivateTraceMode_Mobility", true);
                 this.performActivateTraceMode_Mobility();
                 break;
-            case 14:
+            case 13:
                 printSentMessage("SendIMSI", true);
                 this.performSendIMSI();
                 break;
-            case 15:
+            case 14:
                 printSentMessage("RetrieveRoutingInformationProcedure", true);
                 this.performRetrieveRoutingInformationProcedure();
                 break;
-            case 16:
+            case 15:
                 printSentMessage("RegistrationProcedure", true);
                 this.performRegistrationProcedure();
                 break;
-            case 17:
+            case 16:
                 printSentMessage("ErasureProcedure", true);
                 this.performErasureProcedure();
                 break;
-            case 18:
+            case 17:
                 printSentMessage("ActivationProcedure", true);
                 this.performActivationProcedure();
                 break;
-            case 19:
+            case 18:
                 printSentMessage("DeactivationProcedure", true);
                 this.performDeactivationProcedure();
                 break;
-            case 20:
+            case 19:
                 printSentMessage("InterrogationProcedure", true);
                 this.performInterrogationProcedure();
                 break;
-            case 21:
+            case 20:
                 printSentMessage("PasswordRegistrationProcedure", true);
                 this.performPasswordRegistrationProcedure();
                 break;
-            case 22:
+            case 21:
                 printSentMessage("ProcessUnstructuredSSRequest", true);
                 this.performProcessUnstructuredSSRequest();
                 break;
-            case 23:
+            case 22:
                 printSentMessage("UnstructuredSSRequest", true);
                 this.performUnstructuredSSRequest();
                 break;
-            case 24:
+            case 23:
                 printSentMessage("UnstructuredSSNotify", true);
                 this.performUnstructuredSSNotify();
                 break;
-            case 25:
+            case 24:
                 printSentMessage("ShortMessageAlertProcedure", true);
                 this.performShortMessageAlertProcedure();
                 break;
-            case 26:
+            case 25:
                 printSentMessage("InformServiceCentre", true);
                 this.performInformServiceCentre();
                 break;
-            case 27:
+            case 26:
                 printSentMessage("SendRoutingInfoForGPRS", true);
                 this.performSendRoutingInfoForGPRS();
                 break;
@@ -1524,11 +1520,6 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void performAnyTimeInterrogation() {
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
         this.gsmscfAhlrA.getTestAttackClient().performATI(subscriber.getMsisdn().getAddress());
-    }
-
-    private void performProvideSubscriberInfo() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-        this.mscAvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(subscriber.getImsi());
     }
 
     private void performActivateTraceMode_Oam() {
