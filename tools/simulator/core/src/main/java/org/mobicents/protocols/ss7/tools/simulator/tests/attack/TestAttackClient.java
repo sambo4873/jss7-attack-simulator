@@ -2088,7 +2088,16 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onEraseSSRequest(EraseSSRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogSupplementary curDialog = request.getMAPDialog();
+        AttackSimulationOrganizer organizer = this.testerHost.getAttackSimulationOrganizer();
 
+        try {
+            curDialog.addEraseSSResponse(invokeId, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending EraseSS Resp: " + e.toString());
+        }
     }
 
     @Override
