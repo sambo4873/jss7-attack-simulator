@@ -1768,6 +1768,24 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onProvideSubscriberInfoRequest(ProvideSubscriberInfoRequest request) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory mapParameterFactory = mapProvider.getMAPParameterFactory();
+        MAPDialogMobility curDialog = request.getMAPDialog();
+        long invokeId = request.getInvokeId();
+        IMSI imsi = request.getImsi();
+
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(imsi);
+
+        if(subscriber != null) {
+            try {
+                curDialog.addProvideSubscriberInfoResponse(invokeId, subscriber.getSubscriberInfo(), null);
+                this.needSendClose = true;
+            } catch (MAPException ex) {
+                System.out.println("Exception when sending ProvideSubscriberInfoRequestRes: " + ex.toString());
+            }
+        } else {
+            System.out.println("Could not find subscriber with IMSI: " + imsi.getData());
+        }
     }
 
     @Override

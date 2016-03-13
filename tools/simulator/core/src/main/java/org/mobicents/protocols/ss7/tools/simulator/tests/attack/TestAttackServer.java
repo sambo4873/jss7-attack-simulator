@@ -1416,9 +1416,6 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onProvideSubscriberInfoRequest(ProvideSubscriberInfoRequest request) {
-        if (!isStarted)
-            return;
-
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPParameterFactory mapParameterFactory = mapProvider.getMAPParameterFactory();
         MAPDialogMobility curDialog = request.getMAPDialog();
