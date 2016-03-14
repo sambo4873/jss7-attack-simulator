@@ -38,7 +38,10 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceMod
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.*;
 import org.mobicents.protocols.ss7.map.api.service.oam.*;
+import org.mobicents.protocols.ss7.map.api.service.pdpContextActivation.MAPDialogPdpContextActivation;
 import org.mobicents.protocols.ss7.map.api.service.pdpContextActivation.MAPServicePdpContextActivationListener;
+import org.mobicents.protocols.ss7.map.api.service.pdpContextActivation.SendRoutingInfoForGprsRequest;
+import org.mobicents.protocols.ss7.map.api.service.pdpContextActivation.SendRoutingInfoForGprsResponse;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
 import org.mobicents.protocols.ss7.map.api.service.supplementary.*;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
@@ -79,7 +82,8 @@ import java.util.Random;
  * @author Kristoffer Jensen
  */
 public class TestAttackClient extends AttackTesterBase implements Stoppable, MAPDialogListener, MAPServiceSmsListener,
-        MAPServiceMobilityListener, MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServiceSupplementaryListener, ISUPListener {
+        MAPServiceMobilityListener, MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServiceSupplementaryListener,
+        MAPServicePdpContextActivationListener, ISUPListener {
 
     public static String SOURCE_NAME = "TestAttackClient";
 
@@ -484,6 +488,9 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
             mapProvider.getMAPServiceSupplementary().acivate();
             mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
+
+            mapProvider.getMAPServicePdpContextActivation().acivate();
+            mapProvider.getMAPServicePdpContextActivation().addMAPServiceListener(this);
 
             mapProvider.addMAPDialogListener(this);
         } else {
@@ -2401,6 +2408,37 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onTimeout(ISUPTimeoutEvent event) {
 
+    }
+
+    @Override
+    public void onSendRoutingInfoForGprsRequest(SendRoutingInfoForGprsRequest request) {
+
+    }
+
+    @Override
+    public void onSendRoutingInfoForGprsResponse(SendRoutingInfoForGprsResponse response) {
+
+    }
+
+    public void performSendRoutingInfoForGPRS(IMSI imsi, ISDNAddressString ggsnNumber) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(
+                MAPApplicationContextName.gprsNotifyContext,
+                MAPApplicationContextVersion.version3);
+
+        try {
+            MAPDialogPdpContextActivation curDialog = mapProvider.getMAPServicePdpContextActivation().createNewDialog(
+                    applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addSendRoutingInfoForGprsRequest(imsi, null, ggsnNumber, null);
+            curDialog.send();
+        } catch(MAPException e) {
+            System.out.println("Error when sending SendRoutingInfoForGPRS Req: " + e.toString());
+        }
     }
 
     private class ResendMessageData {

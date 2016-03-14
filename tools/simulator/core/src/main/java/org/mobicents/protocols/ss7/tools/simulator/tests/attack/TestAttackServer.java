@@ -27,9 +27,11 @@ import org.mobicents.protocols.ss7.map.api.service.mobility.oam.ActivateTraceMod
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.*;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberManagement.*;
 import org.mobicents.protocols.ss7.map.api.service.oam.*;
+import org.mobicents.protocols.ss7.map.api.service.pdpContextActivation.*;
 import org.mobicents.protocols.ss7.map.api.service.sms.*;
 import org.mobicents.protocols.ss7.map.api.service.supplementary.*;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
+import org.mobicents.protocols.ss7.map.primitives.GSNAddressImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.api.MessageType;
@@ -54,7 +56,8 @@ import java.util.GregorianCalendar;
  * @author Kristoffer Jensen
  */
 public class TestAttackServer extends AttackTesterBase implements Stoppable, MAPDialogListener, MAPServiceSmsListener,
-        MAPServiceMobilityListener, MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServiceSupplementaryListener, ISUPListener {
+        MAPServiceMobilityListener, MAPServiceCallHandlingListener, MAPServiceOamListener, MAPServiceSupplementaryListener,
+        MAPServicePdpContextActivationListener, ISUPListener {
 
     public static String SOURCE_NAME = "TestAttackServer";
 
@@ -340,6 +343,9 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
             mapProvider.getMAPServiceSupplementary().acivate();
             mapProvider.getMAPServiceSupplementary().addMAPServiceListener(this);
+
+            mapProvider.getMAPServicePdpContextActivation().acivate();
+            mapProvider.getMAPServicePdpContextActivation().addMAPServiceListener(this);
 
             mapProvider.addMAPDialogListener(this);
         } else {
@@ -2012,6 +2018,25 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onTimeout(ISUPTimeoutEvent event) {
+
+    }
+
+    @Override
+    public void onSendRoutingInfoForGprsRequest(SendRoutingInfoForGprsRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogPdpContextActivation curDialog = request.getMAPDialog();
+
+        try {
+            GSNAddress sgsnAddress = this.mapMan.getMAPStack().getMAPProvider().getMAPParameterFactory()
+                    .createGSNAddress(GSNAddressAddressType.IPv4, new byte[] {127, 0, 0, 1});
+            curDialog.addSendRoutingInfoForGprsResponse(invokeId, sgsnAddress, null, 0, null);
+        } catch (MAPException e) {
+            System.out.println("Error sending SendRoutingInfoForGprs Resp: " + e.toString());
+        }
+    }
+
+    @Override
+    public void onSendRoutingInfoForGprsResponse(SendRoutingInfoForGprsResponse response) {
 
     }
 

@@ -37,6 +37,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     private ISDNAddressString defaultHlrAddress;
     private ISDNAddressString defaultSmscAddress;
     private ISDNAddressString defaultVlrAddress;
+    private ISDNAddressString defaultSgsnAddress;
     private ISDNAddressString defaultMscBAddress;
     private ISDNAddressString defaultHlrBAddress;
     private ISDNAddressString defaultSmscBAddress;
@@ -258,6 +259,10 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
                 AttackConfigurationData.VLR_A_NUMBER);
+        this.defaultSgsnAddress = mapParameterFactory.createISDNAddressString(
+                AddressNature.international_number,
+                NumberingPlan.ISDN,
+                AttackSimulationOrganizer.SGSN_A_GT);
 
         this.defaultMscBAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
@@ -1815,7 +1820,14 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performSendRoutingInfoForGPRS() {
-        //this.sgsnAhlrA.getTestAttackClient().performSendRoutingInfoForGPRS();
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        ISDNAddressString ggsnNumber = this.getSgsnAhlrA().getMapMan().getMAPStack().getMAPProvider()
+            .getMAPParameterFactory().createISDNAddressString(
+                        AddressNature.international_number,
+                        NumberingPlan.ISDN,
+                        AttackSimulationOrganizer.SGSN_A_GT);
+
+        this.sgsnAhlrA.getTestAttackClient().performSendRoutingInfoForGPRS(subscriber.getImsi(), ggsnNumber);
     }
 
     public void stop() {
