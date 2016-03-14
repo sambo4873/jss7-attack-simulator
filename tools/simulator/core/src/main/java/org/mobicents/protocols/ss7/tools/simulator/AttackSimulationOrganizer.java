@@ -1522,7 +1522,15 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void performPurgeMS() {
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-        this.vlrAhlrA.getTestAttackServer().performPurgeMS(subscriber.getImsi(), subscriber.getCurrentVlrNumber());
+
+        if(subscriber.isOperatorAHome()) {
+            if(subscriber.getCurrentMscNumber().equals(this.defaultMscAddress))
+                this.vlrAhlrA.getTestAttackServer().performPurgeMS(subscriber.getImsi(), subscriber.getCurrentVlrNumber());
+            else
+                this.vlrBhlrA.getTestAttackClient().performPurgeMS(subscriber.getImsi(), subscriber.getCurrentVlrNumber());
+        } else {
+            this.vlrAhlrB.getTestAttackServer().performPurgeMS(subscriber.getImsi(), subscriber.getCurrentVlrNumber());
+        }
     }
 
     private void performUpdateGPRSLocation() {

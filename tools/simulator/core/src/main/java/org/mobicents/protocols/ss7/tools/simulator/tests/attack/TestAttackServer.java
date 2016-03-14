@@ -1268,7 +1268,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onPurgeMSRequest(PurgeMSRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogMobility curDialog = request.getMAPDialog();
 
+        try {
+            curDialog.addPurgeMSResponse(invokeId, false, false, null, false);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending PurgeMS Resp" + e.toString());
+        }
     }
 
     @Override

