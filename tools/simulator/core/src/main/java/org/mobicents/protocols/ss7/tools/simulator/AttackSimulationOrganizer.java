@@ -1016,10 +1016,6 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    private void modifyCallingPartyAddressDigits(AttackTesterHost attackTesterHost, String cgGT) {
-        attackTesterHost.getSccpMan().setCallingPartyAddressDigits(cgGT);
-    }
-
     private void sendRandomIsupMessage(int num) {
         switch(num) {
             case 0:
