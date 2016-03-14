@@ -1682,13 +1682,13 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         if(subscriber != null) {
             try {
                 if(this.testerHost.hashCode() == organizer.getHlrAvlrA().hashCode()) {
-                    organizer.getHlrAvlrA().getTestAttackServer().performInsertSubscriberData();
-                    organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAvlrA(), false);
-                    organizer.getHlrAvlrA().getTestAttackServer().clearLastInsertSubscriberDataResponse();
+                    organizer.getHlrAvlrA().getTestAttackClient().performInsertSubscriberData();
+                    organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAvlrA(), true);
+                    organizer.getHlrAvlrA().getTestAttackClient().clearLastInsertSubscriberDataResponse();
                 } else if (this.testerHost.hashCode() == organizer.getHlrBvlrA().hashCode()) {
                     organizer.getHlrBvlrA().getTestAttackClient().performInsertSubscriberData();
                     organizer.waitForInsertSubscriberDataResponse(organizer.getHlrBvlrA(), true);
-                    organizer.getHlrBvlrA().getTestAttackServer().clearLastInsertSubscriberDataResponse();
+                    organizer.getHlrBvlrA().getTestAttackClient().clearLastInsertSubscriberDataResponse();
                 }
 
                 curDialog.addRestoreDataResponse(invokeId, subscriber.getCurrentHlrNumber(), false, null);
