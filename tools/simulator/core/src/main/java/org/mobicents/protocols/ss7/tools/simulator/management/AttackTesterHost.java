@@ -3459,6 +3459,17 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             return this.getTestAttackServer().getLastEraseSSResponse() != null;
     }
 
+    public boolean gotSendRoutingInfoResponse() {
+        return this.getTestAttackClient().getLastSendRoutingInfoResponse() != null;
+    }
+
+    public boolean gotInsertSubscriberDataResponse(boolean client) {
+        if(client)
+            return this.getTestAttackClient().getLastInsertSubscriberDataResponse() != null;
+        else
+            return this.getTestAttackServer().getLastInsertSubscriberDataResponse() != null;
+    }
+
     public IsupMan getIsupMan() {
         return this.isup;
     }

@@ -86,6 +86,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     private ProvideSubscriberInfoResponse lastPsiResponse;
     private RegisterSSResponse lastRegisterSSResponse;
     private EraseSSResponse lastEraseSSResponse;
+    private InsertSubscriberDataResponse lastInsertSubscriberDataResponse;
 
     public TestAttackServer() {
         super(SOURCE_NAME);
@@ -1326,7 +1327,28 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onRestoreDataRequest(RestoreDataRequest ind) {
+        long invokeId = ind.getInvokeId();
+        MAPDialogMobility curDialog = ind.getMAPDialog();
+        AttackSimulationOrganizer organizer = this.testerHost.getAttackSimulationOrganizer();
 
+        Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(ind.getImsi());
+
+        if(subscriber != null) {
+            try {
+                if(this.testerHost.hashCode() == organizer.getHlrAvlrB().hashCode()) {
+                    organizer.getHlrAvlrB().getTestAttackServer().performInsertSubscriberData();
+                    organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAvlrB(), false);
+                    organizer.getHlrAvlrB().getTestAttackServer().clearLastInsertSubscriberDataResponse();
+                }
+
+                curDialog.addRestoreDataResponse(invokeId, subscriber.getCurrentHlrNumber(), false, null);
+                this.needSendClose = true;
+            } catch (MAPException e) {
+                System.out.println("Error when sending RestoreData Resp: " + e.toString());
+            }
+        } else {
+            System.out.println("Error: Could not find subscriber with IMSI: " + ind.getImsi());
+        }
     }
 
     @Override
@@ -1478,7 +1500,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onInsertSubscriberDataResponse(InsertSubscriberDataResponse request) {
+        this.lastInsertSubscriberDataResponse = request;
+    }
 
+    public InsertSubscriberDataResponse getLastInsertSubscriberDataResponse() {
+        return this.lastInsertSubscriberDataResponse;
+    }
+
+    public void clearLastInsertSubscriberDataResponse() {
+        this.lastInsertSubscriberDataResponse = null;
     }
 
     public void performInsertSubscriberData() {

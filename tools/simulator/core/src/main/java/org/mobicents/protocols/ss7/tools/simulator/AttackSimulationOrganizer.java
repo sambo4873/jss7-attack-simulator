@@ -1333,6 +1333,38 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
+    public void waitForSendRoutingInfoResponse(AttackTesterHost node) {
+        int tries = 0;
+        while(!node.gotSendRoutingInfoResponse()) {
+            try {
+                if(tries < 100) {
+                    Thread.sleep(50);
+                    tries++;
+                } else {
+                    break;
+                }
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
+    }
+
+    public void waitForInsertSubscriberDataResponse(AttackTesterHost node, boolean client) {
+        int tries = 0;
+        while(!node.gotInsertSubscriberDataResponse(client)) {
+            try {
+                if(tries < 100) {
+                    Thread.sleep(50);
+                    tries++;
+                } else {
+                    break;
+                }
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
+    }
+
     private void performShortMessageMobileOriginated() {
         /**
          * Process per 3GPP TS 23.040 section 10.2:
@@ -1550,12 +1582,18 @@ public class AttackSimulationOrganizer implements Stoppable {
         if(subscriber.isOperatorAHome()) {
             if(subscriberInA) {
                 this.mscAhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
+                this.waitForSendRoutingInfoResponse(this.mscAhlrA);
+                this.vlrAhlrA.getTestAttackServer().performRestoreData(subscriber.getImsi());
             } else {
                 this.mscBhlrA.getTestAttackClient().performSendRoutingInformation(subscriber.getMsisdn());
+                this.waitForSendRoutingInfoResponse(this.mscBhlrA);
+                this.vlrBhlrA.getTestAttackClient().performRestoreData(subscriber.getImsi());
             }
         } else {
             if(subscriberInA) {
-                this.vlrBhlrA.getTestAttackClient().performProvideRoamingNumber(subscriber.getImsi(), subscriber.getCurrentMscNumber());
+                this.hlrBvlrA.getTestAttackClient().performProvideRoamingNumber(subscriber.getImsi(), subscriber.getCurrentMscNumber());
+                this.waitForProvideRoamingNumberResponse(this.vlrBhlrA, true);
+                this.vlrAhlrB.getTestAttackServer().performRestoreData(subscriber.getImsi());
             }
         }
     }

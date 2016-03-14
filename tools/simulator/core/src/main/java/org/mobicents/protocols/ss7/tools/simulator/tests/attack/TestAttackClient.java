@@ -115,6 +115,8 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     private MtForwardShortMessageResponse lastMtForwardShortMessageResponse;
     private RegisterSSResponse lastRegisterSSResponse;
     private EraseSSResponse lastEraseSSResponse;
+    private SendRoutingInformationResponse lastSendRoutingInfoResponse;
+    private InsertSubscriberDataResponse lastInsertSubscriberDataResponse;
 
     public TestAttackClient() {
         super(SOURCE_NAME);
@@ -1673,11 +1675,22 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     public void onRestoreDataRequest(RestoreDataRequest ind) {
         long invokeId = ind.getInvokeId();
         MAPDialogMobility curDialog = ind.getMAPDialog();
+        AttackSimulationOrganizer organizer = this.testerHost.getAttackSimulationOrganizer();
 
         Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(ind.getImsi());
 
         if(subscriber != null) {
             try {
+                if(this.testerHost.hashCode() == organizer.getHlrAvlrA().hashCode()) {
+                    organizer.getHlrAvlrA().getTestAttackServer().performInsertSubscriberData();
+                    organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAvlrA(), false);
+                    organizer.getHlrAvlrA().getTestAttackServer().clearLastInsertSubscriberDataResponse();
+                } else if (this.testerHost.hashCode() == organizer.getHlrBvlrA().hashCode()) {
+                    organizer.getHlrBvlrA().getTestAttackClient().performInsertSubscriberData();
+                    organizer.waitForInsertSubscriberDataResponse(organizer.getHlrBvlrA(), true);
+                    organizer.getHlrBvlrA().getTestAttackServer().clearLastInsertSubscriberDataResponse();
+                }
+
                 curDialog.addRestoreDataResponse(invokeId, subscriber.getCurrentHlrNumber(), false, null);
                 this.needSendClose = true;
             } catch (MAPException e) {
@@ -1691,6 +1704,25 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     @Override
     public void onRestoreDataResponse(RestoreDataResponse ind) {
 
+    }
+
+    public void performRestoreData(IMSI imsi) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.networkLocUpContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addRestoreDataRequest(imsi, null, null, null, false);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending RestoreData Req: " + ex.toString());
+        }
     }
 
     @Override
@@ -1828,7 +1860,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onInsertSubscriberDataResponse(InsertSubscriberDataResponse request) {
+        this.lastInsertSubscriberDataResponse = request;
+    }
 
+    public InsertSubscriberDataResponse getLastInsertSubscriberDataResponse() {
+        return this.lastInsertSubscriberDataResponse;
+    }
+
+    public void clearLastInsertSubscriberDataResponse() {
+        this.lastInsertSubscriberDataResponse = null;
     }
 
     public void performInsertSubscriberData() {
@@ -1935,7 +1975,15 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onSendRoutingInformationResponse(SendRoutingInformationResponse response) {
+        this.lastSendRoutingInfoResponse = response;
+    }
 
+    public SendRoutingInformationResponse getLastSendRoutingInfoResponse() {
+        return this.lastSendRoutingInfoResponse;
+    }
+
+    public void clearLastSendRoutingInformation() {
+        this.lastSendRoutingInfoResponse = null;
     }
 
     public void performSendRoutingInformation(ISDNAddressString msisdn) {
