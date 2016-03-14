@@ -1223,17 +1223,17 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
             MAPParameterFactory mapParameterFactory = this.mapMan.getMAPStack().getMAPProvider().getMAPParameterFactory();
 
-            if(this.testerHost.hashCode() == organizer.getHlrAvlrA().hashCode()) { //New VLR is VLR_A
-                organizer.getHlrAvlrB().getTestAttackServer().performCancelLocation(subscriber.getImsi());
-                organizer.waitForCancelLocationResponse(organizer.getHlrAvlrB(), false);
-                organizer.getHlrAvlrB().getTestAttackServer().clearLastCancelLocationResponse();
+            if(this.testerHost.hashCode() == organizer.getHlrAvlrB().hashCode()) { //New VLR is VLR_B
+                organizer.getHlrAvlrA().getTestAttackClient().performCancelLocation(subscriber.getImsi());
+                organizer.waitForCancelLocationResponse(organizer.getHlrAvlrA(), true);
+                organizer.getHlrAvlrA().getTestAttackClient().clearLastCancelLocationResponse();
 
-                organizer.getHlrAvlrA().getTestAttackClient().performActivateTraceMode(subscriber.getImsi());
-                organizer.waitForActivateTraceModeResponse(organizer.getHlrAvlrA(), true);
-                organizer.getHlrAvlrA().getTestAttackClient().clearLastActivateTraceModeResponse();
+                organizer.getHlrAvlrB().getTestAttackServer().performActivateTraceMode(subscriber.getImsi());
+                organizer.waitForActivateTraceModeResponse(organizer.getHlrAvlrB(), false);
+                organizer.getHlrAvlrB().getTestAttackServer().clearLastActivateTraceModeResponse();
 
-                organizer.getHlrAvlrA().getTestAttackClient().performInsertSubscriberData();
-                organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAvlrA(), true);
+                organizer.getHlrAvlrB().getTestAttackServer().performInsertSubscriberData();
+                organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAvlrB(), false);
             }
 
             ISDNAddressString newMscNumber = ind.getMscNumber();

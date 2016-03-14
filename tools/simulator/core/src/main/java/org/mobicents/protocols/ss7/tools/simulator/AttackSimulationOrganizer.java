@@ -1557,10 +1557,10 @@ public class AttackSimulationOrganizer implements Stoppable {
         if(subscriber.isOperatorAHome()) {
             //Move to B
             if(subscriberIsInA) {
-                this.vlrBhlrA.getTestAttackServer().performUpdateLocationRequest(subscriber.getImsi(), this.defaultMscBAddress, this.defaultVlrBAddress);
+                this.vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(subscriber.getImsi(), this.defaultMscBAddress, this.defaultVlrBAddress);
             //Move to A
             } else {
-                this.vlrAhlrA.getTestAttackClient().performUpdateLocationRequest(subscriber.getImsi(), this.defaultMscAddress, this.defaultVlrAddress);
+                this.vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(subscriber.getImsi(), this.defaultMscAddress, this.defaultVlrAddress);
             }
         } else {
             //Move to A
