@@ -994,29 +994,13 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onAlertServiceCentreRequest(AlertServiceCentreRequest ind) {
-        if (!isStarted)
-            return;
-
-        this.countAscReq++;
-
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPDialogSms curDialog = ind.getMAPDialog();
         long invokeId = ind.getInvokeId();
 
-        this.testerHost.sendNotif(SOURCE_NAME, "Rcvd: ascReq", ind.toString(), Level.DEBUG);
-
         try {
-            if (curDialog.getApplicationContext().getApplicationContextVersion() == MAPApplicationContextVersion.version1) {
-                curDialog.release();
-            } else {
-                curDialog.addAlertServiceCentreResponse(invokeId);
-
-                this.countAscResp++;
-                this.testerHost.sendNotif(SOURCE_NAME, "Sent: ascResp", "", Level.DEBUG);
-
-                this.needSendClose = true;
-            }
-
+            curDialog.addAlertServiceCentreResponse(invokeId);
+            this.needSendClose = true;
         } catch (MAPException e) {
             this.testerHost.sendNotif(SOURCE_NAME, "Exception when invoking addAlertServiceCentreResponse() : " + e.getMessage(), e, Level.ERROR);
         }
@@ -2018,7 +2002,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onReadyForSMRequest(ReadyForSMRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogSms curDialog = request.getMAPDialog();
 
+        try {
+            curDialog.addReadyForSMResponse(invokeId, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending ReadyForSM Resp: " + e.toString());
+        }
     }
 
     @Override

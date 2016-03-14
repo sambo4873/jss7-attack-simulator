@@ -1419,9 +1419,17 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     }
 
     @Override
-    public void onAlertServiceCentreRequest(AlertServiceCentreRequest alertServiceCentreInd) {
-        // TODO Auto-generated method stub
+    public void onAlertServiceCentreRequest(AlertServiceCentreRequest ind) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPDialogSms curDialog = ind.getMAPDialog();
+        long invokeId = ind.getInvokeId();
 
+        try {
+            curDialog.addAlertServiceCentreResponse(invokeId);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            this.testerHost.sendNotif(SOURCE_NAME, "Exception when invoking addAlertServiceCentreResponse() : " + e.getMessage(), e, Level.ERROR);
+        }
     }
 
     @Override
