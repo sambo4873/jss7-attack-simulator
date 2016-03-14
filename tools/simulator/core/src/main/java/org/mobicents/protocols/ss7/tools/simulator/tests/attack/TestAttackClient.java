@@ -1614,6 +1614,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
                 organizer.getHlrAvlrA().getTestAttackClient().performInsertSubscriberData();
                 organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAvlrA(), true);
+                organizer.getHlrAvlrA().getTestAttackClient().clearLastInsertSubscriberDataResponse();
             } else if(this.testerHost.hashCode() == organizer.getHlrBvlrA().hashCode()) { //New VLR is VLR_A
                 organizer.getHlrBvlrA().getTestAttackClient().performActivateTraceMode(subscriber.getImsi());
                 organizer.waitForActivateTraceModeResponse(organizer.getHlrBvlrA(), true);
@@ -1621,6 +1622,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
                 organizer.getHlrBvlrA().getTestAttackClient().performInsertSubscriberData();
                 organizer.waitForInsertSubscriberDataResponse(organizer.getHlrBvlrA(), true);
+                organizer.getHlrBvlrA().getTestAttackClient().clearLastInsertSubscriberDataResponse();
             }
 
             ISDNAddressString newMscNumber = ind.getMscNumber();

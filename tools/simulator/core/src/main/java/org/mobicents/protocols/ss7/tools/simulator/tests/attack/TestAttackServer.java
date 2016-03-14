@@ -1234,6 +1234,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
                 organizer.getHlrAvlrB().getTestAttackServer().performInsertSubscriberData();
                 organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAvlrB(), false);
+                organizer.getHlrAvlrB().getTestAttackServer().clearLastInsertSubscriberDataResponse();
             }
 
             ISDNAddressString newMscNumber = ind.getMscNumber();
