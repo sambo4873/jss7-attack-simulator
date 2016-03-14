@@ -1030,7 +1030,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 27;
+        int numberOfAvailableMessages = 26;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
@@ -1043,104 +1043,100 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performShortMessageMobileTerminated();
                 break;
             case 2:
-                printSentMessage("UpdateLocation", true);
-                this.performUpdateLocation();
-                break;
-            case 3:
-                printSentMessage("CancelLocation", true);
-                this.performCancelLocation();
-                break;
-            case 4:
                 printSentMessage("SendIdentification", true);
                 this.performSendIdentification();
                 break;
-            case 5:
+            case 3:
                 printSentMessage("PurgeMS", true);
                 this.performPurgeMS();
                 break;
-            case 6:
+            case 4:
                 printSentMessage("UpdateGPRSLocation", true);
                 this.performUpdateGPRSLocation();
                 break;
-            case 7:
+            case 5:
                 printSentMessage("CheckIMEI", true);
                 this.performCheckIMEI();
                 break;
-            case 8:
+            case 6:
                 printSentMessage("DeleteSubscriberData", true);
                 this.performDeleteSubscriberData();
                 break;
-            case 9:
+            case 7:
                 printSentMessage("ForwardCheckSSIndication", true);
                 this.performForwardCheckSSIndication();
                 break;
-            case 10:
+            case 8:
                 printSentMessage("AnyTimeInterrogation", true);
                 this.performAnyTimeInterrogation();
                 break;
-            case 11:
+            case 9:
                 printSentMessage("ActivateTraceMode_Oam", true);
                 this.performActivateTraceMode_Oam();
                 break;
-            case 12:
+            case 10:
                 printSentMessage("ActivateTraceMode_Mobility", true);
                 this.performActivateTraceMode_Mobility();
                 break;
-            case 13:
+            case 11:
                 printSentMessage("SendIMSI", true);
                 this.performSendIMSI();
                 break;
-            case 14:
+            case 12:
                 printSentMessage("RetrieveRoutingInformationProcedure", true);
                 this.performRetrieveRoutingInformationProcedure();
                 break;
-            case 15:
+            case 13:
                 printSentMessage("RegistrationProcedure", true);
                 this.performRegistrationProcedure();
                 break;
-            case 16:
+            case 14:
                 printSentMessage("ErasureProcedure", true);
                 this.performErasureProcedure();
                 break;
-            case 17:
+            case 15:
                 printSentMessage("ActivationProcedure", true);
                 this.performActivationProcedure();
                 break;
-            case 18:
+            case 16:
                 printSentMessage("DeactivationProcedure", true);
                 this.performDeactivationProcedure();
                 break;
-            case 19:
+            case 17:
                 printSentMessage("InterrogationProcedure", true);
                 this.performInterrogationProcedure();
                 break;
-            case 20:
+            case 18:
                 printSentMessage("PasswordRegistrationProcedure", true);
                 this.performPasswordRegistrationProcedure();
                 break;
-            case 21:
+            case 19:
                 printSentMessage("ProcessUnstructuredSSRequest", true);
                 this.performProcessUnstructuredSSRequest();
                 break;
-            case 22:
+            case 20:
                 printSentMessage("UnstructuredSSRequest", true);
                 this.performUnstructuredSSRequest();
                 break;
-            case 23:
+            case 21:
                 printSentMessage("UnstructuredSSNotify", true);
                 this.performUnstructuredSSNotify();
                 break;
-            case 24:
+            case 22:
                 printSentMessage("ShortMessageAlertProcedure", true);
                 this.performShortMessageAlertProcedure();
                 break;
-            case 25:
+            case 23:
                 printSentMessage("InformServiceCentre", true);
                 this.performInformServiceCentre();
                 break;
-            case 26:
+            case 24:
                 printSentMessage("SendRoutingInfoForGPRS", true);
                 this.performSendRoutingInfoForGPRS();
+                break;
+            case 25:
+                printSentMessage("LocationUpdate", true);
+                this.performLocationUpdate();
                 break;
 
             default:
@@ -1371,6 +1367,38 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
+    public void waitForCancelLocationResponse(AttackTesterHost node, boolean client) {
+        int tries = 0;
+        while(!node.gotCancelLocationResponse(client)) {
+            try {
+                if(tries < 100) {
+                    Thread.sleep(50);
+                    tries++;
+                } else {
+                    break;
+                }
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
+    }
+
+    public void waitForActivateTraceModeResponse(AttackTesterHost node, boolean client) {
+        int tries = 0;
+        while(!node.gotActivateTraceModeResponse(client)) {
+            try {
+                if(tries < 100) {
+                    Thread.sleep(50);
+                    tries++;
+                } else {
+                    break;
+                }
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
+        }
+    }
+
     private void performShortMessageMobileOriginated() {
         /**
          * Process per 3GPP TS 23.040 section 10.2:
@@ -1508,16 +1536,38 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    private void performLocationUpdating() {
+    private void performLocationUpdate() {
+        /**
+         * Process per 3GPP TS 29.002 section 19.1.1:
+         * MSC/VLR                       PVLR                           HLR
+         *    |--------------------UpdateLocationReq-------------------->|
+         *    |                            |<-----CancelLocationReq------|
+         *    |                            |------CancelLocationResp---->|
+         *    |<-----------------ActivateTraceModeReq--------------------|
+         *    |------------------ActivateTraceModeResp------------------>|
+         *    |<----------------InsertSubscriberDataReq------------------|
+         *    |-----------------InsertSubscriberDataResp---------------->|
+         *    |<-------------------UpdateLocationResp--------------------|
+         */
 
-    }
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        boolean move = this.random.nextBoolean();
+        boolean subscriberIsInA = subscriber.getCurrentMscNumber().equals(this.defaultMscAddress);
 
-    private void performUpdateLocation() {
-        this.vlrAhlrA.getTestAttackServer().performUpdateLocation();
-    }
-
-    private void performCancelLocation() {
-        this.hlrAvlrA.getTestAttackClient().performCancelLocation();
+        if(subscriber.isOperatorAHome()) {
+            //Move to B
+            if(subscriberIsInA) {
+                this.vlrBhlrA.getTestAttackServer().performUpdateLocationRequest(subscriber.getImsi(), this.defaultMscBAddress, this.defaultVlrBAddress);
+            //Move to A
+            } else {
+                this.vlrAhlrA.getTestAttackClient().performUpdateLocationRequest(subscriber.getImsi(), this.defaultMscAddress, this.defaultVlrAddress);
+            }
+        } else {
+            //Move to A
+            if(!subscriberIsInA) {
+                this.vlrAhlrB.getTestAttackServer().performUpdateLocationRequest(subscriber.getImsi(), this.defaultMscAddress, this.defaultVlrAddress);
+            }
+        }
     }
 
     private void performSendIdentification() {

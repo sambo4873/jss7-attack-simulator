@@ -33,6 +33,7 @@ import org.mobicents.protocols.ss7.map.api.service.supplementary.*;
 import org.mobicents.protocols.ss7.map.api.smstpdu.*;
 import org.mobicents.protocols.ss7.map.primitives.GSNAddressImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
+import org.mobicents.protocols.ss7.map.service.oam.TraceReferenceImpl;
 import org.mobicents.protocols.ss7.map.smstpdu.*;
 import org.mobicents.protocols.ss7.tcap.api.MessageType;
 import org.mobicents.protocols.ss7.tcap.asn.comp.Problem;
@@ -90,6 +91,8 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     private RegisterSSResponse lastRegisterSSResponse;
     private EraseSSResponse lastEraseSSResponse;
     private InsertSubscriberDataResponse lastInsertSubscriberDataResponse;
+    private CancelLocationResponse lastCancelLocationResponse;
+    private ActivateTraceModeResponse_Mobility lastActivateTraceModeResponse;
 
     public TestAttackServer() {
         super(SOURCE_NAME);
@@ -1212,12 +1215,26 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     public void onUpdateLocationRequest(UpdateLocationRequest ind) {
         MAPDialogMobility curDialog = ind.getMAPDialog();
         long invokeId = ind.getInvokeId();
+        AttackSimulationOrganizer organizer = this.testerHost.getAttackSimulationOrganizer();
 
         Subscriber subscriber = this.testerHost.getAttackSimulationOrganizer().getSubscriberManager().getSubscriber(ind.getImsi());
 
         if(subscriber != null) {
             MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
             MAPParameterFactory mapParameterFactory = this.mapMan.getMAPStack().getMAPProvider().getMAPParameterFactory();
+
+            if(this.testerHost.hashCode() == organizer.getHlrAvlrA().hashCode()) { //New VLR is VLR_A
+                organizer.getHlrAvlrB().getTestAttackServer().performCancelLocation(subscriber.getImsi());
+                organizer.waitForCancelLocationResponse(organizer.getHlrAvlrB(), false);
+                organizer.getHlrAvlrB().getTestAttackServer().clearLastCancelLocationResponse();
+
+                organizer.getHlrAvlrA().getTestAttackClient().performActivateTraceMode(subscriber.getImsi());
+                organizer.waitForActivateTraceModeResponse(organizer.getHlrAvlrA(), true);
+                organizer.getHlrAvlrA().getTestAttackClient().clearLastActivateTraceModeResponse();
+
+                organizer.getHlrAvlrA().getTestAttackClient().performInsertSubscriberData();
+                organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAvlrA(), true);
+            }
 
             ISDNAddressString newMscNumber = ind.getMscNumber();
             ISDNAddressString hlrNumber = subscriber.getCurrentHlrNumber();
@@ -1244,12 +1261,49 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onCancelLocationRequest(CancelLocationRequest request) {
+        long invokeId = request.getInvokeId();
+        MAPDialogMobility curDialog = request.getMAPDialog();
 
+        try {
+            curDialog.addCancelLocationResponse(invokeId, null);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending CancelLocation Resp" + e.toString());
+        }
+    }
+
+    public void performCancelLocation(IMSI imsi) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(
+                MAPApplicationContextName.locationCancellationContext,
+                MAPApplicationContextVersion.version3);
+
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(
+                    applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            curDialog.addCancelLocationRequest(imsi, null, null, null, null, false, false, null, null, null);
+            curDialog.send();
+        } catch(MAPException e) {
+            System.out.println("Error when sending CancelLocation Req: " + e.toString());
+        }
     }
 
     @Override
     public void onCancelLocationResponse(CancelLocationResponse response) {
+        this.lastCancelLocationResponse = response;
+    }
 
+    public CancelLocationResponse getLastCancelLocationResponse() {
+        return this.lastCancelLocationResponse;
+    }
+
+    public void clearLastCancelLocationResponse() {
+        this.lastCancelLocationResponse = null;
     }
 
     @Override
@@ -1594,12 +1648,51 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onActivateTraceModeRequest_Mobility(ActivateTraceModeRequest_Mobility ind) {
+        long invokeId = ind.getInvokeId();
+        MAPDialogMobility curDialog = ind.getMAPDialog();
 
+        try {
+            curDialog.addActivateTraceModeResponse(invokeId, null, true);
+            this.needSendClose = true;
+        } catch (MAPException e) {
+            System.out.println("Error when sending ActivateTraceMode Resp: " + e.toString());
+        }
     }
 
     @Override
     public void onActivateTraceModeResponse_Mobility(ActivateTraceModeResponse_Mobility ind) {
+        this.lastActivateTraceModeResponse = ind;
+    }
 
+    public ActivateTraceModeResponse_Mobility getLastActivateTraceModeResponse() {
+        return this.lastActivateTraceModeResponse;
+    }
+
+    public void clearLastActivateTraceModeResponse() {
+        this.lastActivateTraceModeResponse = null;
+    }
+
+    public void performActivateTraceMode(IMSI imsi) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
+
+        MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(MAPApplicationContextName.tracingContext, MAPApplicationContextVersion.version3);
+        try {
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility().createNewDialog(applicationContext,
+                    this.mapMan.createOrigAddress(),
+                    null,
+                    this.mapMan.createDestAddress(),
+                    null);
+
+            TraceReference traceReference = parameterFactory.createTraceReference(new byte[]{01, 02});
+            TraceType traceType = parameterFactory.createTraceType(HlrRecordType.Basic,
+                    TraceTypeInvokingEvent.InvokingEvent_0, false);
+
+            curDialog.addActivateTraceModeRequest(imsi, traceReference, traceType, null, null, null, null, null, null, null, null, null);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Error when sending ActivateTraceMode Req: " + ex.toString());
+        }
     }
 
     @Override
@@ -1983,7 +2076,27 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     }
 
-    public void performUpdateLocation() {
+    public void performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber) {
+        MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+
+        MAPApplicationContextVersion vers = MAPApplicationContextVersion.version3;
+        MAPApplicationContextName acn = MAPApplicationContextName.networkLocUpContext;
+
+        MAPApplicationContext mapApplicationContext = MAPApplicationContext.getInstance(acn, vers);
+
+        try{
+            MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility()
+                    .createNewDialog(mapApplicationContext,
+                            this.mapMan.createOrigAddress(),
+                            null,
+                            this.mapMan.createDestAddress(),
+                            null);
+
+            curDialog.addUpdateLocationRequest(imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, null, false, false);
+            curDialog.send();
+        } catch (MAPException ex) {
+            System.out.println("Exception when sending UpdateLocationRequest :" + ex.toString());
+        }
     }
 
     public void performPurgeMS(IMSI imsi, ISDNAddressString vlrNumber) {

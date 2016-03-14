@@ -57,13 +57,18 @@ public class SubscriberManager {
             subscriberId = this.getSubscriber(this.getNumberOfSubscribers() - 1).getSubscriberId() + 1;
         else
             subscriberId = 0;
+        boolean operatorAHome = this.random.nextBoolean(),
+                subscriberLocatedInA = this.random.nextBoolean();
 
-        IMSI imsi = this.mapParameterFactory.createIMSI(generateRandomNumericalString(15));
+        IMSI imsi;
+        if(operatorAHome)
+            imsi = this.mapParameterFactory.createIMSI("242" + "01" + generateRandomNumericalString(10));
+        else
+            imsi = this.mapParameterFactory.createIMSI("242" + "02" + generateRandomNumericalString(10));
+
         ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, generateRandomNumericalString(10));
 
         try {
-            boolean operatorAHome = this.random.nextBoolean(),
-                subscriberLocatedInA = this.random.nextBoolean();
 
             Subscriber subscriber;
             if(operatorAHome) {
@@ -91,7 +96,13 @@ public class SubscriberManager {
         MAPExtensionContainer mapExtensionContainer = null;
         LocationInformationGPRS locationInformationGPRS = null;
         PSSubscriberState psSubscriberState = null;
-        IMEI imei = mapParameterFactory.createIMEI("24201" + generateRandomNumericalString(10));
+
+        IMEI imei;
+        if(operatorAHome)
+            imei = mapParameterFactory.createIMEI("24201" + generateRandomNumericalString(10));
+        else
+            imei = mapParameterFactory.createIMEI("24202" + generateRandomNumericalString(10));
+
         MSClassmark2 msClassmark2 = null;
         GPRSMSClass gprsmsClass = null;
         MNPInfoRes mnpInfoRes = null;

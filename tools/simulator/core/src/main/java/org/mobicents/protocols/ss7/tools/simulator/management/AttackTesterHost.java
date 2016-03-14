@@ -3470,6 +3470,20 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             return this.getTestAttackServer().getLastInsertSubscriberDataResponse() != null;
     }
 
+    public boolean gotCancelLocationResponse(boolean client) {
+        if(client)
+            return this.getTestAttackClient().getLastCancelLocationResponse() != null;
+        else
+            return this.getTestAttackServer().getLastCancelLocationResponse() != null;
+    }
+
+    public boolean gotActivateTraceModeResponse(boolean client) {
+        if(client)
+            return this.getTestAttackClient().getLastActivateTraceModeResponse() != null;
+        else
+            return this.getTestAttackServer().getLastActivateTraceModeResponse() != null;
+    }
+
     public IsupMan getIsupMan() {
         return this.isup;
     }
