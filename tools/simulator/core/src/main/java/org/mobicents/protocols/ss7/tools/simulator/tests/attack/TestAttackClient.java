@@ -2543,8 +2543,8 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     public void performSendRoutingInfoForGPRS(IMSI imsi, ISDNAddressString ggsnNumber) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
         MAPApplicationContext applicationContext = MAPApplicationContext.getInstance(
-                MAPApplicationContextName.gprsNotifyContext,
-                MAPApplicationContextVersion.version3);
+                MAPApplicationContextName.gprsLocationInfoRetrievalContext,
+                MAPApplicationContextVersion.version4);
 
         try {
             MAPDialogPdpContextActivation curDialog = mapProvider.getMAPServicePdpContextActivation().createNewDialog(
