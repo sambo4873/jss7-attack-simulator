@@ -28,8 +28,10 @@ public class AttackSimulationOrganizer implements Stoppable {
     private static int chanceOfAttack;
     private static int numberOfSubscribers;
 
-    private static long countGenuine = 0;
-    private static long countAttack = 0;
+    private static long countGenuineProcedures = 0;
+    private static long countAttackProcedures = 0;
+    private static long countGenuineMessages = 0;
+    private static long countAttackMessages = 0;
 
     private ISDNAddressString defaultMscAddress;
     private ISDNAddressString defaultHlrAddress;
@@ -889,9 +891,8 @@ public class AttackSimulationOrganizer implements Stoppable {
             public void run() {
                 System.out.println();
                 System.out.println("Exiting..");
-                System.out.println("Chance of attack used: " + AttackSimulationOrganizer.chanceOfAttack);
-                System.out.println("Number of genuine messages generated: " + AttackSimulationOrganizer.countGenuine);
-                System.out.println("Number of attacks generated: " + AttackSimulationOrganizer.countAttack);
+                System.out.println("Number of genuine procedures generated: " + AttackSimulationOrganizer.countGenuineProcedures);
+                System.out.println("Number of attack procedures generated: " + AttackSimulationOrganizer.countAttackProcedures);
 
                 //Sleep for some seconds, so nodes can shutdown.
                 try{
@@ -980,10 +981,10 @@ public class AttackSimulationOrganizer implements Stoppable {
         boolean generateNoise = this.random.nextInt(100) >= chanceOfAttack;
 
         if(generateNoise) {
-            countGenuine++;
+            countGenuineProcedures++;
             this.generateNoise();
         } else {
-            countAttack++;
+            countAttackProcedures++;
             this.generateAttack();
         }
     }
@@ -1592,7 +1593,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         } else {
             if(subscriberInA) {
                 this.hlrBvlrA.getTestAttackClient().performProvideRoamingNumber(subscriber.getImsi(), subscriber.getCurrentMscNumber());
-                this.waitForProvideRoamingNumberResponse(this.vlrBhlrA, true);
+                this.waitForProvideRoamingNumberResponse(this.hlrBvlrA, true);
                 this.vlrAhlrB.getTestAttackServer().performRestoreData(subscriber.getImsi());
             }
         }
