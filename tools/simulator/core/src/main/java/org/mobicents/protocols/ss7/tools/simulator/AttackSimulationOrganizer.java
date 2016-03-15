@@ -1589,9 +1589,6 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performCheckIMEI() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-
-        this.vlrAmscA.getTestAttackServer().performCheckIMEI(subscriber.getSubscriberInfo().getIMEI());
         //this.mscAeirA.getTestAttackClient().performCheckIMEI();
         //this.sgsnAeirA.getTestAttackClient().performCheckIMEI();
     }
@@ -1602,7 +1599,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void performForwardCheckSSIndication() {
-        this.hlrAmscA.getTestAttackServer().performForwardCheckSSIndication();
+        //this.hlrAmscA.getTestAttackServer().performForwardCheckSSIndication();
     }
 
     private void performAnyTimeInterrogation() {
@@ -1613,11 +1610,6 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void performActivateTraceMode_Oam() {
         Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
         this.hlrAvlrA.getTestAttackClient().performActivateTraceMode_Oam(subscriber.getImsi());
-    }
-
-    private void performActivateTraceMode_Mobility() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-        this.hlrAvlrA.getTestAttackClient().performActivateTraceMode_Mobility(subscriber.getImsi());
     }
 
     private void performSendIMSI() {
@@ -1739,23 +1731,6 @@ public class AttackSimulationOrganizer implements Stoppable {
          *  |                    |<--InsertSubscriberDataReq---|
          *  |                    |---InsertSubscriberDataResp->|
          */
-
-        int messageOrigin = this.random.nextInt(3);
-
-        switch(messageOrigin) {
-            case 0:
-                this.mscAvlrA.getTestAttackClient().performActivateSS();
-                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
-                break;
-            case 1:
-                this.vlrBhlrA.getTestAttackClient().performActivateSS();
-                this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
-                break;
-            case 2:
-                this.vlrAhlrB.getTestAttackServer().performActivateSS();
-                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
-                break;
-        }
     }
 
     private void performDeactivationProcedure() {
@@ -1769,23 +1744,6 @@ public class AttackSimulationOrganizer implements Stoppable {
          *  |                      |<---InsertSubscriberDataReq----|
          *  |                      |----InsertSubscriberDataResp-->|
          */
-
-        int messageOrigin = this.random.nextInt(3);
-
-        switch(messageOrigin) {
-            case 0:
-                this.mscAvlrA.getTestAttackClient().performDeactivateSS();
-                this.hlrAvlrA.getTestAttackClient().performInsertSubscriberData();
-                break;
-            case 1:
-                this.vlrBhlrA.getTestAttackClient().performDeactivateSS();
-                this.hlrAvlrB.getTestAttackServer().performInsertSubscriberData();
-                break;
-            case 2:
-                this.vlrAhlrB.getTestAttackServer().performDeactivateSS();
-                this.hlrBvlrA.getTestAttackClient().performInsertSubscriberData();
-                break;
-        }
     }
 
     private void performInterrogationProcedure() {
@@ -1797,21 +1755,6 @@ public class AttackSimulationOrganizer implements Stoppable {
          *
          *  NOTE: Message to HLR is optional.
          */
-
-        int messageOrigin = this.random.nextInt(3);
-        boolean forwardToHLR = this.random.nextBoolean();
-
-        switch(messageOrigin) {
-            case 0:
-                this.mscAvlrA.getTestAttackClient().performInterrogateSS(forwardToHLR);
-                break;
-            case 1:
-                this.vlrBhlrA.getTestAttackClient().performInterrogateSS(false);
-                break;
-            case 2:
-                this.vlrAhlrB.getTestAttackServer().performInterrogateSS(false);
-                break;
-        }
     }
 
     private void performPasswordRegistrationProcedure() {
@@ -1827,20 +1770,6 @@ public class AttackSimulationOrganizer implements Stoppable {
          *  |------GetPasswordResp---->|--------GetPasswordResp------->|
          *  |<---RegisterPasswordResp--|<----RegisterPasswordResp------|
          */
-
-        int messageOrigin = this.random.nextInt(3);
-
-        switch(messageOrigin) {
-            case 0:
-                this.mscAvlrA.getTestAttackClient().performRegisterPassword();
-                break;
-            case 1:
-                this.vlrBhlrA.getTestAttackClient().performRegisterPassword();
-                break;
-            case 2:
-                this.vlrAhlrB.getTestAttackServer().performRegisterPassword();
-                break;
-        }
     }
 
     private void performProcessUnstructuredSSRequest() {
