@@ -1030,7 +1030,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void sendRandomMessage() {
-        int numberOfAvailableMessages = 25;
+        int numberOfAvailableMessages = 13;
         int randomMessage = this.random.nextInt(numberOfAvailableMessages);
 
         switch (randomMessage) {
@@ -1043,94 +1043,46 @@ public class AttackSimulationOrganizer implements Stoppable {
                 this.performShortMessageMobileTerminated();
                 break;
             case 2:
-                printSentMessage("SendIdentification", true);
-                this.performSendIdentification();
-                break;
-            case 3:
                 printSentMessage("PurgeMS", true);
                 this.performPurgeMS();
                 break;
-            case 4:
-                printSentMessage("UpdateGPRSLocation", true);
-                this.performUpdateGPRSLocation();
-                break;
-            case 5:
-                printSentMessage("CheckIMEI", true);
-                this.performCheckIMEI();
-                break;
-            case 6:
+            case 3:
                 printSentMessage("DeleteSubscriberData", true);
                 this.performDeleteSubscriberData();
                 break;
-            case 7:
-                printSentMessage("ForwardCheckSSIndication", true);
-                this.performForwardCheckSSIndication();
-                break;
-            case 8:
+            case 4:
                 printSentMessage("AnyTimeInterrogation", true);
                 this.performAnyTimeInterrogation();
                 break;
-            case 9:
+            case 5:
                 printSentMessage("ActivateTraceMode_Oam", true);
                 this.performActivateTraceMode_Oam();
                 break;
-            case 10:
+            case 6:
                 printSentMessage("SendIMSI", true);
                 this.performSendIMSI();
                 break;
-            case 11:
+            case 7:
                 printSentMessage("RetrieveRoutingInformationProcedure", true);
                 this.performRetrieveRoutingInformationProcedure();
                 break;
-            case 12:
+            case 8:
                 printSentMessage("RegistrationProcedure", true);
                 this.performRegistrationProcedure();
                 break;
-            case 13:
+            case 9:
                 printSentMessage("ErasureProcedure", true);
                 this.performErasureProcedure();
                 break;
-            case 14:
-                printSentMessage("ActivationProcedure", true);
-                this.performActivationProcedure();
-                break;
-            case 15:
-                printSentMessage("DeactivationProcedure", true);
-                this.performDeactivationProcedure();
-                break;
-            case 16:
-                printSentMessage("InterrogationProcedure", true);
-                this.performInterrogationProcedure();
-                break;
-            case 17:
-                printSentMessage("PasswordRegistrationProcedure", true);
-                this.performPasswordRegistrationProcedure();
-                break;
-            case 18:
-                printSentMessage("ProcessUnstructuredSSRequest", true);
-                this.performProcessUnstructuredSSRequest();
-                break;
-            case 19:
-                printSentMessage("UnstructuredSSRequest", true);
-                this.performUnstructuredSSRequest();
-                break;
-            case 20:
-                printSentMessage("UnstructuredSSNotify", true);
-                this.performUnstructuredSSNotify();
-                break;
-            case 21:
+            case 10:
                 printSentMessage("ShortMessageAlertProcedure", true);
                 this.performShortMessageAlertProcedure();
                 break;
-            case 22:
-                printSentMessage("InformServiceCentre", true);
-                this.performInformServiceCentre();
-                break;
-            case 23:
+            case 11:
                 printSentMessage("SendRoutingInfoForGPRS", true);
                 this.performSendRoutingInfoForGPRS();
                 break;
-            case 24:
+            case 12:
                 printSentMessage("LocationUpdate", true);
                 this.performLocationUpdate();
                 break;
