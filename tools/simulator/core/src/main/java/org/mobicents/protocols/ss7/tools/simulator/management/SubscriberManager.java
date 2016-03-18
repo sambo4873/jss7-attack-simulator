@@ -29,6 +29,9 @@ public class SubscriberManager {
     private ISDNAddressString defaultVlrBNumber;
     private ISDNAddressString defaultHlrNumber;
     private ISDNAddressString defaultHlrBNumber;
+    private long currentImsi;
+    private long currentImei;
+    private long currentMsisdn;
 
     public SubscriberManager(ISDNAddressString defaultMscNumber, ISDNAddressString defaultMscBNumber,
                              ISDNAddressString defaultVlrNumber, ISDNAddressString defaultVlrBNumber,
@@ -42,6 +45,9 @@ public class SubscriberManager {
         this.defaultVlrBNumber = defaultVlrBNumber;
         this.defaultHlrNumber = defaultHlrNumber;
         this.defaultHlrBNumber = defaultHlrBNumber;
+        this.currentImsi = 111111110L;
+        this.currentImei = 999999990L;
+        this.currentMsisdn  = 41111111;
     }
 
     public void createRandomSubscribers(int number) {
@@ -62,11 +68,11 @@ public class SubscriberManager {
 
         IMSI imsi;
         if(operatorAHome)
-            imsi = this.mapParameterFactory.createIMSI("242" + "01" + generateRandomNumericalString(10));
+            imsi = this.mapParameterFactory.createIMSI("242" + "01" + currentImsi++);
         else
-            imsi = this.mapParameterFactory.createIMSI("242" + "02" + generateRandomNumericalString(10));
+            imsi = this.mapParameterFactory.createIMSI("242" + "02" + currentImsi++);
 
-        ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, generateRandomNumericalString(10));
+        ISDNAddressString msisdn = this.mapParameterFactory.createISDNAddressString(AddressNature.international_number, NumberingPlan.ISDN, Long.toString(currentMsisdn++));
 
         try {
 
@@ -99,9 +105,9 @@ public class SubscriberManager {
 
         IMEI imei;
         if(operatorAHome)
-            imei = mapParameterFactory.createIMEI("24201" + generateRandomNumericalString(10));
+            imei = mapParameterFactory.createIMEI("24201" + currentImei++);
         else
-            imei = mapParameterFactory.createIMEI("24202" + generateRandomNumericalString(10));
+            imei = mapParameterFactory.createIMEI("24202" + currentImei++);
 
         MSClassmark2 msClassmark2 = null;
         GPRSMSClass gprsmsClass = null;
