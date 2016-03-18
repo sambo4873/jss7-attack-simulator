@@ -51,20 +51,30 @@ public class SubscriberManager {
     }
 
     public void createRandomSubscribers(int number) {
-        for(int i = 0; i < number; i++) {
-            this.addSubscriber(this.createRandomSubscriber());
+        int numASubscribers = (int) Math.floor(number * 0.9);
+        int numBSubscribers = number - numASubscribers;
+
+        for(int i = 0; i < numASubscribers; i++) {
+            this.addSubscriber(this.createRandomSubscriber(true));
         }
-        System.out.println("SubscriberManager: added " + number + " number of random subscribers");
+
+        for(int i = 0; i < numBSubscribers; i++) {
+            this.addSubscriber(this.createRandomSubscriber(true));
+        }
+
+        System.out.println("SubscriberManager: added " + numASubscribers + " number of operator A subscribers");
+        System.out.println("SubscriberManager: added " + numBSubscribers + " number of operator B subscribers");
+        System.out.println("SubscriberManager: added " + number + " total subscribers");
     }
 
-    private Subscriber createRandomSubscriber() {
+    private Subscriber createRandomSubscriber(boolean operatorAHome) {
         int subscriberId;
         if(this.subscribers.size() > 0)
             subscriberId = this.getSubscriber(this.getNumberOfSubscribers() - 1).getSubscriberId() + 1;
         else
             subscriberId = 0;
-        boolean operatorAHome = this.random.nextBoolean(),
-                subscriberLocatedInA = this.random.nextBoolean();
+
+        boolean subscriberLocatedInA = this.random.nextBoolean();
 
         IMSI imsi;
         if(operatorAHome)
