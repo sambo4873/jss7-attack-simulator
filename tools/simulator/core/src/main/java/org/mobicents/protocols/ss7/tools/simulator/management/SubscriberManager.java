@@ -249,6 +249,12 @@ public class SubscriberManager {
     }
 
     public Subscriber getRandomSubscriber() {
-        return this.subscribers.get(random.nextInt(subscribers.size()));
+        //int subscriberId = random.nextInt(((subscribers.size() - 1) - 1) + 1) + 1;
+        int subscriberId = random.nextInt(subscribers.size());
+        return this.subscribers.get(subscriberId);
+    }
+
+    public Subscriber getVipSubscriber() {
+        return this.subscribers.get(0);
     }
 }

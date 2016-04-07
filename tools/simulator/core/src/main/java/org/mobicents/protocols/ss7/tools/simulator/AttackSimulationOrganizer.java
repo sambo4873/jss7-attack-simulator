@@ -8,11 +8,13 @@ import org.mobicents.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.mobicents.protocols.ss7.map.api.primitives.NumberingPlan;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.ProvideSubscriberInfoResponse;
 import org.mobicents.protocols.ss7.map.api.service.sms.SendRoutingInfoForSMResponse;
+import org.mobicents.protocols.ss7.map.primitives.IMSIImpl;
 import org.mobicents.protocols.ss7.tools.simulator.common.AttackConfigurationData;
 import org.mobicents.protocols.ss7.tools.simulator.management.AttackTesterHost;
 import org.mobicents.protocols.ss7.tools.simulator.management.Subscriber;
 import org.mobicents.protocols.ss7.tools.simulator.management.SubscriberManager;
 
+import java.beans.SimpleBeanInfo;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -27,6 +29,8 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private static int chanceOfAttack;
     private static int numberOfSubscribers;
+
+    private static Subscriber VIP;
 
     private static long countGenuineProcedures = 0;
     private static long countAttackProcedures = 0;
@@ -926,6 +930,13 @@ public class AttackSimulationOrganizer implements Stoppable {
         //System.out.println(messageSent);
     }
 
+    private enum VipAction{
+        NONE,
+        UPDATE_LOCATION,
+        TRACK,
+        INTERCEPT
+    }
+
     public void start() {
         configureShutDownHook();
         startAttackSimulationHosts();
@@ -935,7 +946,15 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         this.printAttackSimulationStart();
 
-        int sleepTime = 50;
+        int sleepTime = 50,
+                vipUpdateCounter = 0,
+                vipTrackCounter = 0,
+                vipInterceptCounter = 0,
+                warmUpRuns = 10000,
+                currentRuns = 0;
+
+        AttackSimulationOrganizer.VIP = this.getSubscriberManager().getSubscriber(new IMSIImpl("24201111111111"));
+
 
         while (true) {
             try {
@@ -958,14 +977,45 @@ public class AttackSimulationOrganizer implements Stoppable {
                             this.attackLocationPsi();
                             break;
                         case INTERCEPT_SMS:
-                            this.attackInterceptSms();
+                            this.attackInterceptSmsDemo();
                             break;
                         case TEST_PORTS:
                             break;
                     }
                     break;
                 } else {
-                    this.generateTraffic();
+                    vipUpdateCounter++;
+                    vipTrackCounter++;
+                    vipInterceptCounter++;
+                    currentRuns++;
+
+                    if (currentRuns < warmUpRuns) {
+                        this.generateTraffic(true, VipAction.NONE);
+                    } else {
+                        boolean trafficGenerated = false;
+
+                        if(vipUpdateCounter == 1000) {
+                            this.generateTraffic(false, VipAction.UPDATE_LOCATION);
+                            vipUpdateCounter = 0;
+                            trafficGenerated = true;
+                        }
+
+                        if(vipInterceptCounter == 10000) {
+                            this.generateTraffic(false, VipAction.INTERCEPT);
+                            vipInterceptCounter = 0;
+                            trafficGenerated = true;
+                        }
+
+                        if(vipTrackCounter == 2000) {
+                            this.generateTraffic(false, VipAction.TRACK);
+                            vipTrackCounter = 0;
+                            trafficGenerated = true;
+                        }
+
+                        if(!trafficGenerated) this.generateTraffic(false, VipAction.NONE);
+                    }
+
+                    currentRuns++;
                 }
             }
             catch (InterruptedException e) {
@@ -975,8 +1025,29 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    private void generateTraffic() {
+    private void generateTraffic(boolean warmUp, VipAction vipAction) {
         boolean generateNoise = AttackSimulationOrganizer.random.nextInt(100) >= chanceOfAttack;
+        if(warmUp) generateNoise = true;
+
+        switch(vipAction) {
+            case NONE:
+                break;
+            case UPDATE_LOCATION:
+                countGenuineProcedures++;
+                this.performLocationUpdate(true);
+                break;
+            case TRACK:
+                countAttackProcedures++;
+                if(random.nextBoolean())
+                    this.attackLocationAti();
+                else
+                    this.attackLocationPsi();
+                break;
+            case INTERCEPT:
+                countAttackProcedures++;
+                this.attackInterceptSms();
+                break;
+        }
 
         if(generateNoise) {
             countGenuineProcedures++;
@@ -985,6 +1056,8 @@ public class AttackSimulationOrganizer implements Stoppable {
             countAttackProcedures++;
             this.generateAttack();
         }
+
+
     }
 
     private void generateNoise() {
@@ -1077,7 +1150,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 12:
                 printSentMessage("LocationUpdate", true);
-                this.performLocationUpdate();
+                this.performLocationUpdate(false);
                 break;
 
             default:
@@ -1086,14 +1159,11 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void attackLocationAti() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performATI(subscriber.getMsisdn().getAddress());
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performATI(VIP.getMsisdn().getAddress());
     }
 
     private void attackLocationPsi() {
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
-
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(),
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(),
                 AttackSimulationOrganizer.hlrAattackerB.getTestAttackServer().getServiceCenterAddress());
         this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
 
@@ -1114,28 +1184,48 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void attackInterceptSms() {
         MAPParameterFactory mapParameterFactory = AttackSimulationOrganizer.attackerBhlrA.getMapMan().getMAPStack().getMAPProvider().getMAPParameterFactory();
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
 
-        AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
-        this.waitForSRIForSMResponse(AttackSimulationOrganizer.smscAhlrA);
-
-        //SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
-        //AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
-        //AttackSimulationOrganizer.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI(),
-        //        sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),
-        //        this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress(),
-        //        AttackSimulationOrganizer.defaultSmscAddress.getAddress());
-
-        //try {
-        //    Thread.sleep(2000);
-        //} catch(InterruptedException e) {
-        //    System.exit(50);
-        //}
-
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
         this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
 
         SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+
+        ISDNAddressString newMscAddress = mapParameterFactory.createISDNAddressString(
+                AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getAddressNature(),
+                AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
+                AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+        ISDNAddressString newVlrAddress = mapParameterFactory.createISDNAddressString(
+                AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getAddressNature(),
+                AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
+                AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress, true);
+    }
+
+    private void attackInterceptSmsDemo() {
+        MAPParameterFactory mapParameterFactory = AttackSimulationOrganizer.attackerBhlrA.getMapMan().getMAPStack().getMAPProvider().getMAPParameterFactory();
+
+        AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
+        this.waitForSRIForSMResponse(AttackSimulationOrganizer.smscAhlrA);
+
+        SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+        AttackSimulationOrganizer.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI(),
+                sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),
+                this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress(),
+                AttackSimulationOrganizer.defaultSmscAddress.getAddress());
+
+        try {
+            Thread.sleep(2000);
+        } catch(InterruptedException e) {
+            System.exit(50);
+        }
+
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
+        this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
+
+        sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
         AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
 
         ISDNAddressString newMscAddress = mapParameterFactory.createISDNAddressString(
@@ -1155,7 +1245,7 @@ public class AttackSimulationOrganizer implements Stoppable {
             System.exit(50);
         }
 
-        AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
+        AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
         this.waitForSRIForSMResponse(AttackSimulationOrganizer.smscAhlrA);
 
         sriResponse = AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
@@ -1394,7 +1484,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
                 AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().performReportSMDeliveryStatus(destination.getMsisdn());
 
-            } else { //Destination is B
+            } else if(destination.getCurrentMscNumber().equals(AttackSimulationOrganizer.defaultMscBAddress)) { //Destination is B
                 AttackSimulationOrganizer.smscAsmscB.getTestAttackServer().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
                         sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), originator.getMsisdn().getAddress(),
                         this.getDefaultSmscAddress().getAddress());
@@ -1402,6 +1492,13 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AttackSimulationOrganizer.smscAsmscB.getTestAttackServer().clearLastMtForwardSMResponse();
 
                 AttackSimulationOrganizer.smscBhlrA.getTestAttackClient().performReportSMDeliveryStatus(destination.getMsisdn());
+
+            } else { //Destination is Attacker
+                AttackSimulationOrganizer.smscAattackerB.getTestAttackServer().performMtForwardSM(DEFAULT_SMS_MESSAGE, sriResponse.getIMSI(),
+                        sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(), originator.getMsisdn().getAddress(),
+                        this.getDefaultSmscAddress().getAddress());
+                this.waitForMtForwardSMResponse(AttackSimulationOrganizer.smscAattackerB, false);
+                AttackSimulationOrganizer.smscAattackerB.getTestAttackServer().clearLastMtForwardSMResponse();
             }
         } else { //Message originates from B
             if(destination.getCurrentMscNumber().equals(AttackSimulationOrganizer.defaultMscAddress)) { //Destination is A
@@ -1477,7 +1574,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    private void performLocationUpdate() {
+    private void performLocationUpdate(boolean vip) {
         /**
          * Process per 3GPP TS 29.002 section 19.1.1:
          * MSC/VLR                       PVLR                           HLR
@@ -1491,7 +1588,15 @@ public class AttackSimulationOrganizer implements Stoppable {
          *    |<-------------------UpdateLocationResp--------------------|
          */
 
-        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
+        Subscriber subscriber;
+        if(vip) {
+            subscriber = this.getSubscriberManager().getVipSubscriber();
+        } else {
+            subscriber = this.getSubscriberManager().getRandomSubscriber();
+            while(subscriber.getSubscriberId() == 0) //Do not alter location of VIP unless specified.
+                subscriber = this.getSubscriberManager().getRandomSubscriber();
+        }
+
         boolean move = AttackSimulationOrganizer.random.nextBoolean();
         boolean subscriberIsInA = subscriber.getCurrentMscNumber().equals(AttackSimulationOrganizer.defaultMscAddress);
 
