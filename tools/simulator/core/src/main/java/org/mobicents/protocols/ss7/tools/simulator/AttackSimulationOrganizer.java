@@ -1016,8 +1016,6 @@ public class AttackSimulationOrganizer implements Stoppable {
 
                         if(!trafficGenerated) this.generateTraffic(false, VipAction.NONE);
                     }
-
-                    currentRuns++;
                 }
             }
             catch (InterruptedException e) {
