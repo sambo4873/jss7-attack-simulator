@@ -327,7 +327,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -336,7 +336,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.VLR_B_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -382,7 +382,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -391,7 +391,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.VLR_B_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -437,7 +437,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -446,7 +446,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.SMSC_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -492,7 +492,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -501,7 +501,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -547,7 +547,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -556,7 +556,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.VLR_B_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -602,7 +602,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -611,7 +611,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.VLR_B_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -657,7 +657,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -666,7 +666,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.HLR_B_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -712,7 +712,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -721,7 +721,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.HLR_B_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -767,7 +767,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -776,7 +776,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -822,7 +822,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -831,7 +831,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -877,7 +877,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -886,7 +886,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -932,7 +932,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -941,7 +941,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -987,7 +987,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -996,7 +996,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -1042,7 +1042,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -1051,7 +1051,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1097,7 +1097,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -1106,7 +1106,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1152,7 +1152,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1161,7 +1161,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -1207,7 +1207,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -1216,7 +1216,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1262,7 +1262,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1271,7 +1271,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.SMSC_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -1317,7 +1317,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1326,7 +1326,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1372,7 +1372,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1381,7 +1381,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1427,7 +1427,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.ATTACKER_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1436,7 +1436,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_C_GT;
 
         ////////////////////////////////////////
 
@@ -1482,7 +1482,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_C_GT;
 
         ////////////////////////////////////////
 
@@ -1491,7 +1491,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1537,7 +1537,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.ATTACKER_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1546,7 +1546,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_C_GT;
 
         ////////////////////////////////////////
 
@@ -1592,7 +1592,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_C_GT;
 
         ////////////////////////////////////////
 
@@ -1601,7 +1601,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1647,7 +1647,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.ATTACKER_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1656,7 +1656,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_C_GT;
 
         ////////////////////////////////////////
 
@@ -1702,7 +1702,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_C_GT;
 
         ////////////////////////////////////////
 
@@ -1711,7 +1711,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1757,7 +1757,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.ATTACKER_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1766,7 +1766,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_C_GT;
 
         ////////////////////////////////////////
 
@@ -1812,7 +1812,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.ATTACKER_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_C_GT;
 
         ////////////////////////////////////////
 
@@ -1821,7 +1821,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.ATTACKER_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1868,7 +1868,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1877,7 +1877,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -1924,7 +1924,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_B_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_B_GT;
 
         ////////////////////////////////////////
 
@@ -1933,7 +1933,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.MSC_B_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1980,7 +1980,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -1989,7 +1989,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2036,7 +2036,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2045,7 +2045,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2092,7 +2092,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.SMSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2101,7 +2101,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2148,7 +2148,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.SMSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2157,7 +2157,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2205,7 +2205,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2214,7 +2214,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2261,7 +2261,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.MSC_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2270,7 +2270,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.MSC_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.MSC_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2317,7 +2317,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2326,7 +2326,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2372,7 +2372,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2381,7 +2381,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = AttackSimulationOrganizer.HLR_A_MAP_REFERENCE,
                 origReferenceDigits = AttackSimulationOrganizer.VLR_A_MAP_REFERENCE,
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2428,7 +2428,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.SGSN_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2437,7 +2437,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2483,7 +2483,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.SGSN_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2492,7 +2492,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.SGSN_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2538,7 +2538,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.HLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.GSMSCF_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2546,7 +2546,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2592,7 +2592,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.GSMSCF_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.HLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2601,7 +2601,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.GSMSCF_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2647,7 +2647,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.VLR_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.GSMSCF_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2656,7 +2656,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2702,7 +2702,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                 remoteSpc2 = 0,
                 remoteSsn = AttackSimulationOrganizer.GSMSCF_SSN;
         boolean routeonGtMode = true;
-        String callingPartyAddressDigits = AttackSimulationOrganizer.VLR_A_GT;
+        String callingPartyAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
@@ -2710,7 +2710,7 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         String destReferenceDigits = "",
                 origReferenceDigits = "",
-                remoteAddressDigits = AttackSimulationOrganizer.GSMSCF_A_GT;
+                remoteAddressDigits = AttackSimulationOrganizer.OPERATOR_A_GT;
 
         ////////////////////////////////////////
 
