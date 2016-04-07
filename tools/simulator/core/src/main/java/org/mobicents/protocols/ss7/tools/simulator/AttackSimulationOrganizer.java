@@ -141,7 +141,7 @@ public class AttackSimulationOrganizer implements Stoppable {
     public static final int HLR_B_OPC = 12;
     public static final int SMSC_B_OPC = 13;
     public static final int VLR_B_OPC = 14;
-    public static final int ATTACKER_OPC = 11;
+    public static final int ATTACKER_OPC = 20;
 
     public static final int MSC_A_SPC = MSC_A_OPC;
     public static final int HLR_A_SPC = HLR_A_OPC;
@@ -961,7 +961,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         while (true) {
             try {
                 sleepTime = AttackSimulationOrganizer.random.nextInt((1000 - 100) + 1) + 100;
-                sleepTime = 100;
+                sleepTime = 500;
                 Thread.sleep(sleepTime);
 
                 if (this.testerHostsNeedQuit())
