@@ -430,7 +430,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             hostMessageData.mtMessageData = messageData;
             curDialog.setUserObject(hostMessageData);
 
-            curDialog.addSendRoutingInfoForSMRequest(msisdn, true, serviceCentreAddress, null, this.testerHost.getConfigurationData()
+            curDialog.addSendRoutingInfoForSMRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, msisdn, true, serviceCentreAddress, null, this.testerHost.getConfigurationData()
                     .getTestAttackServerConfigurationData().isGprsSupportIndicator(), null, null, null);
 
             // this cap helps us give SCCP error if any
@@ -533,7 +533,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     null);
             SmsSignalInfo si = mapProvider.getMAPParameterFactory().createSmsSignalInfo(tpdu, null);
 
-            curDialog.addMtForwardShortMessageRequest(da, oa, si, false, null);
+            curDialog.addMtForwardShortMessageRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, da, oa, si, false, null);
             curDialog.send();
         } catch (MAPException e) {
             System.out.println("Error when sending MtForwardSMReq: " + e.toString());
@@ -612,9 +612,9 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
             if (si.getData().length < 110 || vers == MAPApplicationContextVersion.version1) {
                 if (this.testerHost.getConfigurationData().getTestAttackServerConfigurationData().getMapProtocolVersion().intValue() <= 2)
-                    curDialog.addForwardShortMessageRequest(da, oa, si, false);
+                    curDialog.addForwardShortMessageRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, da, oa, si, false);
                 else
-                    curDialog.addMtForwardShortMessageRequest(da, oa, si, false, null);
+                    curDialog.addMtForwardShortMessageRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, da, oa, si, false, null);
                 curDialog.send();
 
                 String mtData = createMtData(curDialog.getLocalDialogId(), destImsi, vlrNumber, origIsdnNumber, serviceCentreAddr);
@@ -980,7 +980,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     this.testerHost.getAttackSimulationOrganizer().getDefaultSmscAddress().getAddress());
             SMDeliveryOutcome smDeliveryOutcome = SMDeliveryOutcome.successfulTransfer;
 
-            curDialog.addReportSMDeliveryStatusRequest(msisdn, serviceCentreAddress, smDeliveryOutcome, 0, null, false, true, null, 0);
+            curDialog.addReportSMDeliveryStatusRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, msisdn, serviceCentreAddress, smDeliveryOutcome, 0, null, false, true, null, 0);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending RegisterSS Req: " + ex.toString());
@@ -1039,7 +1039,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addAlertServiceCentreRequest(msisdn, scAddress);
+            curDialog.addAlertServiceCentreRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, msisdn, scAddress);
             curDialog.send();
         } catch (MAPException e) {
             System.out.println("Error when sending AlertServiceCentre: " + e.toString());
@@ -1064,9 +1064,9 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                         MAPDialogSms dlg = (MAPDialogSms) mapDialog;
 
                         if (dlg.getApplicationContext().getApplicationContextVersion().getVersion() <= 2)
-                            dlg.addForwardShortMessageRequest(md.da, md.oa, md.si, false);
+                            dlg.addForwardShortMessageRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, md.da, md.oa, md.si, false);
                         else
-                            dlg.addMoForwardShortMessageRequest(md.da, md.oa, md.si, null, null);
+                            dlg.addMoForwardShortMessageRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, md.da, md.oa, md.si, null, null);
                         mapDialog.send();
 
                         String mtData = createMtData(mapDialog.getLocalDialogId(), md.destImsi, md.vlrNumber, md.origIsdnNumber, md.serviceCentreAddr);
@@ -1186,7 +1186,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                             sMDeliveryOutcome = SMDeliveryOutcome.absentSubscriber;
                     }
 
-                    curDialog.addReportSMDeliveryStatusRequest(msisdn, serviceCentreAddress, sMDeliveryOutcome, null, null, false, false, null, null);
+                    curDialog.addReportSMDeliveryStatusRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, msisdn, serviceCentreAddress, sMDeliveryOutcome, null, null, false, false, null, null);
                     curDialog.send();
 
                     currentRequestDef += "Sent RsmdsReq;";
@@ -1287,7 +1287,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addCancelLocationRequest(imsi, null, null, null, null, false, false, null, null, null);
+            curDialog.addCancelLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, null, null, null, null, false, false, null, null, null);
             curDialog.send();
         } catch(MAPException e) {
             System.out.println("Error when sending CancelLocation Req: " + e.toString());
@@ -1387,7 +1387,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addForwardCheckSSIndicationRequest();
+            curDialog.addForwardCheckSSIndicationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending ForwardCheckSSIndication Req: " + ex.toString());
@@ -1437,7 +1437,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addRestoreDataRequest(imsi, null, null, null, false);
+            curDialog.addRestoreDataRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, null, null, null, false);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending RestoreData Req: " + ex.toString());
@@ -1546,7 +1546,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             if(curDialog == null)
                 System.out.println("ERROR: curDialog is null");
             else {
-                curDialog.addProvideSubscriberInfoRequest(imsi, lmsi, requestedInfo, mapExtensionContainer, emlppPriority);
+                curDialog.addProvideSubscriberInfoRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, lmsi, requestedInfo, mapExtensionContainer, emlppPriority);
                 curDialog.send();
             }
         } catch (MAPException ex) {
@@ -1591,7 +1591,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     null,
                     this.mapMan.createDestAddress(),
                     null);
-            curDialog.addInsertSubscriberDataRequest(null, null, null, null, null, null, null, null, false, null, null, null, null);
+            curDialog.addInsertSubscriberDataRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, null, null, null, null, null, null, null, null, false, null, null, null, null);
             curDialog.send();
         } catch (MAPException e) {
             System.out.println("Error when sending InsertSubscriberData Req: " + e.toString());
@@ -1640,7 +1640,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
             RequestedEquipmentInfo equipmentInfo = parameterFactory.createRequestedEquipmentInfo(true, false);
 
-            curDialog.addCheckImeiRequest(imei, equipmentInfo, null);
+            curDialog.addCheckImeiRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imei, equipmentInfo, null);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending CheckIMEI Req: " + ex.toString());
@@ -1689,7 +1689,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             TraceType traceType = parameterFactory.createTraceType(HlrRecordType.Basic,
                     TraceTypeInvokingEvent.InvokingEvent_0, false);
 
-            curDialog.addActivateTraceModeRequest(imsi, traceReference, traceType, null, null, null, null, null, null, null, null, null);
+            curDialog.addActivateTraceModeRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, traceReference, traceType, null, null, null, null, null, null, null, null, null);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending ActivateTraceMode Req: " + ex.toString());
@@ -1791,7 +1791,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addProvideRoamingNumberRequest(imsi, mscNumber, null, null, null, null, false, null, null, false,
+            curDialog.addProvideRoamingNumberRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, null, null, null, false, null, null, false,
                     null, null, false, null, null, false, false, false, false, null, false, null, null, false, null);
             curDialog.send();
         } catch (MAPException ex) {
@@ -1853,7 +1853,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addSendImsiRequest(msisdn);
+            curDialog.addSendImsiRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, msisdn);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending SendIMSI Req: " + ex.toString());
@@ -1916,7 +1916,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             BasicServiceCode basicServiceCode = parameterFactory.createBasicServiceCode(
                     parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices));
 
-            curDialog.addRegisterSSRequest(ssCode, basicServiceCode, msisdn, null, 0, null, null, null);
+            curDialog.addRegisterSSRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, ssCode, basicServiceCode, msisdn, null, 0, null, null, null);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending RegisterSS Req: " + ex.toString());
@@ -1974,7 +1974,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     parameterFactory.createBasicServiceCode(parameterFactory.createTeleserviceCode(TeleserviceCodeValue.allTeleservices)),
                     false);
 
-            curDialog.addEraseSSRequest(ssForBSCode);
+            curDialog.addEraseSSRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, ssForBSCode);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending EraseSS Req: " + ex.toString());
@@ -2093,7 +2093,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                             this.mapMan.createDestAddress(),
                             null);
 
-            curDialog.addUpdateLocationRequest(imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, null, false, false);
+            curDialog.addUpdateLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, null, false, false);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Exception when sending UpdateLocationRequest :" + ex.toString());
@@ -2117,7 +2117,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addPurgeMSRequest(imsi, vlrNumber, null, null);
+            curDialog.addPurgeMSRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, vlrNumber, null, null);
             curDialog.send();
         } catch (MAPException e) {
             System.out.println("Error performing PurgeMS: " + e.toString());
@@ -2206,7 +2206,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                     this.mapMan.createDestAddress(),
                     null);
 
-            curDialog.addReadyForSMRequest(imsi, AlertReason.msPresent, true, null, false);
+            curDialog.addReadyForSMRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, AlertReason.msPresent, true, null, false);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Error when sending ReadyForSM Req: " + ex.toString());
