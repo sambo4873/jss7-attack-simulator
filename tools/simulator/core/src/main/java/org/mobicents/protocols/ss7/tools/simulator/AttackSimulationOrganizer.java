@@ -1127,23 +1127,23 @@ public class AttackSimulationOrganizer implements Stoppable {
         AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
         this.waitForSRIForSMResponse(AttackSimulationOrganizer.smscAhlrA);
 
-        SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
-        AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
-        AttackSimulationOrganizer.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI(),
-                sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),
-                this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress(),
-                AttackSimulationOrganizer.defaultSmscAddress.getAddress());
+        //SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        //AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+        //AttackSimulationOrganizer.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI(),
+        //        sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),
+        //        this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress(),
+        //        AttackSimulationOrganizer.defaultSmscAddress.getAddress());
 
-        try {
-            Thread.sleep(2000);
-        } catch(InterruptedException e) {
-            System.exit(50);
-        }
+        //try {
+        //    Thread.sleep(2000);
+        //} catch(InterruptedException e) {
+        //    System.exit(50);
+        //}
 
         AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(subscriber.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
         this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
 
-        sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
         AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
 
         ISDNAddressString newMscAddress = mapParameterFactory.createISDNAddressString(
@@ -1155,7 +1155,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
 
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress);
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress, true);
 
         try {
             Thread.sleep(2000);
@@ -1506,7 +1506,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         if(subscriber.isOperatorAHome()) {
             //Move to B
             if(subscriberIsInA) {
-                AttackSimulationOrganizer.vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(subscriber.getImsi(), AttackSimulationOrganizer.defaultMscBAddress, AttackSimulationOrganizer.defaultVlrBAddress);
+                AttackSimulationOrganizer.vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(subscriber.getImsi(), AttackSimulationOrganizer.defaultMscBAddress, AttackSimulationOrganizer.defaultVlrBAddress, false);
             //Move to A
             } else {
                 AttackSimulationOrganizer.vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(subscriber.getImsi(), AttackSimulationOrganizer.defaultMscAddress, AttackSimulationOrganizer.defaultVlrAddress);

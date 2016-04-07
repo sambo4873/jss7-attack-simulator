@@ -89,14 +89,14 @@ public class SubscriberManager {
             Subscriber subscriber;
             if(operatorAHome) {
                 if(subscriberLocatedInA)
-                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrNumber, true);
+                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrNumber, true, false);
                 else
-                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscBNumber, this.defaultVlrBNumber, this.defaultHlrNumber, true);
+                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscBNumber, this.defaultVlrBNumber, this.defaultHlrNumber, true, false);
             } else {
                 if(subscriberLocatedInA)
-                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrBNumber, false);
+                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscNumber, this.defaultVlrNumber, this.defaultHlrBNumber, false, false);
                 else
-                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscBNumber, this.defaultVlrBNumber, this.defaultHlrBNumber, false);
+                    subscriber = new Subscriber(subscriberId, imsi, msisdn, this.createRandomSubscriberInfo(operatorAHome), this.defaultMscBNumber, this.defaultVlrBNumber, this.defaultHlrBNumber, false, false);
             }
 
             return subscriber;

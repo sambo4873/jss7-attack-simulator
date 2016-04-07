@@ -17,9 +17,11 @@ public class Subscriber {
     private ISDNAddressString currentVlrNumber;
     private ISDNAddressString currentHlrNumber;
     private boolean operatorAHome;
+    private boolean vip;
 
     public Subscriber(int subscriberId, IMSI imsi, ISDNAddressString msisdn, SubscriberInfo subscriberInfo,
-                      ISDNAddressString currentMscNumber, ISDNAddressString currentVlrNumber, ISDNAddressString currentHlrNumber, boolean operatorAHome) {
+                      ISDNAddressString currentMscNumber, ISDNAddressString currentVlrNumber,
+                      ISDNAddressString currentHlrNumber, boolean operatorAHome, boolean vip) {
         this.subscriberId = subscriberId;
         this.imsi = imsi;
         this.msisdn = msisdn;
@@ -28,6 +30,15 @@ public class Subscriber {
         this.currentVlrNumber = currentVlrNumber;
         this.currentHlrNumber = currentHlrNumber;
         this.operatorAHome = operatorAHome;
+        this.vip = vip;
+    }
+
+    public void setVIP(boolean vip) {
+        this.vip = vip;
+    }
+
+    public boolean isVIP() {
+        return this.vip;
     }
 
     public boolean isOperatorAHome() {

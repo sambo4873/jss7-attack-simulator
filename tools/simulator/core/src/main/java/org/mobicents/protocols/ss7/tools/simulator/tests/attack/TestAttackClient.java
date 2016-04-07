@@ -51,6 +51,7 @@ import org.mobicents.protocols.ss7.map.primitives.LMSIImpl;
 import org.mobicents.protocols.ss7.map.primitives.MAPExtensionContainerImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.MAPDialogMobilityImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberInformation.RequestedInfoImpl;
+import org.mobicents.protocols.ss7.map.service.mobility.subscriberManagement.SupportedCamelPhasesImpl;
 import org.mobicents.protocols.ss7.map.service.mobility.subscriberManagement.TeleserviceCodeImpl;
 import org.mobicents.protocols.ss7.map.service.oam.TraceReferenceImpl;
 import org.mobicents.protocols.ss7.map.service.oam.TraceTypeImpl;
@@ -1548,13 +1549,14 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             needSendClose = true;
     }
 
-    public void performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber) {
+    public void performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber, boolean attackerOriginated) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
 
         MAPApplicationContextVersion vers = MAPApplicationContextVersion.version3;
         MAPApplicationContextName acn = MAPApplicationContextName.networkLocUpContext;
 
         MAPApplicationContext mapApplicationContext = MAPApplicationContext.getInstance(acn, vers);
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
         try{
 
@@ -1565,7 +1567,25 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                             this.mapMan.createDestAddress(),
                             null);
 
-            curDialog.addUpdateLocationRequest(imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, null, false, false);
+            if(attackerOriginated) {
+                curDialog.addUpdateLocationRequest(imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, null, false, false);
+            } else {
+                VLRCapability vlrCapability = parameterFactory.createVlrCapability(
+                    parameterFactory.createSupportedCamelPhases(true, true, true, true),
+                        null,
+                        false,
+                        ISTSupportIndicator.basicISTSupported,
+                        parameterFactory.createSuperChargerInfo(true),
+                        true,
+                        parameterFactory.createSupportedLCSCapabilitySets(true, true, true, true, true),
+                        parameterFactory.createOfferedCamel4CSIs(true, true, true, true, true, true, true),
+                        parameterFactory.createSupportedRATTypes(true, true, true, true, true),
+                        true,
+                        true
+                );
+                curDialog.addUpdateLocationRequest(imsi, mscNumber, null, vlrNumber, null, null, vlrCapability, true, false, null, null, null, true, false);
+            }
+
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Exception when sending UpdateLocationRequest :" + ex.toString());
