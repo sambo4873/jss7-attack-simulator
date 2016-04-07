@@ -957,6 +957,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         AttackSimulationOrganizer.VIP = this.getSubscriberManager().getSubscriber(new IMSIImpl("24201111111111"));
 
+        boolean trafficGenerated = false;
 
         while (true) {
             try {
@@ -994,27 +995,28 @@ public class AttackSimulationOrganizer implements Stoppable {
                     if (currentRuns < warmUpRuns) {
                         this.generateTraffic(true, VipAction.NONE);
                     } else {
-                        boolean trafficGenerated = false;
+                        trafficGenerated = false;
 
-                        if(vipUpdateCounter == 1000) {
+                        if(vipUpdateCounter == 100) {
                             this.generateTraffic(false, VipAction.UPDATE_LOCATION);
                             vipUpdateCounter = 0;
                             trafficGenerated = true;
                         }
 
-                        if(vipInterceptCounter == 10000) {
+                        if(vipInterceptCounter == 1000) {
                             this.generateTraffic(false, VipAction.INTERCEPT);
                             vipInterceptCounter = 0;
                             trafficGenerated = true;
                         }
 
-                        if(vipTrackCounter == 2000) {
+                        if(vipTrackCounter == 200) {
                             this.generateTraffic(false, VipAction.TRACK);
                             vipTrackCounter = 0;
                             trafficGenerated = true;
                         }
 
-                        if(!trafficGenerated) this.generateTraffic(false, VipAction.NONE);
+                        if(!trafficGenerated)
+                            this.generateTraffic(true, VipAction.NONE);
                     }
                 }
             }
@@ -1025,43 +1027,31 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    private void generateTraffic(boolean warmUp, VipAction vipAction) {
-        boolean generateNoise = AttackSimulationOrganizer.random.nextInt(100) >= chanceOfAttack;
-        if(warmUp) generateNoise = true;
-
-        switch(vipAction) {
-            case NONE:
-                break;
-            case UPDATE_LOCATION:
-                countGenuineProcedures++;
-                this.performLocationUpdate(true);
-                break;
-            case TRACK:
-                countAttackProcedures++;
-                if(random.nextBoolean())
-                    this.attackLocationAti();
-                else
-                    this.attackLocationPsi();
-                break;
-            case INTERCEPT:
-                countAttackProcedures++;
-                this.attackInterceptSms();
-                break;
-        }
-
-        if(generateNoise) {
+    private void generateTraffic(boolean noise, VipAction vipAction) {
+        if(noise) {
             countGenuineProcedures++;
-            this.generateNoise();
+            this.sendRandomMessage();
         } else {
-            countAttackProcedures++;
-            this.generateAttack();
+            switch (vipAction) {
+                case NONE:
+                    break;
+                case UPDATE_LOCATION:
+                    countGenuineProcedures++;
+                    this.performLocationUpdate(true);
+                    break;
+                case TRACK:
+                    countAttackProcedures++;
+                    if (random.nextBoolean())
+                        this.attackLocationAti();
+                    else
+                        this.attackLocationPsi();
+                    break;
+                case INTERCEPT:
+                    countAttackProcedures++;
+                    this.attackInterceptSms();
+                    break;
+            }
         }
-
-
-    }
-
-    private void generateNoise() {
-       this.sendRandomMessage();
     }
 
     private void generateAttack() {
