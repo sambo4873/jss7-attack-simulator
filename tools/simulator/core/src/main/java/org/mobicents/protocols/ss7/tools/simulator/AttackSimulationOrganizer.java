@@ -149,25 +149,17 @@ public class AttackSimulationOrganizer implements Stoppable {
     public static final int VLR_B_SPC = VLR_B_OPC;
     public static final int ATTACKER_SPC = ATTACKER_OPC;
 
-    public static final String MSC_A_GT = "1111";
-    public static final String HLR_A_GT = "1112";
-    public static final String SMSC_A_GT = "1113";
-    public static final String VLR_A_GT = "1114";
-    public static final String SGSN_A_GT = "1115";
-    public static final String GSMSCF_A_GT = "1116";
-    public static final String MSC_B_GT = "2221";
-    public static final String HLR_B_GT = "2222";
-    public static final String SMSC_B_GT = "2223";
-    public static final String VLR_B_GT = "2224";
-    public static final String ATTACKER_GT = "2221";
+    public static final String OPERATOR_A_GT = "11111111";
+    public static final String OPERATOR_B_GT = "22222222";
+    public static final String OPERATOR_C_GT = "33333333";
 
-    public static final String MSC_A_MAP_REFERENCE = MSC_A_GT;
-    public static final String HLR_A_MAP_REFERENCE = HLR_A_GT;
-    public static final String VLR_A_MAP_REFERENCE = VLR_A_GT;
-    public static final String MSC_B_MAP_REFERENCE = MSC_B_GT;
-    public static final String HLR_B_MAP_REFERENCE = HLR_B_GT;
-    public static final String VLR_B_MAP_REFERENCE = VLR_B_GT;
-    public static final String ATTACKER_MAP_REFERENCE = MSC_B_GT;
+    public static final String MSC_A_MAP_REFERENCE = OPERATOR_A_GT;
+    public static final String HLR_A_MAP_REFERENCE = OPERATOR_A_GT;
+    public static final String VLR_A_MAP_REFERENCE = OPERATOR_A_GT;
+    public static final String MSC_B_MAP_REFERENCE = OPERATOR_B_GT;
+    public static final String HLR_B_MAP_REFERENCE = OPERATOR_B_GT;
+    public static final String VLR_B_MAP_REFERENCE = OPERATOR_B_GT;
+    public static final String ATTACKER_MAP_REFERENCE = OPERATOR_C_GT;
 
     public static final int MSC_A_MSC_B_PORT = 8011;
     public static final int MSC_B_MSC_A_PORT = 8012;
@@ -262,24 +254,24 @@ public class AttackSimulationOrganizer implements Stoppable {
         AttackSimulationOrganizer.defaultSgsnAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                AttackSimulationOrganizer.SGSN_A_GT);
+                AttackSimulationOrganizer.OPERATOR_A_GT);
 
         AttackSimulationOrganizer.defaultMscBAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                MSC_B_GT);
+                OPERATOR_B_GT);
         AttackSimulationOrganizer.defaultSmscBAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                SMSC_B_GT);
+                OPERATOR_B_GT);
         AttackSimulationOrganizer.defaultHlrBAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                HLR_B_GT);
+                OPERATOR_B_GT);
         AttackSimulationOrganizer.defaultVlrBAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                VLR_B_GT);
+                OPERATOR_B_GT);
 
         AttackSimulationOrganizer.subscriberManager = new SubscriberManager(defaultMscAddress, defaultMscBAddress,
                 defaultVlrAddress, defaultVlrBAddress,
@@ -1753,7 +1745,7 @@ public class AttackSimulationOrganizer implements Stoppable {
             .getMAPParameterFactory().createISDNAddressString(
                         AddressNature.international_number,
                         NumberingPlan.ISDN,
-                        AttackSimulationOrganizer.SGSN_A_GT);
+                        AttackSimulationOrganizer.OPERATOR_A_GT);
 
         AttackSimulationOrganizer.sgsnAhlrA.getTestAttackClient().performSendRoutingInfoForGPRS(subscriber.getImsi(), ggsnNumber);
     }
