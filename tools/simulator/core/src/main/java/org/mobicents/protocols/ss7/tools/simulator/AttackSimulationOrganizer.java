@@ -952,7 +952,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 vipUpdateCounter = 0,
                 vipTrackCounter = 0,
                 vipInterceptCounter = 0,
-                warmUpRuns = 10000,
+                warmUpRuns = 100,
                 currentRuns = 0;
 
         AttackSimulationOrganizer.VIP = this.getSubscriberManager().getSubscriber(new IMSIImpl("24201111111111"));
