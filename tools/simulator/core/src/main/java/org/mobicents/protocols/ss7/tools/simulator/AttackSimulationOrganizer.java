@@ -950,7 +950,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 vipUpdateCounter = 0,
                 vipTrackCounter = 0,
                 vipInterceptCounter = 0,
-                warmUpRuns = 10000,
+                warmUpRuns = 1000,
                 currentRuns = 0;
 
         AttackSimulationOrganizer.VIP = this.getSubscriberManager().getSubscriber(new IMSIImpl("24201111111111"));
@@ -959,7 +959,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         while (true) {
             try {
                 sleepTime = AttackSimulationOrganizer.random.nextInt((1000 - 100) + 1) + 100;
-                sleepTime = 100;
+                sleepTime = 500;
                 Thread.sleep(sleepTime);
 
                 if (this.testerHostsNeedQuit())
