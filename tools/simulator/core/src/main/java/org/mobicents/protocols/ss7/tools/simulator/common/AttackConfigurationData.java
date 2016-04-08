@@ -37,6 +37,14 @@ public class AttackConfigurationData extends ConfigurationData {
     public static final String HLR_A_NUMBER = "1112";
     public static final String SMSC_A_NUMBER = "1113";
     public static final String VLR_A_NUMBER = "1114";
+    public static final String SGSN_A_NUMBER = "1115";
+
+    public static final String MSC_B_NUMBER = "2221";
+    public static final String HLR_B_NUMBER = "2222";
+    public static final String SMSC_B_NUMBER = "2223";
+    public static final String VLR_B_NUMBER = "2224";
+
+    public static final String ATTACKER_NUMBER = "3331";
 
     public static final String INSTANCE_L1 = "instance_L1";
     public static final String INSTANCE_L2 = "instance_L2";

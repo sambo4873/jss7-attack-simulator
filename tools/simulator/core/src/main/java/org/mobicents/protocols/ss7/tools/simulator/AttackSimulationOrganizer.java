@@ -244,19 +244,19 @@ public class AttackSimulationOrganizer implements Stoppable {
         AttackSimulationOrganizer.defaultMscAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                AttackConfigurationData.MSC_A_NUMBER);
+                AttackSimulationOrganizer.OPERATOR_A_GT);
         AttackSimulationOrganizer.defaultSmscAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                AttackConfigurationData.SMSC_A_NUMBER);
+                AttackSimulationOrganizer.OPERATOR_A_GT);
         AttackSimulationOrganizer.defaultHlrAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                AttackConfigurationData.HLR_A_NUMBER);
+                AttackSimulationOrganizer.OPERATOR_A_GT);
         AttackSimulationOrganizer.defaultVlrAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                AttackConfigurationData.VLR_A_NUMBER);
+                AttackSimulationOrganizer.OPERATOR_A_GT);
         AttackSimulationOrganizer.defaultSgsnAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
@@ -265,19 +265,19 @@ public class AttackSimulationOrganizer implements Stoppable {
         AttackSimulationOrganizer.defaultMscBAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                OPERATOR_B_GT);
+                AttackSimulationOrganizer.OPERATOR_B_GT);
         AttackSimulationOrganizer.defaultSmscBAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                OPERATOR_B_GT);
+                AttackSimulationOrganizer.OPERATOR_B_GT);
         AttackSimulationOrganizer.defaultHlrBAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                OPERATOR_B_GT);
+                AttackSimulationOrganizer.OPERATOR_B_GT);
         AttackSimulationOrganizer.defaultVlrBAddress = mapParameterFactory.createISDNAddressString(
                 AddressNature.international_number,
                 NumberingPlan.ISDN,
-                OPERATOR_B_GT);
+                AttackSimulationOrganizer.OPERATOR_B_GT);
 
         AttackSimulationOrganizer.subscriberManager = new SubscriberManager(defaultMscAddress, defaultMscBAddress,
                 defaultVlrAddress, defaultVlrBAddress,
