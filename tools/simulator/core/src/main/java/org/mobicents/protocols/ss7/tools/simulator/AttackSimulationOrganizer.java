@@ -955,7 +955,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 warmUpRuns = 100,
                 currentRuns = 0;
 
-        AttackSimulationOrganizer.VIP = this.getSubscriberManager().getSubscriber(new IMSIImpl("24201111111111"));
+        AttackSimulationOrganizer.VIP = this.getSubscriberManager().getVipSubscriber();
 
         boolean trafficGenerated = false;
 
