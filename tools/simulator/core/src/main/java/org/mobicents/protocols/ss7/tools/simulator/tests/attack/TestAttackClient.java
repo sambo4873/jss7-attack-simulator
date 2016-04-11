@@ -1549,7 +1549,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             needSendClose = true;
     }
 
-    public void performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber, boolean attackerOriginated) {
+    public void performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber, boolean attackerOriginated, int newLac) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
 
         MAPApplicationContextVersion vers = MAPApplicationContextVersion.version3;
@@ -1559,7 +1559,6 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
         MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
         try{
-
             MAPDialogMobility curDialog = mapProvider.getMAPServiceMobility()
                     .createNewDialog(mapApplicationContext,
                             this.mapMan.createOrigAddress(),
@@ -1583,7 +1582,13 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                         true,
                         true
                 );
-                curDialog.addUpdateLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, vlrNumber, null, null, vlrCapability, true, false, null, null, null, true, false);
+
+                ArrayList<LocationArea> lac = new ArrayList<LocationArea>();
+                lac.add(parameterFactory.createLocationArea(parameterFactory.createLAC(newLac)));
+
+                PagingArea pagingArea = parameterFactory.createPagingArea(lac);
+
+                curDialog.addUpdateLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, vlrNumber, null, null, vlrCapability, true, false, null, null, pagingArea, true, false);
             }
 
             curDialog.send();
@@ -1653,7 +1658,35 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             subscriber.setCurrentVlrNumber(newVlrNumber);
 
             try {
-                curDialog.addUpdateLocationResponse(invokeId, hlrNumber, null, false, false);
+                int newLac, newCellID = 0;
+                newLac = ind.getPagingArea().getLocationAreas().get(0).getLAC().getLac();
+
+                switch(newLac) {
+                    case AttackSimulationOrganizer.LAC_A_1:
+                        newCellID = AttackSimulationOrganizer.CELLID_A_1;
+                        break;
+                    case AttackSimulationOrganizer.LAC_A_2:
+                        newCellID = AttackSimulationOrganizer.CELLID_A_2;
+                        break;
+                    case AttackSimulationOrganizer.LAC_A_3:
+                        newCellID = AttackSimulationOrganizer.CELLID_A_3;
+                        break;
+                    case AttackSimulationOrganizer.LAC_B_1:
+                        newCellID = AttackSimulationOrganizer.CELLID_B_1;
+                        break;
+                    case AttackSimulationOrganizer.LAC_B_2:
+                        newCellID = AttackSimulationOrganizer.CELLID_B_2;
+                        break;
+                    case AttackSimulationOrganizer.LAC_B_3:
+                        newCellID = AttackSimulationOrganizer.CELLID_B_3;
+                        break;
+                    case AttackSimulationOrganizer.LAC_C_1:
+                        newCellID = AttackSimulationOrganizer.CELLID_C_1;
+                        break;
+                }
+                subscriber.setSubscriberInfo(organizer.getSubscriberManager().createNewSubscriberLocation(subscriber, newLac, newCellID));
+
+                curDialog.addUpdateLocationResponse(invokeId, hlrNumber, null, false, true);
                 this.needSendClose = true;
             } catch(MAPException e) {
                 System.out.println("ERROR when sending UpdateLocationResponse: " + e.toString());

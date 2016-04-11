@@ -167,6 +167,22 @@ public class AttackSimulationOrganizer implements Stoppable {
     public static final String VLR_B_MAP_REFERENCE = OPERATOR_B_GT;
     public static final String ATTACKER_MAP_REFERENCE = OPERATOR_C_GT;
 
+    public static final int LAC_A_1 = 8138;
+    public static final int LAC_A_2 = 8161;
+    public static final int LAC_A_3 = 8189;
+    public static final int LAC_B_1 = 9321;
+    public static final int LAC_B_2 = 9343;
+    public static final int LAC_B_3 = 9385;
+    public static final int LAC_C_1 = 6593;
+
+    public static final int CELLID_A_1 = 12789342;
+    public static final int CELLID_A_2 = 94379845;
+    public static final int CELLID_A_3 = 84234504;
+    public static final int CELLID_B_1 = 74893458;
+    public static final int CELLID_B_2 = 23983244;
+    public static final int CELLID_B_3 = 32407984;
+    public static final int CELLID_C_1 = 23703728;
+
     public static final int MSC_A_MSC_B_PORT = 8011;
     public static final int MSC_B_MSC_A_PORT = 8012;
 
@@ -934,9 +950,16 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private enum VipAction{
         NONE,
-        UPDATE_LOCATION,
         TRACK,
         INTERCEPT
+    }
+
+    private enum VipNextAction {
+        FIRST_MOVE,
+        MOVE_TO_A,
+        MOVING_TO_A,
+        MOVE_TO_B,
+        MOVING_TO_B
     }
 
     public void start() {
@@ -948,20 +971,27 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         this.printAttackSimulationStart();
 
-        int sleepTime = 50,
-                vipUpdateCounter = 0,
+        int sleepTime = 0,
+                vipActionCounter = 0,
                 vipTrackCounter = 0,
                 vipInterceptCounter = 0,
-                warmUpRuns = 100,
-                currentRuns = 0;
+                currentRuns = 0,
+                warmUpRuns = 16800 * 1, // 16800 counts = one week
+                maxRuns = warmUpRuns * 4;
 
         AttackSimulationOrganizer.VIP = this.getSubscriberManager().getVipSubscriber();
 
-        boolean trafficGenerated = false;
+        boolean trafficGenerated, warmUpDone = false;
+        VipNextAction vipNextAction = VipNextAction.FIRST_MOVE;
+
+        IMSI vipImsi = VIP.getImsi();
 
         while (true) {
+            if(currentRuns >= maxRuns)
+                break;
+
             try {
-                sleepTime = AttackSimulationOrganizer.random.nextInt((1000 - 100) + 1) + 100;
+                //sleepTime = AttackSimulationOrganizer.random.nextInt((1000 - 100) + 1) + 100;
                 sleepTime = 1000;
                 Thread.sleep(sleepTime);
 
@@ -969,7 +999,6 @@ public class AttackSimulationOrganizer implements Stoppable {
                     break;
 
                 this.testerHostsExecuteCheckStore();
-
 
                 if (simpleSimulation) {
                     switch (AttackSimulationOrganizer.simpleAttackGoal) {
@@ -987,20 +1016,221 @@ public class AttackSimulationOrganizer implements Stoppable {
                     }
                     break;
                 } else {
-                    vipUpdateCounter++;
-                    vipTrackCounter++;
-                    vipInterceptCounter++;
-                    currentRuns++;
-
                     if (currentRuns < warmUpRuns) {
-                        this.generateTraffic(true, VipAction.NONE);
-                    } else {
                         trafficGenerated = false;
 
-                        if(vipUpdateCounter == 100) {
-                            this.generateTraffic(false, VipAction.UPDATE_LOCATION);
-                            vipUpdateCounter = 0;
-                            trafficGenerated = true;
+                        switch(vipNextAction) {
+                            case MOVE_TO_A:
+                                if(vipActionCounter == 800)
+                                    vipNextAction = VipNextAction.MOVING_TO_A;
+                                break;
+                            case MOVING_TO_A:
+                                switch(vipActionCounter) {
+                                    case 810:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_2);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 820:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_1);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 830:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_3);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 840:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_2);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 850:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_1);
+                                        trafficGenerated = true;
+                                        vipActionCounter = 0;
+                                        vipNextAction = VipNextAction.MOVE_TO_B;
+                                        break;
+                                }
+                                break;
+                            case MOVE_TO_B:
+                                if(vipActionCounter == 1500)
+                                    vipNextAction = VipNextAction.MOVING_TO_B;
+                                break;
+                            case MOVING_TO_B:
+                                switch(vipActionCounter) {
+                                    case 1510:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_2);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 1520:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_3);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 1530:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_1);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 1540:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_2);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 1550:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_3);
+                                        trafficGenerated = true;
+                                        vipActionCounter = 0;
+                                        vipNextAction = VipNextAction.MOVE_TO_A;
+                                        break;
+                                }
+                                break;
+                            case FIRST_MOVE:
+                                if(vipActionCounter == 850) {
+                                    vipActionCounter = 1499;
+                                    trafficGenerated = true;
+                                    vipNextAction = VipNextAction.MOVING_TO_B;
+                                }
+                                break;
+                        }
+
+                        if(!trafficGenerated)
+                            this.generateTraffic(true, VipAction.NONE);
+
+                    } else {
+                        if(!warmUpDone) {
+                            warmUpDone = true;
+                            vipActionCounter = 0;
+                            vipNextAction = VipNextAction.MOVE_TO_A;
+                        }
+                        trafficGenerated = false;
+
+                        switch(vipNextAction) {
+                            case MOVE_TO_A:
+                                if(vipActionCounter == 800)
+                                    vipNextAction = VipNextAction.MOVING_TO_A;
+                                break;
+                            case MOVING_TO_A:
+                                switch(vipActionCounter) {
+                                    case 810:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_2);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 820:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_1);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 830:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_3);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 840:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_2);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 850:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_1);
+                                        trafficGenerated = true;
+                                        vipActionCounter = 0;
+                                        vipNextAction = VipNextAction.MOVE_TO_B;
+                                        break;
+                                }
+                                break;
+                            case MOVE_TO_B:
+                                if(vipActionCounter == 1500)
+                                    vipNextAction = VipNextAction.MOVING_TO_B;
+                                break;
+                            case MOVING_TO_B:
+                                switch(vipActionCounter) {
+                                    case 1510:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_2);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 1520:
+                                        vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                LAC_A_3);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 1530:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_1);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 1540:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_2);
+                                        trafficGenerated = true;
+                                        break;
+                                    case 1550:
+                                        vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
+                                                AttackSimulationOrganizer.defaultMscAddress,
+                                                AttackSimulationOrganizer.defaultVlrAddress,
+                                                false,
+                                                LAC_B_3);
+                                        trafficGenerated = true;
+                                        vipActionCounter = 0;
+                                        vipNextAction = VipNextAction.MOVE_TO_A;
+                                        break;
+                                }
+                                break;
                         }
 
                         if(vipInterceptCounter == 1000) {
@@ -1009,7 +1239,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                             trafficGenerated = true;
                         }
 
-                        if(vipTrackCounter == 200) {
+                        if(vipTrackCounter == 100) {
                             this.generateTraffic(false, VipAction.TRACK);
                             vipTrackCounter = 0;
                             trafficGenerated = true;
@@ -1018,6 +1248,11 @@ public class AttackSimulationOrganizer implements Stoppable {
                         if(!trafficGenerated)
                             this.generateTraffic(true, VipAction.NONE);
                     }
+
+                    vipActionCounter++;
+                    vipTrackCounter++;
+                    vipInterceptCounter++;
+                    currentRuns++;
                 }
             }
             catch (InterruptedException e) {
@@ -1034,10 +1269,6 @@ public class AttackSimulationOrganizer implements Stoppable {
         } else {
             switch (vipAction) {
                 case NONE:
-                    break;
-                case UPDATE_LOCATION:
-                    countGenuineProcedures++;
-                    this.performLocationUpdate(true);
                     break;
                 case TRACK:
                     countAttackProcedures++;
@@ -1140,7 +1371,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 break;
             case 12:
                 printSentMessage("LocationUpdate", true);
-                this.performLocationUpdate(false);
+                this.performLocationUpdate();
                 break;
 
             default:
@@ -1153,18 +1384,18 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void attackLocationPsi() {
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(),
-                AttackSimulationOrganizer.hlrAattackerB.getTestAttackServer().getServiceCenterAddress());
-        this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
+        //AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(),
+        //        AttackSimulationOrganizer.hlrAattackerB.getTestAttackServer().getServiceCenterAddress());
+        //this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
 
-        SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+        //SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        //AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
 
-        IMSI victimImsi = sriResponse.getIMSI();
-        String victimVlrAddress = sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress();
+        //IMSI victimImsi = sriResponse.getIMSI();
+        //String victimVlrAddress = sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress();
 
-        AttackSimulationOrganizer.attackerBvlrA.getConfigurationData().getMapConfigurationData().setRemoteAddressDigits(victimVlrAddress);
-        AttackSimulationOrganizer.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(victimImsi);
+        //AttackSimulationOrganizer.attackerBvlrA.getConfigurationData().getMapConfigurationData().setRemoteAddressDigits(victimVlrAddress);
+        AttackSimulationOrganizer.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(VIP.getImsi());
 
         this.waitForPSIResponse(AttackSimulationOrganizer.attackerBvlrA, true);
 
@@ -1175,11 +1406,11 @@ public class AttackSimulationOrganizer implements Stoppable {
     private void attackInterceptSms() {
         MAPParameterFactory mapParameterFactory = AttackSimulationOrganizer.attackerBhlrA.getMapMan().getMAPStack().getMAPProvider().getMAPParameterFactory();
 
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
-        this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
+        //AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
+        //this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
 
-        SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+        //SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        //AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
 
         ISDNAddressString newMscAddress = mapParameterFactory.createISDNAddressString(
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getAddressNature(),
@@ -1190,7 +1421,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
 
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress, true);
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(VIP.getImsi(), newMscAddress, newVlrAddress, true, LAC_C_1);
     }
 
     private void attackInterceptSmsDemo() {
@@ -1227,7 +1458,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
 
-        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress, true);
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress, true, LAC_C_1);
 
         try {
             Thread.sleep(2000);
@@ -1564,7 +1795,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         }
     }
 
-    private void performLocationUpdate(boolean vip) {
+    private void performLocationUpdate() {
         /**
          * Process per 3GPP TS 29.002 section 19.1.1:
          * MSC/VLR                       PVLR                           HLR
@@ -1578,30 +1809,58 @@ public class AttackSimulationOrganizer implements Stoppable {
          *    |<-------------------UpdateLocationResp--------------------|
          */
 
-        Subscriber subscriber;
-        if(vip) {
-            subscriber = this.getSubscriberManager().getVipSubscriber();
-        } else {
-            subscriber = this.getSubscriberManager().getRandomSubscriber();
+        Subscriber subscriber = this.getSubscriberManager().getRandomSubscriber();
             while(subscriber.getSubscriberId() == 0) //Do not alter location of VIP unless specified.
                 subscriber = this.getSubscriberManager().getRandomSubscriber();
-        }
 
-        boolean move = AttackSimulationOrganizer.random.nextBoolean();
         boolean subscriberIsInA = subscriber.getCurrentMscNumber().equals(AttackSimulationOrganizer.defaultMscAddress);
+        int newLAC = 0;
 
         if(subscriber.isOperatorAHome()) {
             //Move to B
             if(subscriberIsInA) {
-                AttackSimulationOrganizer.vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(subscriber.getImsi(), AttackSimulationOrganizer.defaultMscBAddress, AttackSimulationOrganizer.defaultVlrBAddress, false);
+                switch(random.nextInt(3)) {
+                    case 0:
+                        newLAC = LAC_B_1;
+                        break;
+                    case 1:
+                        newLAC = LAC_B_2;
+                        break;
+                    case 2:
+                        newLAC = LAC_B_3;
+                        break;
+                }
+                AttackSimulationOrganizer.vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(subscriber.getImsi(), AttackSimulationOrganizer.defaultMscBAddress, AttackSimulationOrganizer.defaultVlrBAddress, false, newLAC);
             //Move to A
             } else {
-                AttackSimulationOrganizer.vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(subscriber.getImsi(), AttackSimulationOrganizer.defaultMscAddress, AttackSimulationOrganizer.defaultVlrAddress);
+                switch(random.nextInt(3)) {
+                    case 0:
+                        newLAC = LAC_A_1;
+                        break;
+                    case 1:
+                        newLAC = LAC_A_2;
+                        break;
+                    case 2:
+                        newLAC = LAC_A_3;
+                        break;
+                }
+                AttackSimulationOrganizer.vlrAhlrA.getTestAttackServer().performUpdateLocationRequest(subscriber.getImsi(), AttackSimulationOrganizer.defaultMscAddress, AttackSimulationOrganizer.defaultVlrAddress, newLAC);
             }
         } else {
             //Move to A
             if(!subscriberIsInA) {
-                AttackSimulationOrganizer.vlrAhlrB.getTestAttackServer().performUpdateLocationRequest(subscriber.getImsi(), AttackSimulationOrganizer.defaultMscAddress, AttackSimulationOrganizer.defaultVlrAddress);
+                switch(random.nextInt(3)) {
+                    case 0:
+                        newLAC = LAC_A_1;
+                        break;
+                    case 1:
+                        newLAC = LAC_A_2;
+                        break;
+                    case 2:
+                        newLAC = LAC_A_3;
+                        break;
+                }
+                AttackSimulationOrganizer.vlrAhlrB.getTestAttackServer().performUpdateLocationRequest(subscriber.getImsi(), AttackSimulationOrganizer.defaultMscAddress, AttackSimulationOrganizer.defaultVlrAddress, newLAC);
             }
         }
     }

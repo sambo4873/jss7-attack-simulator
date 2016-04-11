@@ -50,6 +50,7 @@ import org.mobicents.protocols.ss7.tools.simulator.tests.sms.SmsCodingType;
 import org.mobicents.protocols.ss7.tools.simulator.tests.sms.TypeOfNumberType;
 
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -1244,8 +1245,37 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             subscriber.setCurrentMscNumber(newMscNumber);
             subscriber.setCurrentVlrNumber(newVlrNumber);
 
+
             try {
-                curDialog.addUpdateLocationResponse(invokeId, hlrNumber, null, false, false);
+                int newLac, newCellID = 0;
+                newLac = ind.getPagingArea().getLocationAreas().get(0).getLAC().getLac();
+
+                switch(newLac) {
+                    case AttackSimulationOrganizer.LAC_A_1:
+                        newCellID = AttackSimulationOrganizer.CELLID_A_1;
+                        break;
+                    case AttackSimulationOrganizer.LAC_A_2:
+                        newCellID = AttackSimulationOrganizer.CELLID_A_2;
+                        break;
+                    case AttackSimulationOrganizer.LAC_A_3:
+                        newCellID = AttackSimulationOrganizer.CELLID_A_3;
+                        break;
+                    case AttackSimulationOrganizer.LAC_B_1:
+                        newCellID = AttackSimulationOrganizer.CELLID_B_1;
+                        break;
+                    case AttackSimulationOrganizer.LAC_B_2:
+                        newCellID = AttackSimulationOrganizer.CELLID_B_2;
+                        break;
+                    case AttackSimulationOrganizer.LAC_B_3:
+                        newCellID = AttackSimulationOrganizer.CELLID_B_3;
+                        break;
+                    case AttackSimulationOrganizer.LAC_C_1:
+                        newCellID = AttackSimulationOrganizer.CELLID_C_1;
+                        break;
+                }
+                subscriber.setSubscriberInfo(organizer.getSubscriberManager().createNewSubscriberLocation(subscriber, newLac, newCellID));
+
+                curDialog.addUpdateLocationResponse(invokeId, hlrNumber, null, false, true);
                 this.needSendClose = true;
             } catch(MAPException e) {
                 System.out.println("ERROR when sending UpdateLocationResponse: " + e.toString());
@@ -1463,7 +1493,6 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
         if(subscriber != null) {
             try {
-                subscriber.getCurrentVlrNumber();
                 if(subscriber.getCurrentVlrNumber().equals(this.testerHost.getAttackSimulationOrganizer().getDefaultVlrAddress())) {
                     this.testerHost.getAttackSimulationOrganizer().getHlrAvlrA().getTestAttackClient().performProvideSubscriberInfoRequest(subscriber.getImsi());
                     this.testerHost.getAttackSimulationOrganizer().waitForPSIResponse(this.testerHost.getAttackSimulationOrganizer().getHlrAvlrA(), true);
@@ -2077,8 +2106,9 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     }
 
-    public void performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber) {
+    public void performUpdateLocationRequest(IMSI imsi, ISDNAddressString mscNumber, ISDNAddressString vlrNumber, int newLac) {
         MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
+        MAPParameterFactory parameterFactory = mapProvider.getMAPParameterFactory();
 
         MAPApplicationContextVersion vers = MAPApplicationContextVersion.version3;
         MAPApplicationContextName acn = MAPApplicationContextName.networkLocUpContext;
@@ -2093,7 +2123,12 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
                             this.mapMan.createDestAddress(),
                             null);
 
-            curDialog.addUpdateLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, null, false, false);
+            ArrayList<LocationArea> lac = new ArrayList<LocationArea>();
+            lac.add(parameterFactory.createLocationArea(parameterFactory.createLAC(newLac)));
+
+            PagingArea pagingArea = parameterFactory.createPagingArea(lac);
+
+            curDialog.addUpdateLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, pagingArea, false, false);
             curDialog.send();
         } catch (MAPException ex) {
             System.out.println("Exception when sending UpdateLocationRequest :" + ex.toString());

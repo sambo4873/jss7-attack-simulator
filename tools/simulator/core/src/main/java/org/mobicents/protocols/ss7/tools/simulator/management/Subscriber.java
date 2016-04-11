@@ -3,6 +3,7 @@ package org.mobicents.protocols.ss7.tools.simulator.management;
 import org.mobicents.protocols.ss7.map.api.primitives.IMSI;
 import org.mobicents.protocols.ss7.map.api.primitives.ISDNAddressString;
 import org.mobicents.protocols.ss7.map.api.service.mobility.subscriberInformation.SubscriberInfo;
+import org.mobicents.protocols.ss7.tools.simulator.AttackSimulationOrganizer;
 
 /**
  * @author Kristoffer Jensen
