@@ -29,7 +29,6 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private static SimpleAttackGoal simpleAttackGoal;
 
-    private static int chanceOfAttack;
     private static int numberOfSubscribers;
 
     private static Subscriber VIP;
@@ -249,11 +248,10 @@ public class AttackSimulationOrganizer implements Stoppable {
     public static final int ATTACKER_VLR_A_PORT = 8053;
     public static final int VLR_A_ATTACKER_PORT = 8054;
 
-    public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers, int chanceOfAttack) {
+    public AttackSimulationOrganizer(String simulatorHome, boolean simpleSimulation, String simpleAttackGoal, int numberOfSubscribers) {
         random = new Random(System.currentTimeMillis());
         AttackSimulationOrganizer.simpleSimulation = simpleSimulation;
         AttackSimulationOrganizer.numberOfSubscribers = numberOfSubscribers;
-        AttackSimulationOrganizer.chanceOfAttack = chanceOfAttack;
 
         MAPParameterFactory mapParameterFactory = new MAPParameterFactoryImpl();
 
@@ -619,7 +617,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void startAttackSimulationHosts() {
         if (AttackSimulationOrganizer.simpleSimulation) {
-            switch(this.simpleAttackGoal) {
+            switch(simpleAttackGoal) {
                 case LOCATION_ATI:
                     AttackSimulationOrganizer.attackerBhlrA.start();
                     AttackSimulationOrganizer.hlrAattackerB.start();
@@ -932,7 +930,6 @@ public class AttackSimulationOrganizer implements Stoppable {
         if(AttackSimulationOrganizer.simpleSimulation) {
             System.out.println("    -m: " + AttackSimulationOrganizer.simpleAttackGoal.name());
         } else {
-            System.out.println("    -c: " + AttackSimulationOrganizer.chanceOfAttack + "%");
             System.out.println("    -s: " + AttackSimulationOrganizer.numberOfSubscribers);
         }
         System.out.println("-----------------------------------------------");
@@ -1006,7 +1003,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                             this.attackLocationAti();
                             break;
                         case LOCATION_PSI:
-                            this.attackLocationPsi();
+                            this.attackLocationPsiDemo();
                             break;
                         case INTERCEPT_SMS:
                             this.attackInterceptSmsDemo();
@@ -1381,6 +1378,26 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void attackLocationAti() {
         AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performATI(VIP.getMsisdn().getAddress());
+    }
+
+    private void attackLocationPsiDemo() {
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(),
+                AttackSimulationOrganizer.hlrAattackerB.getTestAttackServer().getServiceCenterAddress());
+        this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
+
+        SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+
+        IMSI victimImsi = sriResponse.getIMSI();
+        String victimVlrAddress = sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress();
+
+        AttackSimulationOrganizer.attackerBvlrA.getConfigurationData().getMapConfigurationData().setRemoteAddressDigits(victimVlrAddress);
+        AttackSimulationOrganizer.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(VIP.getImsi());
+
+        this.waitForPSIResponse(AttackSimulationOrganizer.attackerBvlrA, true);
+
+        ProvideSubscriberInfoResponse psiResponse = AttackSimulationOrganizer.attackerBvlrA.getTestAttackClient().getLastPsiResponse();
+        AttackSimulationOrganizer.attackerBvlrA.getTestAttackClient().clearLastPsiResponse();
     }
 
     private void attackLocationPsi() {

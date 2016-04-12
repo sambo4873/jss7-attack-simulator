@@ -19,8 +19,7 @@ Current nightly builds can be downloaded from the project's [Jenkins CI Server](
 How to run the simulator:
 
 * Make sure you have SCTP support installed on Linux.
-* Download latest build artifact from the [Jenkins CI
-Server](https://jensen.ninja/jenkins/job/jss7-attack-simulator/).
+* Download latest build artifact from the projects [Jenkins CI Server](https://jensen.ninja/jenkins/job/jss7-attack-simulator/).
 * Unzip the file.
 * The simulator is launched with the script:
 
