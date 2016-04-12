@@ -6,6 +6,12 @@ Open Source Java SS7 attack simulator that makes it possible to simulate some pu
 
 This project is part of an ongoing Master Thesis at NTNU Gjøvik, Norway.
 
+The simulator supports two modes:
+
+* Simple mode: Used to demonstrate some SS7 attacks.
+* Complex mode: Includes a full network simulation containing 3 operators where one of the subscribers in is the victim of attacks by an adversary with access to the SS7 network.
+  In this mode several nodes communicate using 13 standard procedures per the MAP standard. After a mercy period there will be launched attacks against the VIP subscriber with the goal of obtaining the subscribers location and intercept SMS originally sent to the subscriber.
+
 ## License
 
 SS7 Attack Simulator is licensed under the Free Open Source [GNU Affero GPL v3.0](http://www.gnu.org/licenses/agpl-3.0.html).
