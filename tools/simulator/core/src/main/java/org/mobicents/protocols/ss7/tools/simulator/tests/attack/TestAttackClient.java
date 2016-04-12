@@ -1566,6 +1566,10 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                             this.mapMan.createDestAddress(),
                             null);
 
+            ArrayList<LocationArea> lac = new ArrayList<LocationArea>();
+            lac.add(parameterFactory.createLocationArea(parameterFactory.createLAC(newLac)));
+            PagingArea pagingArea = parameterFactory.createPagingArea(lac);
+
             if(attackerOriginated) {
                 curDialog.addUpdateLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, null, false, false);
             } else {
@@ -1582,11 +1586,6 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
                         true,
                         true
                 );
-
-                ArrayList<LocationArea> lac = new ArrayList<LocationArea>();
-                lac.add(parameterFactory.createLocationArea(parameterFactory.createLAC(newLac)));
-
-                PagingArea pagingArea = parameterFactory.createPagingArea(lac);
 
                 curDialog.addUpdateLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, vlrNumber, null, null, vlrCapability, true, false, null, null, pagingArea, true, false);
             }

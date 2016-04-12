@@ -1469,16 +1469,16 @@ public class AttackSimulationOrganizer implements Stoppable {
         ISDNAddressString newMscAddress = mapParameterFactory.createISDNAddressString(
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getAddressNature(),
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
-                AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+                AttackSimulationOrganizer.OPERATOR_C_GT);
         ISDNAddressString newVlrAddress = mapParameterFactory.createISDNAddressString(
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getAddressNature(),
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getNumberingPlan(),
-                AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getSccpConfigurationData().getCallingPartyAddressDigits());
+                AttackSimulationOrganizer.OPERATOR_C_GT);
 
         AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress, true, LAC_C_1);
 
         try {
-            Thread.sleep(2000);
+            Thread.sleep(5000);
         } catch(InterruptedException e) {
             System.exit(50);
         }
@@ -1488,7 +1488,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
         sriResponse = AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().getLastSRIForSMResponse();
         AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().clearLastSRIForSMResponse();
-        AttackSimulationOrganizer.smscAmscA.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI(),
+        AttackSimulationOrganizer.smscAattackerB.getTestAttackServer().performMtForwardSM("SMS Message", sriResponse.getIMSI(),
                 sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress(),
                 this.getSubscriberManager().getRandomSubscriber().getMsisdn().getAddress(),
                 AttackSimulationOrganizer.defaultSmscAddress.getAddress());
