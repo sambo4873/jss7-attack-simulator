@@ -12,6 +12,8 @@ The simulator supports two modes:
 * Complex mode: Includes a full network simulation containing 3 operators, where one of the subscribers is the victim of attacks by an adversary with access to the SS7 network.
   In this mode several nodes communicate using 13 standard procedures per the 3GPP MAP standard. After a mercy period, there will be launched attacks against the subscriber with the goal of obtaining the subscribers location and intercept SMS originally sent to this subscriber.
 
+Traffic is generated using the SCTP protocol and all data is sent on the lo interface.
+
 ## License
 
 SS7 Attack Simulator is licensed under the Free Open Source [GNU Affero GPL v3.0](http://www.gnu.org/licenses/agpl-3.0.html).
@@ -25,6 +27,8 @@ Builds can be downloaded from the project's [Jenkins CI Server](https://jensen.n
 How to run the simulator:
 
 * Make sure you have SCTP support installed on Linux.
+  On Fedora: lksctp-tools and kernel-modules-extra
+  Ubuntu: libsctp1 and lksctp-tools.
 * Download latest build artifact from the projects [Jenkins CI Server](https://jensen.ninja/jenkins/job/jss7-attack-simulator/).
 * Unzip the file.
 * The simulator is launched with the script:
