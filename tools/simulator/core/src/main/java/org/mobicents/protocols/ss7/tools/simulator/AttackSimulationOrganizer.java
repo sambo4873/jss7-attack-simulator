@@ -323,6 +323,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AttackSimulationOrganizer.hlrAsmscA = new AttackTesterHost("HLR_A_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_SMSC_A, this);
                 AttackSimulationOrganizer.mscAsmscA = new AttackTesterHost("MSC_A_SMSC_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_SMSC_A, this);
                 AttackSimulationOrganizer.smscAmscA = new AttackTesterHost("SMSC_A_MSC_A", simulatorHome, AttackTesterHost.AttackNode.SMSC_A_MSC_A, this);
+                AttackSimulationOrganizer.hlrAvlrA = new AttackTesterHost("HLR_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_VLR_A, this);
+                AttackSimulationOrganizer.vlrAhlrA = new AttackTesterHost("VLR_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_HLR_A, this);
             } else if(simpleAttackGoal.equals("test:ports")) {
                 AttackSimulationOrganizer.simpleAttackGoal = SimpleAttackGoal.TEST_PORTS;
                 AttackSimulationOrganizer.mscAhlrA = new AttackTesterHost("MSC_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.MSC_A_HLR_A, this);
@@ -640,6 +642,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                     AttackSimulationOrganizer.hlrAsmscA.start();
                     AttackSimulationOrganizer.mscAsmscA.start();
                     AttackSimulationOrganizer.smscAmscA.start();
+                    AttackSimulationOrganizer.hlrAvlrA.start();
+                    AttackSimulationOrganizer.vlrAhlrA.start();
                     break;
                 case TEST_PORTS:
                     AttackSimulationOrganizer.mscAhlrA.start();
@@ -764,7 +768,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                         case INTERCEPT_SMS:
                             if(AttackSimulationOrganizer.attackerBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
                                     AttackSimulationOrganizer.smscAhlrA.getM3uaMan().getState().contains("ACTIVE") &&
-                                    AttackSimulationOrganizer.mscAsmscA.getM3uaMan().getState().contains("ACTIVE"))
+                                    AttackSimulationOrganizer.mscAsmscA.getM3uaMan().getState().contains("ACTIVE") &&
+                                    AttackSimulationOrganizer.hlrAvlrA.getM3uaMan().getState().contains("ACTIVE"))
                                 return true;
                             break;
                         case TEST_PORTS:
@@ -796,7 +801,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                 case INTERCEPT_SMS:
                     return AttackSimulationOrganizer.attackerBhlrA.isNeedQuit() || AttackSimulationOrganizer.hlrAattackerB.isNeedQuit() ||
                             AttackSimulationOrganizer.smscAhlrA.isNeedQuit() || AttackSimulationOrganizer.hlrAsmscA.isNeedQuit() ||
-                            AttackSimulationOrganizer.mscAsmscA.isNeedQuit() || AttackSimulationOrganizer.smscAmscA.isNeedQuit();
+                            AttackSimulationOrganizer.mscAsmscA.isNeedQuit() || AttackSimulationOrganizer.smscAmscA.isNeedQuit() ||
+                            AttackSimulationOrganizer.hlrAvlrA.isNeedQuit() || AttackSimulationOrganizer.vlrAhlrA.isNeedQuit();
                 case TEST_PORTS:
                     return AttackSimulationOrganizer.mscAhlrA.isNeedQuit() || AttackSimulationOrganizer.hlrAmscA.isNeedQuit() ||
                             AttackSimulationOrganizer.smscAhlrA.isNeedQuit() || AttackSimulationOrganizer.hlrAsmscA.isNeedQuit();
@@ -851,6 +857,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                     AttackSimulationOrganizer.hlrAsmscA.execute();
                     AttackSimulationOrganizer.mscAsmscA.execute();
                     AttackSimulationOrganizer.smscAmscA.execute();
+                    AttackSimulationOrganizer.hlrAvlrA.execute();
+                    AttackSimulationOrganizer.vlrAhlrA.execute();
                     break;
                 case TEST_PORTS:
                     AttackSimulationOrganizer.mscAhlrA.execute();
@@ -1410,17 +1418,6 @@ public class AttackSimulationOrganizer implements Stoppable {
     }
 
     private void attackLocationPsi() {
-        //AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(),
-        //        AttackSimulationOrganizer.hlrAattackerB.getTestAttackServer().getServiceCenterAddress());
-        //this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
-
-        //SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
-        //AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
-
-        //IMSI victimImsi = sriResponse.getIMSI();
-        //String victimVlrAddress = sriResponse.getLocationInfoWithLMSI().getNetworkNodeNumber().getAddress();
-
-        //AttackSimulationOrganizer.attackerBvlrA.getConfigurationData().getMapConfigurationData().setRemoteAddressDigits(victimVlrAddress);
         AttackSimulationOrganizer.attackerBvlrA.getTestAttackClient().performProvideSubscriberInfoRequest(VIP.getImsi());
 
         this.waitForPSIResponse(AttackSimulationOrganizer.attackerBvlrA, true);
@@ -1431,12 +1428,6 @@ public class AttackSimulationOrganizer implements Stoppable {
 
     private void attackInterceptSms() {
         MAPParameterFactory mapParameterFactory = AttackSimulationOrganizer.attackerBhlrA.getMapMan().getMAPStack().getMAPProvider().getMAPParameterFactory();
-
-        //AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
-        //this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
-
-        //SendRoutingInfoForSMResponse sriResponse = AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().getLastSRIForSMResponse();
-        //AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
 
         ISDNAddressString newMscAddress = mapParameterFactory.createISDNAddressString(
                 AttackSimulationOrganizer.attackerBhlrA.getConfigurationData().getTestAttackClientConfigurationData().getAddressNature(),

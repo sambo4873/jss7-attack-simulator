@@ -1224,7 +1224,19 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
             MAPProvider mapProvider = this.mapMan.getMAPStack().getMAPProvider();
             MAPParameterFactory mapParameterFactory = this.mapMan.getMAPStack().getMAPProvider().getMAPParameterFactory();
 
-            if(this.testerHost.hashCode() == organizer.getHlrAvlrB().hashCode()) { //New VLR is VLR_B
+            if(this.testerHost.hashCode() == organizer.getHlrAattackerB().hashCode()) { //New VLR is attacker.
+                organizer.getHlrAvlrA().getTestAttackClient().performCancelLocation(subscriber.getImsi());
+                organizer.waitForCancelLocationResponse(organizer.getHlrAvlrA(), true);
+                organizer.getHlrAvlrA().getTestAttackClient().clearLastCancelLocationResponse();
+
+                organizer.getHlrAattackerB().getTestAttackServer().performActivateTraceMode(subscriber.getImsi());
+                organizer.waitForActivateTraceModeResponse(organizer.getHlrAattackerB(), false);
+                organizer.getHlrAattackerB().getTestAttackServer().clearLastActivateTraceModeResponse();
+
+                organizer.getHlrAattackerB().getTestAttackServer().performInsertSubscriberData();
+                organizer.waitForInsertSubscriberDataResponse(organizer.getHlrAattackerB(), false);
+                organizer.getHlrAattackerB().getTestAttackServer().clearLastInsertSubscriberDataResponse();
+            } else if(this.testerHost.hashCode() == organizer.getHlrAvlrB().hashCode()) { //New VLR is VLR_B
                 organizer.getHlrAvlrA().getTestAttackClient().performCancelLocation(subscriber.getImsi());
                 organizer.waitForCancelLocationResponse(organizer.getHlrAvlrA(), true);
                 organizer.getHlrAvlrA().getTestAttackClient().clearLastCancelLocationResponse();
