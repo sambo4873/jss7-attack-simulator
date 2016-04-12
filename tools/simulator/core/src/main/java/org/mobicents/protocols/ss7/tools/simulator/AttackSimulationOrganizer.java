@@ -1026,7 +1026,7 @@ public class AttackSimulationOrganizer implements Stoppable {
 
             try {
                 //sleepTime = AttackSimulationOrganizer.random.nextInt((1000 - 100) + 1) + 100;
-                sleepTime = 1000;
+                sleepTime = 800;
                 Thread.sleep(sleepTime);
 
                 if (this.testerHostsNeedQuit())
