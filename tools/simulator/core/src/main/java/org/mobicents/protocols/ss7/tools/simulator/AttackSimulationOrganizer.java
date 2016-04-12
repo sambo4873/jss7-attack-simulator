@@ -976,8 +976,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                 vipTrackCounter = 0,
                 vipInterceptCounter = 0,
                 currentRuns = 0,
-                warmUpRuns = 16800 * 1, // 16800 counts = one week
-                maxRuns = warmUpRuns * 4;
+                warmUpRuns = 16800 * 3, // 16800 counts = one week
+                maxRuns = 16800 * 4;
 
         AttackSimulationOrganizer.VIP = this.getSubscriberManager().getVipSubscriber();
 
