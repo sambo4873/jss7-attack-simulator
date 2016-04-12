@@ -307,6 +307,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AttackSimulationOrganizer.simpleAttackGoal = SimpleAttackGoal.LOCATION_ATI;
                 AttackSimulationOrganizer.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_HLR_A, this);
                 AttackSimulationOrganizer.hlrAattackerB = new AttackTesterHost("HLR_A_ATTACKER_B", simulatorHome, AttackTesterHost.AttackNode.HLR_A_ATTACKER_B, this);
+                AttackSimulationOrganizer.hlrAvlrA = new AttackTesterHost("HLR_A_VLR_A", simulatorHome, AttackTesterHost.AttackNode.HLR_A_VLR_A, this);
+                AttackSimulationOrganizer.vlrAhlrA = new AttackTesterHost("VLR_A_HLR_A", simulatorHome, AttackTesterHost.AttackNode.VLR_A_HLR_A, this);
             } else if(simpleAttackGoal.equals("location:psi")) {
                 AttackSimulationOrganizer.simpleAttackGoal = SimpleAttackGoal.LOCATION_PSI;
                 AttackSimulationOrganizer.attackerBhlrA = new AttackTesterHost("ATTACKER_B_HLR_A", simulatorHome, AttackTesterHost.AttackNode.ATTACKER_B_HLR_A, this);
@@ -622,6 +624,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                 case LOCATION_ATI:
                     AttackSimulationOrganizer.attackerBhlrA.start();
                     AttackSimulationOrganizer.hlrAattackerB.start();
+                    AttackSimulationOrganizer.hlrAvlrA.start();
+                    AttackSimulationOrganizer.vlrAhlrA.start();
                     break;
                 case LOCATION_PSI:
                     AttackSimulationOrganizer.attackerBhlrA.start();
@@ -748,7 +752,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                 } else {
                     switch(AttackSimulationOrganizer.simpleAttackGoal) {
                         case LOCATION_ATI:
-                            if(AttackSimulationOrganizer.attackerBhlrA.getM3uaMan().getState().contains("ACTIVE"))
+                            if(AttackSimulationOrganizer.attackerBhlrA.getM3uaMan().getState().contains("ACTIVE") &&
+                                    AttackSimulationOrganizer.hlrAvlrA.getM3uaMan().getState().contains("ACTIVE"))
                                 return true;
                             break;
                         case LOCATION_PSI:
@@ -783,7 +788,8 @@ public class AttackSimulationOrganizer implements Stoppable {
         if(simpleSimulation) {
             switch(AttackSimulationOrganizer.simpleAttackGoal) {
                 case LOCATION_ATI:
-                    return AttackSimulationOrganizer.attackerBhlrA.isNeedQuit() || AttackSimulationOrganizer.hlrAattackerB.isNeedQuit();
+                    return AttackSimulationOrganizer.attackerBhlrA.isNeedQuit() || AttackSimulationOrganizer.hlrAattackerB.isNeedQuit() ||
+                            AttackSimulationOrganizer.hlrAvlrA.isNeedQuit() || AttackSimulationOrganizer.vlrAhlrA.isNeedQuit();
                 case LOCATION_PSI:
                     return AttackSimulationOrganizer.attackerBhlrA.isNeedQuit() || AttackSimulationOrganizer.hlrAattackerB.isNeedQuit() ||
                             AttackSimulationOrganizer.attackerBvlrA.isNeedQuit() || AttackSimulationOrganizer.vlrAattackerB.isNeedQuit();
@@ -829,6 +835,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                 case LOCATION_ATI:
                     AttackSimulationOrganizer.attackerBhlrA.execute();
                     AttackSimulationOrganizer.hlrAattackerB.execute();
+                    AttackSimulationOrganizer.hlrAvlrA.execute();
+                    AttackSimulationOrganizer.vlrAhlrA.execute();
                     break;
                 case LOCATION_PSI:
                     AttackSimulationOrganizer.attackerBhlrA.execute();

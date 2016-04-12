@@ -353,8 +353,8 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
             mapProvider.addMAPDialogListener(this);
         } else {
-            ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();
-            isupProvider.addListener(this);
+            //ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();
+            //isupProvider.addListener(this);
         }
 
         this.testerHost.sendNotif(SOURCE_NAME, "AttackServer has been started", "", Level.INFO);

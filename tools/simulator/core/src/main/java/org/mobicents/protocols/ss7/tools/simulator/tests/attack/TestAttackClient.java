@@ -497,8 +497,8 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
 
             mapProvider.addMAPDialogListener(this);
         } else {
-            ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();
-            isupProvider.addListener(this);
+            //ISUPProvider isupProvider = this.testerHost.getIsupMan().getIsupStack().getIsupProvider();
+            //isupProvider.addListener(this);
         }
 
         this.testerHost.sendNotif(SOURCE_NAME, "AttackClient has been started", "", Level.INFO);
@@ -2524,54 +2524,54 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
     }
 
     public void performIsupIAM() {
-        ISUPStack isupStack = this.testerHost.getIsupMan().getIsupStack();
-        ISUPProvider isupProvider = isupStack.getIsupProvider();
+        //ISUPStack isupStack = this.testerHost.getIsupMan().getIsupStack();
+        //ISUPProvider isupProvider = isupStack.getIsupProvider();
 
-        try {
-            CircuitIdentificationCode cic = isupProvider.getParameterFactory().createCircuitIdentificationCode();
-            cic.setCIC(1);
+        //try {
+        //    CircuitIdentificationCode cic = isupProvider.getParameterFactory().createCircuitIdentificationCode();
+        //    cic.setCIC(1);
 
-            CalledPartyNumber cpn = isupProvider.getParameterFactory().createCalledPartyNumber();
-            cpn.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_ALLOWED);
-            cpn.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
-            cpn.setAddress("82828282");
-            cpn.setNatureOfAddresIndicator(CalledPartyNumber._NAI_INTERNATIONAL_NUMBER);
+        //    CalledPartyNumber cpn = isupProvider.getParameterFactory().createCalledPartyNumber();
+        //    cpn.setInternalNetworkNumberIndicator(CalledPartyNumber._INN_ROUTING_ALLOWED);
+        //    cpn.setNumberingPlanIndicator(CalledPartyNumber._NPI_ISDN);
+        //    cpn.setAddress("82828282");
+        //    cpn.setNatureOfAddresIndicator(CalledPartyNumber._NAI_INTERNATIONAL_NUMBER);
 
-            NatureOfConnectionIndicators noci = isupProvider.getParameterFactory().createNatureOfConnectionIndicators();
-            noci.setContinuityCheckIndicator(NatureOfConnectionIndicators._CCI_NOT_REQUIRED);
-            noci.setEchoControlDeviceIndicator(true);
-            noci.setSatelliteIndicator(NatureOfConnectionIndicators._SI_NO_SATELLITE);
+        //    NatureOfConnectionIndicators noci = isupProvider.getParameterFactory().createNatureOfConnectionIndicators();
+        //    noci.setContinuityCheckIndicator(NatureOfConnectionIndicators._CCI_NOT_REQUIRED);
+        //    noci.setEchoControlDeviceIndicator(true);
+        //    noci.setSatelliteIndicator(NatureOfConnectionIndicators._SI_NO_SATELLITE);
 
-            ForwardCallIndicators fci = isupProvider.getParameterFactory().createForwardCallIndicators();
-            fci.setEndToEndInformationIndicator(false);
-            fci.setEndToEndMethodIndicator(ForwardCallIndicators._ETEMI_NOMETHODAVAILABLE);
-            fci.setInterworkingIndicator(false);
-            fci.setIsdnAccessIndicator(true);
-            fci.setIsdnUserPartIndicator(true);
-            fci.setNationalCallIdentificator(false);
-            fci.setSccpMethodIndicator(ForwardCallIndicators._SCCP_MI_NOINDICATION);
+        //    ForwardCallIndicators fci = isupProvider.getParameterFactory().createForwardCallIndicators();
+        //    fci.setEndToEndInformationIndicator(false);
+        //    fci.setEndToEndMethodIndicator(ForwardCallIndicators._ETEMI_NOMETHODAVAILABLE);
+        //    fci.setInterworkingIndicator(false);
+        //    fci.setIsdnAccessIndicator(true);
+        //    fci.setIsdnUserPartIndicator(true);
+        //    fci.setNationalCallIdentificator(false);
+        //    fci.setSccpMethodIndicator(ForwardCallIndicators._SCCP_MI_NOINDICATION);
 
-            CallingPartyCategory cpc = isupProvider.getParameterFactory().createCallingPartyCategory();
-            cpc.setCallingPartyCategory(CallingPartyCategory._ORDINARY_SUBSCRIBER);
+        //    CallingPartyCategory cpc = isupProvider.getParameterFactory().createCallingPartyCategory();
+        //    cpc.setCallingPartyCategory(CallingPartyCategory._ORDINARY_SUBSCRIBER);
 
-            TransmissionMediumRequirement tmr = isupProvider.getParameterFactory().createTransmissionMediumRequirement();
-            tmr.setTransimissionMediumRequirement(TransmissionMediumRequirement._MEDIUM_64_KBIT_UNRESTRICTED);
+        //    TransmissionMediumRequirement tmr = isupProvider.getParameterFactory().createTransmissionMediumRequirement();
+        //    tmr.setTransimissionMediumRequirement(TransmissionMediumRequirement._MEDIUM_64_KBIT_UNRESTRICTED);
 
-            InitialAddressMessage msg = isupProvider.getMessageFactory().createIAM();
-            msg.setCircuitIdentificationCode(isupProvider.getParameterFactory().createCircuitIdentificationCode());
-            msg.setSls(1);
-            msg.setCalledPartyNumber(cpn);
-            msg.setNatureOfConnectionIndicators(noci);
-            msg.setForwardCallIndicators(fci);
-            msg.setCallingPartCategory(cpc);
-            msg.setTransmissionMediumRequirement(tmr);
+        //    InitialAddressMessage msg = isupProvider.getMessageFactory().createIAM();
+        //    msg.setCircuitIdentificationCode(isupProvider.getParameterFactory().createCircuitIdentificationCode());
+        //    msg.setSls(1);
+        //    msg.setCalledPartyNumber(cpn);
+        //    msg.setNatureOfConnectionIndicators(noci);
+        //    msg.setForwardCallIndicators(fci);
+        //    msg.setCallingPartCategory(cpc);
+        //    msg.setTransmissionMediumRequirement(tmr);
 
-            isupProvider.sendMessage(msg, this.testerHost.getIsupMan().getDpc());
-        } catch(IOException ex) {
-            System.out.println("Error when sending ISUP IAM: " + ex.toString());
-        } catch(ParameterException ex) {
-            System.out.println("Error when sending ISUP IAM: " + ex.toString());
-        }
+        //    isupProvider.sendMessage(msg, this.testerHost.getIsupMan().getDpc());
+        //} catch(IOException ex) {
+        //    System.out.println("Error when sending ISUP IAM: " + ex.toString());
+        //} catch(ParameterException ex) {
+        //    System.out.println("Error when sending ISUP IAM: " + ex.toString());
+        //}
     }
 
     @Override
