@@ -1572,7 +1572,7 @@ public class TestAttackClient extends AttackTesterBase implements Stoppable, MAP
             PagingArea pagingArea = parameterFactory.createPagingArea(lac);
 
             if(attackerOriginated) {
-                curDialog.addUpdateLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, null, false, false);
+                curDialog.addUpdateLocationRequest(AttackSimulationOrganizer.TCAP_TIMEOUT, imsi, mscNumber, null, vlrNumber, null, null, null, false, false, null, null, pagingArea, false, false);
             } else {
                 VLRCapability vlrCapability = parameterFactory.createVlrCapability(
                     parameterFactory.createSupportedCamelPhases(true, true, true, true),
