@@ -5,9 +5,6 @@ import org.mobicents.protocols.ss7.isup.impl.CircuitManagerImpl;
 import org.mobicents.protocols.ss7.isup.impl.ISUPProviderImpl;
 import org.mobicents.protocols.ss7.isup.impl.ISUPStackImpl;
 import org.mobicents.protocols.ss7.mtp.Mtp3UserPart;
-import org.mobicents.protocols.ss7.scheduler.Clock;
-import org.mobicents.protocols.ss7.scheduler.DefaultClock;
-import org.mobicents.protocols.ss7.scheduler.Scheduler;
 import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
 
 /**
@@ -15,7 +12,6 @@ import org.mobicents.protocols.ss7.tools.simulator.Stoppable;
  */
 public class IsupMan implements Stoppable {
     private ISUPStack isupStack;
-    private Scheduler scheduler;
 
     private int ni;
     private int localSpc;
@@ -31,11 +27,6 @@ public class IsupMan implements Stoppable {
         this.localSpc = localSpc;
         this.dpc = dpc;
 
-        this.scheduler = new Scheduler();
-        this.scheduler.setClock(new DefaultClock());
-        this.scheduler.start();
-
-        this.isupStack = new ISUPStackImpl(this.scheduler, localSpc, ni);
         this.isupStack.setCircuitManager(new CircuitManagerImpl());
         this.isupStack.setMtp3UserPart(mtp3UserPart);
         this.isupStack.start();

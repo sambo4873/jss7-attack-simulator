@@ -80,7 +80,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
     // levels
     M3uaMan m3ua;
-    IsupMan isup;
     SccpMan sccp;
     MapMan map;
     CapMan cap;
@@ -109,8 +108,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
 
         this.m3ua = new M3uaMan(appName);
         this.m3ua.setTesterHost(this);
-
-        this.isup = new IsupMan();
 
         this.sccp = new SccpMan(appName);
         this.sccp.setTesterHost(this);
@@ -3250,8 +3247,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
                     sccpStack = this.sccp.getSccpStack();
                     break;
                 case Instance_L2.VAL_ISUP:
-                    this.instance_L2_B = this.isup;
-                    this.isup.initIsup(mtp3UserPart, this.isupNi, this.isupLocalSpc, this.isupDpc);
                     started = true;
                     break;
             }
@@ -3482,10 +3477,6 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
             return this.getTestAttackClient().getLastActivateTraceModeResponse() != null;
         else
             return this.getTestAttackServer().getLastActivateTraceModeResponse() != null;
-    }
-
-    public IsupMan getIsupMan() {
-        return this.isup;
     }
 
     public enum AttackNode {
