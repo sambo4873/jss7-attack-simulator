@@ -26,8 +26,9 @@ Builds can be downloaded from the project's [Jenkins CI Server](https://jensen.n
 
 How to run the simulator:
 
-* Make sure you have SCTP support installed on Linux.
-  * Fedora: lksctp-tools and kernel-modules-extra
+* The simulator needs a working Java environment.
+* Make sure you have SCTP support installed on Linux:
+  * Fedora: lksctp-tools and kernel-modules-extra.
   * Ubuntu: libsctp1 and lksctp-tools.
 * Download latest build artifact from the projects [Jenkins CI Server](https://jensen.ninja/jenkins/job/jss7-attack-simulator/).
 * Unzip the file.
