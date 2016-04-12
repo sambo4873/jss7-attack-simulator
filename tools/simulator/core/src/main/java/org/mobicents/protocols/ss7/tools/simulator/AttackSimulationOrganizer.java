@@ -1484,12 +1484,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                 AttackSimulationOrganizer.OPERATOR_C_GT);
 
         AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().performUpdateLocationRequest(sriResponse.getIMSI(), newMscAddress, newVlrAddress, true, LAC_C_1);
-
-        try {
-            Thread.sleep(5000);
-        } catch(InterruptedException e) {
-            System.exit(50);
-        }
+        this.waitForUpdateLocationResponse(AttackSimulationOrganizer.attackerBhlrA);
+        AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastUpdateLocationResponse();
 
         AttackSimulationOrganizer.smscAhlrA.getTestAttackClient().performSendRoutingInfoForSM(VIP.getMsisdn().getAddress(), AttackSimulationOrganizer.hlrAsmscA.getConfigurationData().getTestAttackServerConfigurationData().getServiceCenterAddress());
         this.waitForSRIForSMResponse(AttackSimulationOrganizer.smscAhlrA);
@@ -1519,6 +1515,16 @@ public class AttackSimulationOrganizer implements Stoppable {
                     scanTarget.getMsisdn().getAddress(), this.getDefaultSmscAddress().getAddress());
             this.waitForSRIForSMResponse(AttackSimulationOrganizer.attackerBhlrA);
             AttackSimulationOrganizer.attackerBhlrA.getTestAttackClient().clearLastSRIForSMResponse();
+        }
+    }
+
+    public void waitForUpdateLocationResponse(AttackTesterHost node) {
+        while(!node.gotUpdateLocationResponse()) {
+            try{
+                Thread.sleep(50);
+            } catch(InterruptedException e) {
+                System.exit(50);
+            }
         }
     }
 
