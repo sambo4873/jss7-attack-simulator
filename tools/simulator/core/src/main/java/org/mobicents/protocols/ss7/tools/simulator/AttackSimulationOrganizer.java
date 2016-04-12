@@ -296,7 +296,8 @@ public class AttackSimulationOrganizer implements Stoppable {
         AttackSimulationOrganizer.subscriberManager = new SubscriberManager(defaultMscAddress, defaultMscBAddress,
                 defaultVlrAddress, defaultVlrBAddress,
                 defaultHlrAddress, defaultHlrBAddress);
-        AttackSimulationOrganizer.subscriberManager.createRandomSubscribers(numberOfSubscribers);
+
+        AttackSimulationOrganizer.subscriberManager.createRandomSubscribers(numberOfSubscribers,simpleSimulation);
 
         if (AttackSimulationOrganizer.simpleSimulation) {
             //this.isupClient = new AttackTesterHost("ISUP_CLIENT", simulatorHome, AttackTesterHost.AttackNode.ISUP_CLIENT, this);

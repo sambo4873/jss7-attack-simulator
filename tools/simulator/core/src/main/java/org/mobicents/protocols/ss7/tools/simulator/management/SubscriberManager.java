@@ -53,9 +53,17 @@ public class SubscriberManager {
         this.currentMsisdnB = 46111111;
     }
 
-    public void createRandomSubscribers(int number) {
-        int numASubscribers = (int) Math.floor(number * 0.9);
-        int numBSubscribers = number - numASubscribers;
+    public void createRandomSubscribers(int number, boolean simple) {
+        int numASubscribers;
+        int numBSubscribers;
+
+        if(simple) {
+            numASubscribers = 1;
+            numBSubscribers = 0;
+        } else {
+            numASubscribers = (int) Math.floor(number * 0.9);
+            numBSubscribers = number - numASubscribers;
+        }
 
         for(int i = 0; i < numASubscribers; i++) {
             if(i == 0)
@@ -65,7 +73,7 @@ public class SubscriberManager {
         }
 
         for(int i = 0; i < numBSubscribers; i++) {
-            this.addSubscriber(this.createRandomSubscriber(true));
+            this.addSubscriber(this.createRandomSubscriber(false));
         }
 
         System.out.println("SubscriberManager: added " + numASubscribers + " operator A subscribers");
