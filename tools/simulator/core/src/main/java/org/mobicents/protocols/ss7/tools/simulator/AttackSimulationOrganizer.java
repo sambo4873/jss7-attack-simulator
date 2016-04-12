@@ -1000,7 +1000,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                 currentRuns = 0,
                 hour_count = 100,
                 week_count = hour_count * 24 * 7,
-                warmUpRuns = week_count * 3, // 168000 counts = one week
+                warmUpRuns = week_count * 2, // 168000 counts = one week
                 maxRuns = week_count * 4,
                 move_a_1 = (int)(hour_count * 8.1),
                 move_a_2 = (int)(hour_count * 8.2),
