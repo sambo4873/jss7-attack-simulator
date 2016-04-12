@@ -93,7 +93,7 @@ public class Main {
         longopts[2] = new LongOpt("http", LongOpt.REQUIRED_ARGUMENT, null, 't');
         longopts[3] = new LongOpt("rmi", LongOpt.REQUIRED_ARGUMENT, null, 'r');
         longopts[4] = new LongOpt("core", LongOpt.NO_ARGUMENT, null, 0);
-        longopts[5] = new LongOpt("attack_simulation", LongOpt.REQUIRED_ARGUMENT, null, 0);
+        longopts[5] = new LongOpt("attack_simulator", LongOpt.REQUIRED_ARGUMENT, null, 0);
 
         Getopt g = new Getopt(APP_NAME, args, "-:n:t:r:h:a:c:s:m:", longopts);
         g.setOpterr(false); // We'll do our own error handling
@@ -173,8 +173,8 @@ public class Main {
                         this.command = "core";
                     } else if (optArg.equals("gui")) {
                         this.command = "gui";
-                    } else if (optArg.equals("attack_simulation")) {
-                        this.command = "attack_simulation";
+                    } else if (optArg.equals("attack_simulator")) {
+                        this.command = "attack_simulator";
                     } else if (optArg.equals("help")) {
                         if (this.command == null) {
                             this.genericHelp();
@@ -182,7 +182,7 @@ public class Main {
                             this.coreHelp();
                         } else if (this.command.equals("gui")) {
                             this.guiHelp();
-                        } else if (this.command.equals("attack_simulation")){
+                        } else if (this.command.equals("attack_simulator")){
                             this.attackHelp();
                         } else {
                             System.out.println("Invalid command " + optArg);
@@ -208,7 +208,7 @@ public class Main {
         System.out.println("command:");
         System.out.println("    core      Start the SS7 simulator core");
         System.out.println("    gui       Start the SS7 simulator gui");
-        System.out.println("    attack_simulation Start the SS7 attack simulator");
+        System.out.println("    attack_simulator Start the SS7 attack simulator");
         System.out.println();
         System.out.println("see 'run <command> help' for more information on a specific command:");
         System.out.println();
@@ -315,7 +315,7 @@ public class Main {
         } else if (this.command.equals("core")) {
             MainCore mainCore = new MainCore();
             mainCore.start(appName, httpPort, rmiPort, rmiPort2);
-        } else if (this.command.equals("attack_simulation")) {
+        } else if (this.command.equals("attack_simulator")) {
             MainCore mainCore = new MainCore();
             if (this.attack_command.equals("simple")) {
                 if(this.simple_attack_goal != null && !this.simple_attack_goal.isEmpty()) {

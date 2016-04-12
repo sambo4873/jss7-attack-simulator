@@ -42,7 +42,7 @@ run.sh help
 or
 
 ```
-run.sh attack_simulation help 
+run.sh attack_simulator help 
 ```
 
 for help on how to run the simulator.
