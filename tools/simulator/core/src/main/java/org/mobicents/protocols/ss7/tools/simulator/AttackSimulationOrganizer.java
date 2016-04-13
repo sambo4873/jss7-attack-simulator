@@ -999,9 +999,9 @@ public class AttackSimulationOrganizer implements Stoppable {
                 vipInterceptCounter = 0,
                 currentRuns = 0,
                 hour_count = 100,
-                week_count = hour_count * 24 * 7,
-                warmUpRuns = week_count * 6, // 168000 counts = one week
-                maxRuns = week_count * 8,
+                week_count = hour_count * 24 * 7, // one week
+                warmUpRuns = week_count * 3,
+                maxRuns = week_count * 4,
                 move_a_1 = (int)(hour_count * 8.1),
                 move_a_2 = (int)(hour_count * 8.2),
                 move_a_3 = (int)(hour_count * 8.3),
@@ -1027,7 +1027,6 @@ public class AttackSimulationOrganizer implements Stoppable {
             try {
                 //sleepTime = AttackSimulationOrganizer.random.nextInt((1000 - 100) + 1) + 100;
                 sleepTime = 800;
-                Thread.sleep(sleepTime);
 
                 if (this.testerHostsNeedQuit())
                     break;
@@ -1061,15 +1060,15 @@ public class AttackSimulationOrganizer implements Stoppable {
                             case MOVING_TO_A:
                                 if (vipActionCounter == move_a_1) {
                                     vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
-                                            AttackSimulationOrganizer.defaultMscAddress,
-                                            AttackSimulationOrganizer.defaultVlrAddress,
+                                            AttackSimulationOrganizer.defaultMscBAddress,
+                                            AttackSimulationOrganizer.defaultVlrBAddress,
                                             false,
                                             LAC_B_2);
                                     trafficGenerated = true;
                                 } else if(vipActionCounter == move_a_2) {
                                     vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
-                                            AttackSimulationOrganizer.defaultMscAddress,
-                                            AttackSimulationOrganizer.defaultVlrAddress,
+                                            AttackSimulationOrganizer.defaultMscBAddress,
+                                            AttackSimulationOrganizer.defaultVlrBAddress,
                                             false,
                                             LAC_B_1);
                                     trafficGenerated = true;
@@ -1114,22 +1113,22 @@ public class AttackSimulationOrganizer implements Stoppable {
                                     trafficGenerated = true;
                                 } else if(vipActionCounter == move_b_3) {
                                     vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
-                                            AttackSimulationOrganizer.defaultMscAddress,
-                                            AttackSimulationOrganizer.defaultVlrAddress,
+                                            AttackSimulationOrganizer.defaultMscBAddress,
+                                            AttackSimulationOrganizer.defaultVlrBAddress,
                                             false,
                                             LAC_B_1);
                                     trafficGenerated = true;
                                 } else if(vipActionCounter == move_b_4) {
                                     vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
-                                            AttackSimulationOrganizer.defaultMscAddress,
-                                            AttackSimulationOrganizer.defaultVlrAddress,
+                                            AttackSimulationOrganizer.defaultMscBAddress,
+                                            AttackSimulationOrganizer.defaultVlrBAddress,
                                             false,
                                             LAC_B_2);
                                     trafficGenerated = true;
                                 } else if(vipActionCounter == move_b_5) {
                                     vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
-                                            AttackSimulationOrganizer.defaultMscAddress,
-                                            AttackSimulationOrganizer.defaultVlrAddress,
+                                            AttackSimulationOrganizer.defaultMscBAddress,
+                                            AttackSimulationOrganizer.defaultVlrBAddress,
                                             false,
                                             LAC_B_3);
                                     trafficGenerated = true;
@@ -1139,8 +1138,8 @@ public class AttackSimulationOrganizer implements Stoppable {
                                 break;
                             case FIRST_MOVE:
                                 if(vipActionCounter == (int)(8.5 * hour_count)) {
-                                    vipActionCounter = 14999;
-                                    trafficGenerated = true;
+                                    vipActionCounter = (int)(14.99 * hour_count);
+                                    trafficGenerated = false;
                                     vipNextAction = VipNextAction.MOVING_TO_B;
                                 }
                                 break;
@@ -1150,11 +1149,6 @@ public class AttackSimulationOrganizer implements Stoppable {
                             this.generateTraffic(true, VipAction.NONE);
 
                     } else {
-                        if(!warmUpDone) {
-                            warmUpDone = true;
-                            vipActionCounter = 0;
-                            vipNextAction = VipNextAction.MOVE_TO_A;
-                        }
                         trafficGenerated = false;
 
                         switch(vipNextAction) {
@@ -1165,15 +1159,15 @@ public class AttackSimulationOrganizer implements Stoppable {
                             case MOVING_TO_A:
                                 if (vipActionCounter == move_a_1) {
                                     vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
-                                            AttackSimulationOrganizer.defaultMscAddress,
-                                            AttackSimulationOrganizer.defaultVlrAddress,
+                                            AttackSimulationOrganizer.defaultMscBAddress,
+                                            AttackSimulationOrganizer.defaultVlrBAddress,
                                             false,
                                             LAC_B_2);
                                     trafficGenerated = true;
                                 } else if(vipActionCounter == move_a_2) {
                                     vlrBhlrA.getTestAttackClient().performUpdateLocationRequest(vipImsi,
-                                            AttackSimulationOrganizer.defaultMscAddress,
-                                            AttackSimulationOrganizer.defaultVlrAddress,
+                                            AttackSimulationOrganizer.defaultMscBAddress,
+                                            AttackSimulationOrganizer.defaultVlrBAddress,
                                             false,
                                             LAC_B_1);
                                     trafficGenerated = true;
@@ -1256,7 +1250,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                         }
 
                         if(!trafficGenerated)
-                            this.generateTraffic(true, VipAction.NONE);
+                            //this.generateTraffic(true, VipAction.NONE);
 
 
                         vipTrackCounter++;
@@ -1266,6 +1260,9 @@ public class AttackSimulationOrganizer implements Stoppable {
                     vipActionCounter++;
                     currentRuns++;
                 }
+
+
+                Thread.sleep(sleepTime);
             }
             catch (InterruptedException e) {
                 e.printStackTrace();
