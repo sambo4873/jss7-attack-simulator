@@ -1166,7 +1166,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                         }
 
                         if(!trafficGenerated) {
-                            //this.generateTraffic(true, VipAction.NONE);
+                            this.generateTraffic(true, VipAction.NONE);
                         }
 
                     } else {
@@ -1291,7 +1291,7 @@ public class AttackSimulationOrganizer implements Stoppable {
                         }
 
                         if(!trafficGenerated) {
-                            //this.generateTraffic(true, VipAction.NONE);
+                            this.generateTraffic(true, VipAction.NONE);
                         }
 
 
