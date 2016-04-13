@@ -1145,8 +1145,9 @@ public class AttackSimulationOrganizer implements Stoppable {
                                 break;
                         }
 
-                        if(!trafficGenerated)
-                            this.generateTraffic(true, VipAction.NONE);
+                        if(!trafficGenerated) {
+                            //this.generateTraffic(true, VipAction.NONE);
+                        }
 
                     } else {
                         trafficGenerated = false;
@@ -1249,8 +1250,9 @@ public class AttackSimulationOrganizer implements Stoppable {
                             trafficGenerated = true;
                         }
 
-                        if(!trafficGenerated)
+                        if(!trafficGenerated) {
                             //this.generateTraffic(true, VipAction.NONE);
+                        }
 
 
                         vipTrackCounter++;
