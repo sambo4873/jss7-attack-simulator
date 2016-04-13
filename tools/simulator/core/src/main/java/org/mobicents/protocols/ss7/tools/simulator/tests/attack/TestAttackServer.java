@@ -94,6 +94,7 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
     private InsertSubscriberDataResponse lastInsertSubscriberDataResponse;
     private CancelLocationResponse lastCancelLocationResponse;
     private ActivateTraceModeResponse_Mobility lastActivateTraceModeResponse;
+    private UpdateLocationResponse lastUpdateLocationResponse;
 
     public TestAttackServer() {
         super(SOURCE_NAME);
@@ -1299,7 +1300,15 @@ public class TestAttackServer extends AttackTesterBase implements Stoppable, MAP
 
     @Override
     public void onUpdateLocationResponse(UpdateLocationResponse ind) {
+        this.lastUpdateLocationResponse = ind;
+    }
 
+    public UpdateLocationResponse getLastUpdateLocationResponse() {
+        return this.lastUpdateLocationResponse;
+    }
+
+    public void clearLastUpdateLocationResponse() {
+        this.lastUpdateLocationResponse = null;
     }
 
     @Override

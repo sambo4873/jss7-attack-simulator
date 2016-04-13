@@ -3411,8 +3411,11 @@ public class AttackTesterHost extends TesterHost implements TesterHostMBean, Sto
         needStore = true;
     }
 
-    public boolean gotUpdateLocationResponse() {
-        return this.getTestAttackClient().getLastUpdateLocationResponse() != null;
+    public boolean gotUpdateLocationResponse(boolean client) {
+        if(client)
+            return this.getTestAttackClient().getLastUpdateLocationResponse() != null;
+        else
+            return this.getTestAttackServer().getLastUpdateLocationResponse() != null;
     }
 
     public boolean gotPSIResponse(boolean client) {
