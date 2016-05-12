@@ -58,10 +58,7 @@ The currently supported simple attacks are:
 * location:psi
 * intercept:sms
 
-## Wiki
-
-Read the [wiki](https://github.com/polarking/jss7-attack-simulator/wiki) for more information.
-
 ## Build From Source
 
-Instruction will be added to the wiki shortly.
+Building from source can be done by using the instructions for jSS7, which can
+be found [here](https://github.com/RestComm/jss7/wiki/Build-jSS7-from-Source).
