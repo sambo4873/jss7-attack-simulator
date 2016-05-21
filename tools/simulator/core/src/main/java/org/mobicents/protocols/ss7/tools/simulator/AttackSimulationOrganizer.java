@@ -1021,9 +1021,6 @@ public class AttackSimulationOrganizer implements Stoppable {
         IMSI vipImsi = VIP.getImsi();
 
         while (true) {
-            if(currentRuns >= maxRuns)
-                break;
-
             try {
                 //sleepTime = AttackSimulationOrganizer.random.nextInt((1000 - 100) + 1) + 100;
                 sleepTime = 800;
