@@ -1021,7 +1021,7 @@ public class AttackSimulationOrganizer implements Stoppable {
         IMSI vipImsi = VIP.getImsi();
 
         while (true) {
-            if (currentRuns <= maxRuns)
+            if (currentRuns == maxRuns)
                 currentRuns = 0;
 
             try {
