@@ -8,7 +8,6 @@
 			<parameter>SCTPManagement</parameter>
 		</constructor>
 		<property name="persistDir">${jboss.server.data.dir}</property>
-		<property name="singleThread">true</property>
 	</bean>
 
 	<bean name="SCTPShellExecutor" class="org.mobicents.protocols.ss7.m3ua.impl.oam.SCTPShellExecutor">
@@ -48,6 +47,8 @@
 		<property name="persistDir">${jboss.server.data.dir}</property>
 		<property name="maxSequenceNumber">256</property>
 		<property name="maxAsForRoute">2</property>
+		<property name="useLsbForLinksetSelection">false</property>
+		<property name="deliveryMessageThreadCount">8</property>
 		<property name="transportManagement">
 			<inject bean="SCTPManagement" />
 		</property>
@@ -204,7 +205,7 @@
 			</map>
 		</property>
 	</bean>
-	
+
 	<!-- ==================================================================== -->
 	<!-- Shell Service -->
 	<!-- ==================================================================== -->
@@ -279,7 +280,7 @@
 		</property>
 	</bean>
 	<!-- ==================================================================== -->
-	<!-- Mobicents SS7 Service -->
+	<!-- RestComm SS7 Service -->
 	<!-- ==================================================================== -->
 	<bean name="TCAPSS7Service" class="org.mobicents.ss7.SS7Service">
 		<constructor>

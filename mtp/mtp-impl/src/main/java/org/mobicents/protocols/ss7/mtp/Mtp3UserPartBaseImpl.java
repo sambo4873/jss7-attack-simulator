@@ -28,6 +28,8 @@ import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
+// lic dep 1
+
 /**
  *
  * @author amit bhayani
@@ -47,7 +49,7 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
     // Mtp3UserPartListener's
     // For single thread model this value should be equal 1
     // TODO: make it configurable
-    protected int deliveryTransferMessageThreadCount = 1;
+    protected int deliveryTransferMessageThreadCount = Runtime.getRuntime().availableProcessors() * 2;
 
     protected boolean isStarted = false;
 
@@ -141,6 +143,8 @@ public abstract class Mtp3UserPartBaseImpl implements Mtp3UserPart {
     }
 
     public void start() throws Exception {
+        // lic dep 2
+
         if (this.isStarted)
             return;
 
