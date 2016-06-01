@@ -1,7 +1,5 @@
 # SS7 Attack Simulator based on RestComm's jss7.
 
-[![Join the chat at https://gitter.im/RestComm/jss7](https://badges.gitter.im/RestComm/jss7.svg)](https://gitter.im/RestComm/jss7?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 ## Introduction
 
 Open Source Java SS7 attack simulator that makes it possible to simulate some publicly disclosed attacks on the SS7 network.
