@@ -20,7 +20,7 @@ SS7 Attack Simulator is licensed under the Free Open Source [GNU Affero GPL v3.0
 
 ## Downloads
 
-Builds can be downloaded from the project's [Jenkins CI Server](https://jensen.ninja/jenkins/).
+The latest build can be downloaded from [here](https://drive.google.com/file/d/0B5wpGwi_jRR5a1pUZ2laWnA0WmM/view?usp=sharing).
 
 ## Instructions
 
