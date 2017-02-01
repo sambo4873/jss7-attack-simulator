@@ -2,6 +2,8 @@
 
 ## Introduction
 
+This project is currenlty not maintained and may not build, I've made available the latest build [here](https://drive.google.com/file/d/0B5wpGwi_jRR5a1pUZ2laWnA0WmM/view?usp=sharing).
+
 Open Source Java SS7 attack simulator that makes it possible to simulate some publicly disclosed attacks on the SS7 network.
 
 This project is part of an ongoing Master Thesis at NTNU Gjøvik, Norway.
@@ -30,7 +32,7 @@ How to run the simulator:
 * Make sure you have SCTP support installed on Linux:
   * Fedora: lksctp-tools and kernel-modules-extra.
   * Ubuntu: libsctp1 and lksctp-tools.
-* Download latest build artifact from the projects [Jenkins CI Server](https://jensen.ninja/jenkins/job/jss7-attack-simulator/).
+* Download latest build [here](https://drive.google.com/file/d/0B5wpGwi_jRR5a1pUZ2laWnA0WmM/view?usp=sharing).
 * Unzip the file.
 * The simulator is launched with the script:
 
